@@ -17,21 +17,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <nav className="flex flex-col gap-1">
-          <NavLink href="/" label="Projects" icon={LayoutGrid} />
-          <NavLink href="/settings" label="Settings" icon={Settings} />
+          <NavLink href="/" label="Projets" icon={LayoutGrid} />
+          <NavLink href="/settings" label="Paramètres" icon={Settings} />
         </nav>
 
         <Link
           href="/projects/new"
           className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-glow transition-colors hover:bg-accent/90"
         >
-          <Plus size={16} /> New demo
+          <Plus size={16} /> Nouvelle démo
         </Link>
 
         <div className="mt-auto px-2">
           <p className="eyebrow mb-1">Pipeline</p>
           <p className="text-xs leading-relaxed text-faint">
-            Capture → storyboard → script → render. Real screens, no invented UI.
+            Capture → storyboard → script → rendu. De vrais écrans, aucune UI inventée.
           </p>
         </div>
       </aside>

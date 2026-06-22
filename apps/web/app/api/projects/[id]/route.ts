@@ -13,6 +13,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       exports: { orderBy: { createdAt: "desc" }, take: 1 },
     },
   });
-  if (!project) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!project) return NextResponse.json({ error: "Introuvable" }, { status: 404 });
   return NextResponse.json({ project });
 }

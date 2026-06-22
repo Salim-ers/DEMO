@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const project = await prisma.project.findUnique({ where: { id } });
-  if (!project) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!project) return NextResponse.json({ error: "Introuvable" }, { status: 404 });
 
   const renderJob = await prisma.renderJob.create({
     data: { projectId: project.id, status: JobStatus.QUEUED, format: project.format },
@@ -19,7 +19,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   } catch (err) {
     // Redis unavailable: keep the job queued and surface the issue rather than 500-ing the UI.
     return NextResponse.json(
-      { renderJobId: renderJob.id, queued: false, error: "Queue unavailable — is Redis running?" },
+      { renderJobId: renderJob.id, queued: false, error: "File d'attente indisponible — Redis est-il démarré ?" },
       { status: 202 },
     );
   }

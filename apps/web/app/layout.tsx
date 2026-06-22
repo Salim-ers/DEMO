@@ -8,14 +8,14 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} — premium demo videos from a real capture`,
+  title: `${APP_NAME} — des vidéos de démo premium à partir d'une vraie capture`,
   description:
-    "Turn a URL, a login, and a sentence into a polished product demo video. Real browser captures, narrated and rendered automatically.",
+    "Transformez une URL, un identifiant et une phrase en une vidéo de démo produit soignée. De vraies captures de navigateur, narrées et rendues automatiquement.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable} dark`}>
+    <html lang="fr" className={`${sans.variable} ${mono.variable} dark`}>
       <body className="font-sans antialiased">
         <div className="relative z-10">
           <AppShell>{children}</AppShell>

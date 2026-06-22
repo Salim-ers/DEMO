@@ -28,14 +28,14 @@ export default async function DashboardPage() {
     <div>
       <header className="mb-8 flex items-end justify-between">
         <div>
-          <p className="eyebrow mb-2">Workspace</p>
-          <h1 className="text-2xl font-semibold tracking-tighter text-ink">Demo projects</h1>
+          <p className="eyebrow mb-2">Espace de travail</p>
+          <h1 className="text-2xl font-semibold tracking-tighter text-ink">Projets de démo</h1>
         </div>
         <Link
           href="/projects/new"
           className="hidden items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-glow transition-colors hover:bg-accent/90 sm:inline-flex"
         >
-          <Plus size={16} /> New demo
+          <Plus size={16} /> Nouvelle démo
         </Link>
       </header>
 
@@ -58,16 +58,16 @@ function EmptyState() {
       <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-hairline bg-elevated">
         <Plus size={22} className="text-accent" />
       </div>
-      <h2 className="mb-1.5 text-lg font-semibold tracking-tighter text-ink">No demos yet</h2>
+      <h2 className="mb-1.5 text-lg font-semibold tracking-tighter text-ink">Aucune démo pour l'instant</h2>
       <p className="mb-6 max-w-sm text-sm leading-relaxed text-muted">
-        Point DemoForge at a live app, describe the flow in a sentence, and it captures the real screens and renders a
-        narrated demo.
+        Indiquez une app en ligne à DemoForge, décrivez le parcours en une phrase, et il capture les vrais écrans puis
+        génère une démo narrée.
       </p>
       <Link
         href="/projects/new"
         className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white shadow-glow transition-colors hover:bg-accent/90"
       >
-        <Plus size={16} /> Create your first demo
+        <Plus size={16} /> Créer votre première démo
       </Link>
     </div>
   );

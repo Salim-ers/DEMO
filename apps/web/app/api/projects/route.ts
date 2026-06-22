@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   try {
     input = bodySchema.parse(await req.json());
   } catch (err) {
-    return NextResponse.json({ error: "Invalid project payload", detail: String(err) }, { status: 400 });
+    return NextResponse.json({ error: "Données du projet invalides", detail: String(err) }, { status: 400 });
   }
 
   const workspaceId = await getActiveWorkspaceId();

@@ -12,9 +12,9 @@ export interface PreviewScene {
 }
 
 const TYPE_LABEL: Record<string, string> = {
-  TITLE_CARD: "Title",
-  BENEFIT_CARD: "Statement",
-  SCREEN_CAPTURE: "Screen",
+  TITLE_CARD: "Titre",
+  BENEFIT_CARD: "Affirmation",
+  SCREEN_CAPTURE: "Écran",
   ZOOM: "Zoom",
   TRANSITION: "Transition",
   HIGGSFIELD_BROLL: "B-roll",
@@ -25,7 +25,7 @@ export function StoryboardPreview({ scenes, source }: { scenes: PreviewScene[]; 
   if (scenes.length === 0) {
     return (
       <div className="card p-6">
-        <p className="text-sm text-muted">The storyboard appears here once the pipeline reaches that stage.</p>
+        <p className="text-sm text-muted">Le storyboard apparaît ici une fois cette étape atteinte.</p>
       </div>
     );
   }
@@ -33,7 +33,7 @@ export function StoryboardPreview({ scenes, source }: { scenes: PreviewScene[]; 
   return (
     <div className="card overflow-hidden">
       <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
-        <span className="eyebrow">Storyboard · {scenes.length} scenes</span>
+        <span className="eyebrow">Storyboard · {scenes.length} scènes</span>
         <span className="font-mono text-xs text-muted">
           {source ? `${source} · ` : ""}
           {(total / 1000).toFixed(1)}s
@@ -48,7 +48,7 @@ export function StoryboardPreview({ scenes, source }: { scenes: PreviewScene[]; 
                 <Badge tone={s.type === "SCREEN_CAPTURE" || s.type === "ZOOM" ? "accent" : "neutral"}>
                   {TYPE_LABEL[s.type] ?? s.type}
                 </Badge>
-                {s.hasImage && <span className="font-mono text-[10px] uppercase tracking-wide text-ok">real capture</span>}
+                {s.hasImage && <span className="font-mono text-[10px] uppercase tracking-wide text-ok">capture réelle</span>}
                 <span className="font-mono text-[11px] text-faint">{(s.durationMs / 1000).toFixed(1)}s</span>
                 {s.cameraMotion !== "none" && (
                   <span className="font-mono text-[11px] text-faint">{s.cameraMotion.replace(/_/g, " ")}</span>

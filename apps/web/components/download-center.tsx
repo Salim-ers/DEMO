@@ -21,11 +21,11 @@ export function DownloadCenter({ items }: { items: DownloadItem[] }) {
   return (
     <div className="card overflow-hidden">
       <div className="border-b border-hairline px-6 py-4">
-        <span className="eyebrow">Downloads</span>
+        <span className="eyebrow">Téléchargements</span>
       </div>
       {!available ? (
         <div className="px-6 py-6">
-          <p className="text-sm text-muted">Deliverables show up here when the export stage finishes.</p>
+          <p className="text-sm text-muted">Les livrables apparaissent ici une fois l'étape d'export terminée.</p>
         </div>
       ) : (
         <ul className="divide-y divide-hairline">

@@ -48,7 +48,7 @@ export function ProviderSettings({ initial }: { initial: ProviderRow[] }) {
             <div>
               <div className="flex items-center gap-2.5">
                 <h3 className="text-[15px] font-semibold tracking-tighter text-ink">{r.label}</h3>
-                {r.enabled ? <Badge tone="ok">Connected</Badge> : <Badge tone="neutral">Not connected</Badge>}
+                {r.enabled ? <Badge tone="ok">Connecté</Badge> : <Badge tone="neutral">Non connecté</Badge>}
               </div>
               <p className="mt-1 text-sm leading-relaxed text-muted">{r.description}</p>
             </div>
@@ -59,18 +59,19 @@ export function ProviderSettings({ initial }: { initial: ProviderRow[] }) {
               type="password"
               value={drafts[r.kind] ?? ""}
               onChange={(e) => setDrafts((d) => ({ ...d, [r.kind]: e.target.value }))}
-              placeholder={r.hasSecret ? "•••••••••••• (saved — paste to replace)" : r.placeholder}
+              placeholder={r.hasSecret ? "•••••••••••• (enregistré — collez pour remplacer)" : r.placeholder}
             />
             <Button size="md" onClick={() => save(r.kind)} disabled={saving === r.kind || !(drafts[r.kind] ?? "").trim()}>
               {saving === r.kind ? <Loader2 size={16} className="animate-spin" /> : saved === r.kind ? <Check size={16} /> : null}
-              Save
+              Enregistrer
             </Button>
           </div>
         </div>
       ))}
       <p className="px-1 text-xs leading-relaxed text-faint">
-        Keys are encrypted in the vault and stored only as opaque references — never in plaintext, never in logs. Leave a
-        provider disconnected to run fully offline with the deterministic fallbacks.
+        Les clés sont chiffrées dans le coffre et stockées uniquement sous forme de références opaques — jamais en clair,
+        jamais dans les logs. Laissez un fournisseur déconnecté pour fonctionner entièrement hors ligne avec les solutions
+        de repli déterministes.
       </p>
     </div>
   );

@@ -74,18 +74,18 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   ]);
 
   const downloads: DownloadItem[] = [
-    { label: "Demo video", sublabel: `demo.mp4 · ${project.format}`, href: videoUrl, kind: "video" },
+    { label: "Vidéo de démo", sublabel: `demo.mp4 · ${project.format}`, href: videoUrl, kind: "video" },
     { label: "Storyboard", sublabel: "storyboard.json", href: storyboardUrl, kind: "json" },
-    { label: "Voiceover script", sublabel: "script.md", href: scriptUrl, kind: "md" },
-    { label: "Captions (SRT)", sublabel: "captions.srt", href: srtUrl, kind: "srt" },
-    { label: "Captions (VTT)", sublabel: "captions.vtt", href: vttUrl, kind: "vtt" },
-    { label: "All assets", sublabel: "assets.zip", href: zipUrl, kind: "zip" },
+    { label: "Script de voix off", sublabel: "script.md", href: scriptUrl, kind: "md" },
+    { label: "Sous-titres (SRT)", sublabel: "captions.srt", href: srtUrl, kind: "srt" },
+    { label: "Sous-titres (VTT)", sublabel: "captions.vtt", href: vttUrl, kind: "vtt" },
+    { label: "Tous les fichiers", sublabel: "assets.zip", href: zipUrl, kind: "zip" },
   ];
 
   return (
     <div>
       <Link href="/" className="mb-7 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink">
-        <ArrowLeft size={16} /> Back to projects
+        <ArrowLeft size={16} /> Retour aux projets
       </Link>
 
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
@@ -134,8 +134,8 @@ function VideoPanel({ url, format }: { url: string | null; format: string }) {
           <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-hairline bg-elevated">
             <Film size={20} className="text-faint" />
           </span>
-          <p className="text-sm text-muted">Your rendered demo will play here</p>
-          <p className="font-mono text-[11px] text-faint">Run the pipeline to produce demo.mp4</p>
+          <p className="text-sm text-muted">Votre démo rendue s'affichera ici</p>
+          <p className="font-mono text-[11px] text-faint">Lancez le pipeline pour produire demo.mp4</p>
         </div>
       )}
     </div>
@@ -153,12 +153,12 @@ function DetailsPanel(props: {
 }) {
   const rows: Array<[string, string]> = [
     ["Audience", props.audience],
-    ["Promise", props.promise],
-    ["Duration", `${props.duration}s`],
+    ["Promesse", props.promise],
+    ["Durée", `${props.duration}s`],
     ["Format", props.format],
-    ["Tone", props.tone],
-    ["Voice", props.voiceMode.toLowerCase().replace(/_/g, " ")],
-    ["Language", props.language],
+    ["Ton", props.tone],
+    ["Voix", props.voiceMode.toLowerCase().replace(/_/g, " ")],
+    ["Langue", props.language],
   ];
   return (
     <div className="card overflow-hidden">

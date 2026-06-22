@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   try {
     input = postSchema.parse(await req.json());
   } catch (err) {
-    return NextResponse.json({ error: "Invalid provider payload", detail: String(err) }, { status: 400 });
+    return NextResponse.json({ error: "Données du fournisseur invalides", detail: String(err) }, { status: 400 });
   }
   const workspaceId = await getActiveWorkspaceId();
 

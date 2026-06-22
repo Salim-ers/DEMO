@@ -27,19 +27,19 @@ interface FormState {
   startNow: boolean;
 }
 
-const STEPS = ["Product", "Access & flow", "Format & voice"] as const;
+const STEPS = ["Produit", "Accès & parcours", "Format & voix"] as const;
 
 const TONE_LABEL: Record<string, string> = {
   premium: "Premium",
-  pedagogical: "Pedagogical",
-  sales: "Sales",
-  investor_demo: "Investor demo",
+  pedagogical: "Pédagogique",
+  sales: "Commercial",
+  investor_demo: "Démo investisseurs",
   onboarding: "Onboarding",
 };
 const VOICE_LABEL: Record<string, string> = {
-  script_only: "Script only (record it yourself)",
-  uploaded_human_voice: "Upload my own voice",
-  tts_provider: "AI voiceover (with consent)",
+  script_only: "Script seul (à enregistrer vous-même)",
+  uploaded_human_voice: "Importer ma propre voix",
+  tts_provider: "Voix off IA (avec consentement)",
 };
 
 export function NewProjectWizard() {
@@ -85,7 +85,7 @@ export function NewProjectWizard() {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? `Request failed (${res.status})`);
+        throw new Error(body.error ?? `Échec de la requête (${res.status})`);
       }
       const { id } = (await res.json()) as { id: string };
       if (form.startNow) {
@@ -93,7 +93,7 @@ export function NewProjectWizard() {
       }
       router.push(`/projects/${id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Une erreur est survenue");
       setSubmitting(false);
     }
   }
@@ -104,48 +104,48 @@ export function NewProjectWizard() {
 
       <div className="card mt-6 p-6 sm:p-8">
         {step === 0 && (
-          <Section title="What are we demoing?" hint="The product and the single promise the video should land.">
-            <Field label="Product name">
+          <Section title="Que démontre-t-on ?" hint="Le produit et la promesse unique que la vidéo doit faire passer.">
+            <Field label="Nom du produit">
               <Input value={form.productName} onChange={(e) => set("productName", e.target.value)} placeholder="Northwind CRM" />
             </Field>
-            <Field label="App URL" hint="The live app the capture will run against.">
-              <Input value={form.url} onChange={(e) => set("url", e.target.value)} placeholder="https://app.example.com" />
+            <Field label="URL de l'app" hint="L'app en ligne sur laquelle la capture sera effectuée.">
+              <Input value={form.url} onChange={(e) => set("url", e.target.value)} placeholder="https://app.exemple.com" />
             </Field>
             <Field label="Audience">
               <Input
                 value={form.targetAudience}
                 onChange={(e) => set("targetAudience", e.target.value)}
-                placeholder="RevOps leaders at B2B SaaS companies"
+                placeholder="Responsables RevOps dans des entreprises SaaS B2B"
               />
             </Field>
-            <Field label="Main promise">
+            <Field label="Promesse principale">
               <Input
                 value={form.mainPromise}
                 onChange={(e) => set("mainPromise", e.target.value)}
-                placeholder="Close more deals with less busywork."
+                placeholder="Concluez plus de ventes avec moins de tâches répétitives."
               />
             </Field>
           </Section>
         )}
 
         {step === 1 && (
-          <Section title="Access & the flow to record" hint="Credentials are encrypted in a vault — never stored in plaintext, never logged.">
+          <Section title="Accès & parcours à enregistrer" hint="Les identifiants sont chiffrés dans un coffre — jamais stockés en clair, jamais journalisés.">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="Login URL (optional)">
-                <Input value={form.loginUrl} onChange={(e) => set("loginUrl", e.target.value)} placeholder="https://app.example.com/login" />
+              <Field label="URL de connexion (optionnel)">
+                <Input value={form.loginUrl} onChange={(e) => set("loginUrl", e.target.value)} placeholder="https://app.exemple.com/login" />
               </Field>
-              <Field label="Demo account email (optional)">
-                <Input value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="demo@example.com" />
+              <Field label="Email du compte de démo (optionnel)">
+                <Input value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="demo@exemple.com" />
               </Field>
             </div>
-            <Field label="Password (optional)" hint="2FA / CAPTCHA are never bypassed; you'll be prompted to finish those by hand.">
+            <Field label="Mot de passe (optionnel)" hint="La 2FA / le CAPTCHA ne sont jamais contournés ; il vous sera demandé de les compléter à la main.">
               <Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="••••••••" />
             </Field>
-            <Field label="Scenario" hint="Plain English. One flow, a few steps — e.g. open the dashboard, then create a customer, then show analytics.">
+            <Field label="Scénario" hint="En clair. Un parcours, quelques étapes — ex. ouvrir le tableau de bord, créer un client, puis afficher les analyses.">
               <Textarea
                 value={form.scenario}
                 onChange={(e) => set("scenario", e.target.value)}
-                placeholder="Open the dashboard, then create a new customer, then show the analytics page, and end on the ROI summary."
+                placeholder="Ouvrir le tableau de bord, créer un nouveau client, afficher la page d'analyses, et terminer sur le résumé du ROI."
                 rows={4}
               />
             </Field>
@@ -153,27 +153,27 @@ export function NewProjectWizard() {
         )}
 
         {step === 2 && (
-          <Section title="Format & voice" hint="How it should look and sound. You can re-render later.">
+          <Section title="Format & voix" hint="L'apparence et le son. Vous pourrez relancer le rendu plus tard.">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="Duration">
+              <Field label="Durée">
                 <Select value={form.durationSeconds} onChange={(e) => set("durationSeconds", Number(e.target.value))}>
                   {DEMO_DURATIONS.map((d) => (
                     <option key={d} value={d}>
-                      {d} seconds
+                      {d} secondes
                     </option>
                   ))}
                 </Select>
               </Field>
-              <Field label="Aspect ratio">
+              <Field label="Format d'image">
                 <Select value={form.format} onChange={(e) => set("format", e.target.value)}>
                   {VIDEO_FORMATS.map((f) => (
                     <option key={f} value={f}>
-                      {f === "16:9" ? "16:9 — landscape" : f === "9:16" ? "9:16 — vertical" : "1:1 — square"}
+                      {f === "16:9" ? "16:9 — paysage" : f === "9:16" ? "9:16 — vertical" : "1:1 — carré"}
                     </option>
                   ))}
                 </Select>
               </Field>
-              <Field label="Tone">
+              <Field label="Ton">
                 <Select value={form.tone} onChange={(e) => set("tone", e.target.value)}>
                   {DEMO_TONES.map((t) => (
                     <option key={t} value={t}>
@@ -182,7 +182,7 @@ export function NewProjectWizard() {
                   ))}
                 </Select>
               </Field>
-              <Field label="Language">
+              <Field label="Langue">
                 <Select value={form.language} onChange={(e) => set("language", e.target.value)}>
                   <option value="en">English</option>
                   <option value="fr">Français</option>
@@ -191,7 +191,7 @@ export function NewProjectWizard() {
                 </Select>
               </Field>
             </div>
-            <Field label="Voiceover">
+            <Field label="Voix off">
               <Select value={form.voiceMode} onChange={(e) => set("voiceMode", e.target.value)}>
                 {VOICE_MODES.map((v) => (
                   <option key={v} value={v}>
@@ -210,14 +210,14 @@ export function NewProjectWizard() {
                   className="mt-0.5 h-4 w-4 accent-accent"
                 />
                 <span className="text-sm text-muted">
-                  I confirm I have the rights and consent to synthesize this voiceover. No voice is cloned or generated without it.
+                  Je confirme avoir les droits et le consentement pour synthétiser cette voix off. Aucune voix n'est clonée ou générée sans cela.
                 </span>
               </label>
             )}
 
             <label className="mt-1 flex cursor-pointer items-center gap-3">
               <input type="checkbox" checked={form.startNow} onChange={(e) => set("startNow", e.target.checked)} className="h-4 w-4 accent-accent" />
-              <span className="text-sm text-muted">Start the capture & render pipeline immediately</span>
+              <span className="text-sm text-muted">Lancer la capture & le rendu immédiatement</span>
             </label>
           </Section>
         )}
@@ -226,16 +226,16 @@ export function NewProjectWizard() {
 
         <div className="mt-8 flex items-center justify-between">
           <Button variant="ghost" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0 || submitting}>
-            <ArrowLeft size={16} /> Back
+            <ArrowLeft size={16} /> Retour
           </Button>
           {step < STEPS.length - 1 ? (
             <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext}>
-              Continue <ArrowRight size={16} />
+              Continuer <ArrowRight size={16} />
             </Button>
           ) : (
             <Button onClick={submit} disabled={submitting}>
               {submitting ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-              {form.startNow ? "Create & generate" : "Create project"}
+              {form.startNow ? "Créer & générer" : "Créer le projet"}
             </Button>
           )}
         </div>

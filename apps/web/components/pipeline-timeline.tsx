@@ -5,22 +5,22 @@ import type { JobState, JobName } from "@demoforge/shared";
 import { cn } from "../lib/cn.js";
 
 const STAGE_LABEL: Record<JobName, string> = {
-  analyzeProject: "Analyze project",
-  captureWebsite: "Capture real screens",
-  generateStoryboard: "Build storyboard",
-  generateVoiceScript: "Write voiceover",
-  generateCaptions: "Generate captions",
-  renderVideo: "Render video",
-  exportAssets: "Export assets",
+  analyzeProject: "Analyser le projet",
+  captureWebsite: "Capturer les vrais écrans",
+  generateStoryboard: "Construire le storyboard",
+  generateVoiceScript: "Écrire la voix off",
+  generateCaptions: "Générer les sous-titres",
+  renderVideo: "Rendre la vidéo",
+  exportAssets: "Exporter les fichiers",
 };
 const STAGE_HINT: Record<JobName, string> = {
-  analyzeProject: "Parsing your scenario into steps",
-  captureWebsite: "Driving a headless browser, screenshotting each step",
-  generateStoryboard: "Sequencing a grounded hook → product → proof arc",
-  generateVoiceScript: "Timing narration to each scene",
-  generateCaptions: "Burning subtitles to SRT + VTT",
-  renderVideo: "Compositing in Remotion, encoding H.264",
-  exportAssets: "Bundling MP4, storyboard, script & captions",
+  analyzeProject: "Découpe de votre scénario en étapes",
+  captureWebsite: "Pilotage d'un navigateur headless, capture de chaque étape",
+  generateStoryboard: "Séquençage d'un arc accroche → produit → preuve",
+  generateVoiceScript: "Synchronisation de la narration sur chaque scène",
+  generateCaptions: "Génération des sous-titres en SRT + VTT",
+  renderVideo: "Composition dans Remotion, encodage H.264",
+  exportAssets: "Regroupement MP4, storyboard, script & sous-titres",
 };
 
 interface StatusResponse {
@@ -69,7 +69,7 @@ export function PipelineTimeline({
   if (!renderJobId || !state) {
     return (
       <div className="card p-6">
-        <p className="text-sm text-muted">No render run yet. Start the pipeline to capture and render this demo.</p>
+        <p className="text-sm text-muted">Aucun rendu pour l'instant. Lancez le pipeline pour capturer et générer cette démo.</p>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export function PipelineTimeline({
     <div className="card overflow-hidden">
       <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
         <div className="flex items-center gap-2.5">
-          <span className="eyebrow">Render pipeline</span>
+          <span className="eyebrow">Pipeline de rendu</span>
           <StatusPill status={state.status} />
         </div>
         <span className="font-mono text-xs tabular-nums text-muted">{state.progress}%</span>
@@ -122,9 +122,9 @@ export function PipelineTimeline({
                     {STAGE_LABEL[name] ?? stage.name}
                   </p>
                   {stage.status === "running" && (
-                    <span className="font-mono text-[11px] text-accent">working…</span>
+                    <span className="font-mono text-[11px] text-accent">en cours…</span>
                   )}
-                  {stage.status === "skipped" && <span className="font-mono text-[11px] text-faint">skipped</span>}
+                  {stage.status === "skipped" && <span className="font-mono text-[11px] text-faint">ignoré</span>}
                 </div>
                 <p className="mt-0.5 truncate text-xs text-faint">
                   {stage.error ? <span className="text-bad">{stage.error}</span> : STAGE_HINT[name]}
@@ -179,5 +179,11 @@ function StatusPill({ status }: { status: string }) {
     succeeded: "text-ok",
     failed: "text-bad",
   };
-  return <span className={cn("text-xs font-medium capitalize", map[status] ?? "text-muted")}>{status}</span>;
+  const label: Record<string, string> = {
+    queued: "En attente",
+    running: "En cours",
+    succeeded: "Terminé",
+    failed: "Échec",
+  };
+  return <span className={cn("text-xs font-medium", map[status] ?? "text-muted")}>{label[status] ?? status}</span>;
 }

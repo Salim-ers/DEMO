@@ -22,7 +22,7 @@ export function GenerateButton({ projectId, hasRun }: { projectId: string; hasRu
   return (
     <Button onClick={go} disabled={loading} variant={hasRun ? "secondary" : "primary"}>
       {loading ? <Loader2 size={16} className="animate-spin" /> : hasRun ? <RotateCw size={16} /> : <Play size={16} />}
-      {hasRun ? "Re-run pipeline" : "Generate demo"}
+      {hasRun ? "Relancer le pipeline" : "Générer la démo"}
     </Button>
   );
 }

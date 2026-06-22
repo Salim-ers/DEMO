@@ -5,10 +5,10 @@ import { ProviderSettings, type ProviderRow } from "../../components/provider-se
 export const dynamic = "force-dynamic";
 
 const CATALOG: Array<{ kind: ProviderKind; label: string; description: string; placeholder: string }> = [
-  { kind: ProviderKind.LLM_ANTHROPIC, label: "Anthropic", description: "Sharper storyboards and voiceover copy. Falls back to the deterministic writer when absent.", placeholder: "sk-ant-…" },
-  { kind: ProviderKind.LLM_OPENAI, label: "OpenAI", description: "Alternative LLM provider for storyboard and script generation.", placeholder: "sk-…" },
-  { kind: ProviderKind.ELEVENLABS, label: "ElevenLabs", description: "AI voiceover synthesis. Only ever used with explicit consent.", placeholder: "xi-…" },
-  { kind: ProviderKind.HIGGSFIELD, label: "Higgsfield", description: "Optional marketing b-roll and image-to-video transitions.", placeholder: "hf-…" },
+  { kind: ProviderKind.LLM_ANTHROPIC, label: "Anthropic", description: "Storyboards et textes de voix off plus précis. Bascule sur le générateur déterministe en son absence.", placeholder: "sk-ant-…" },
+  { kind: ProviderKind.LLM_OPENAI, label: "OpenAI", description: "Fournisseur LLM alternatif pour la génération de storyboard et de script.", placeholder: "sk-…" },
+  { kind: ProviderKind.ELEVENLABS, label: "ElevenLabs", description: "Synthèse de voix off par IA. Utilisée uniquement avec consentement explicite.", placeholder: "xi-…" },
+  { kind: ProviderKind.HIGGSFIELD, label: "Higgsfield", description: "B-roll marketing et transitions image-vers-vidéo (optionnel).", placeholder: "hf-…" },
 ];
 
 export default async function SettingsPage() {
@@ -31,10 +31,10 @@ export default async function SettingsPage() {
   return (
     <div className="mx-auto max-w-2xl">
       <header className="mb-8">
-        <p className="eyebrow mb-2">Settings</p>
-        <h1 className="text-2xl font-semibold tracking-tighter text-ink">Providers</h1>
+        <p className="eyebrow mb-2">Paramètres</p>
+        <h1 className="text-2xl font-semibold tracking-tighter text-ink">Fournisseurs</h1>
         <p className="mt-1.5 text-sm leading-relaxed text-muted">
-          Connect optional providers to enrich generation. Everything works without them.
+          Connectez des fournisseurs optionnels pour enrichir la génération. Tout fonctionne sans eux.
         </p>
       </header>
       <ProviderSettings initial={rows} />
