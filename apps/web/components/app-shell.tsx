@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { LayoutGrid, Settings, Plus, Clapperboard } from "lucide-react";
 import { APP_NAME } from "@demoforge/shared";

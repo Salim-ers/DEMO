@@ -13,7 +13,11 @@ export const createProjectSchema = z.object({
   targetAudience: z.string().min(2).max(280),
   mainPromise: z.string().min(2).max(280),
   durationSeconds: z.union(
-    DEMO_DURATIONS.map((d) => z.literal(d)) as [z.ZodLiteral<number>, ...z.ZodLiteral<number>[]],
+    DEMO_DURATIONS.map((d) => z.literal(d)) as [
+      z.ZodLiteral<number>,
+      z.ZodLiteral<number>,
+      ...z.ZodLiteral<number>[],
+    ],
   ),
   format: z.enum(VIDEO_FORMATS),
   language: z.string().min(2).max(10).default("en"),

@@ -7,6 +7,9 @@ let _queue: Queue<PipelineJobData> | null = null;
 
 export function getQueue(): Queue<PipelineJobData> {
   if (!_queue) {
+    // bullmq v5's defaulted generics don't fully resolve at the construction
+    // site (the `DataType = ExtractDataType<DataTypeOrJob, …>` default is left
+    // un-instantiated), so pin the resolved Queue<PipelineJobData> type here.
     _queue = new Queue<PipelineJobData>(QUEUE_NAME, {
       connection: createRedis(),
       defaultJobOptions: {
@@ -15,7 +18,7 @@ export function getQueue(): Queue<PipelineJobData> {
         removeOnComplete: { count: 100 },
         removeOnFail: { count: 200 },
       },
-    });
+    }) as Queue<PipelineJobData>;
   }
   return _queue;
 }

@@ -6,8 +6,8 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./queue": "./src/queue.js",
-    "./queue.js": "./src/queue.js"
+    "./queue": "./src/queue.ts",
+    "./queue.js": "./src/queue.ts"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
