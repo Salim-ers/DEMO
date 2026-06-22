@@ -45,7 +45,10 @@ export const JOBS = {
 } as const;
 export type JobName = (typeof JOBS)[keyof typeof JOBS];
 
-export const QUEUE_NAME = "demoforge:pipeline";
+// NOTE: no ":" — BullMQ v5 rejects colons in queue names (it uses ":" as its
+// internal Redis key separator). A colon here crashes both the Worker and the
+// web-side Queue with "Queue name cannot contain :".
+export const QUEUE_NAME = "demoforge-pipeline";
 
 /** Average speaking rate (words/min) used to budget voiceover against scene time. */
 export const WORDS_PER_MINUTE = 150;
