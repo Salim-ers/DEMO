@@ -26,5 +26,7 @@ export function getQueue(): Queue<PipelineJobData> {
 /** Enqueue a full pipeline run for a project's render job. */
 export async function enqueuePipeline(data: PipelineJobData) {
   const queue = getQueue();
-  return queue.add("pipeline", data, { jobId: `pipeline:${data.renderJobId}` });
+  // No ":" — BullMQ rejects colons in custom job ids ("Custom Id cannot contain :"),
+  // which silently made every web-side enqueue throw and never reach the queue.
+  return queue.add("pipeline", data, { jobId: `pipeline-${data.renderJobId}` });
 }
