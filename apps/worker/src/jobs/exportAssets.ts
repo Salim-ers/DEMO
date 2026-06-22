@@ -53,49 +53,63 @@ export async function exportAssets(ctx: PipelineCtx, captions: CaptionKeys): Pro
     videoMp4Key = out?.storageKey;
   }
 
-  // 3. Build assets.zip from storage objects + screenshots.
-  const tmpDir = path.join(os.tmpdir(), `demoforge-export-${project.id}`);
-  await mkdir(tmpDir, { recursive: true });
-  const zipPath = path.join(tmpDir, "assets.zip");
+  // 3. Build assets.zip from storage objects + screenshots. BEST-EFFORT: the zip
+  // bundles the full demo.mp4 + every screenshot, so it can exceed the storage
+  // bucket's per-file size limit. That must NOT fail the export — demo.mp4 and
+  // the individual files are already uploaded and downloadable on their own.
   const assetsZipKey = `exports/${project.id}/assets.zip`;
+  let assetsZipKeyOrNull: string | null = null;
+  let screenshotCount = 0;
+  try {
+    const tmpDir = path.join(os.tmpdir(), `demoforge-export-${project.id}`);
+    await mkdir(tmpDir, { recursive: true });
+    const zipPath = path.join(tmpDir, "assets.zip");
 
-  const screenshots = await prisma.asset.findMany({
-    where: { projectId: project.id, kind: { in: [AssetKind.SCREENSHOT_DESKTOP, AssetKind.SCREENSHOT_MOBILE] } },
-    orderBy: { createdAt: "asc" },
-  });
+    const screenshots = await prisma.asset.findMany({
+      where: { projectId: project.id, kind: { in: [AssetKind.SCREENSHOT_DESKTOP, AssetKind.SCREENSHOT_MOBILE] } },
+      orderBy: { createdAt: "asc" },
+    });
+    screenshotCount = screenshots.length;
 
-  await new Promise<void>((resolve, reject) => {
-    const output = createWriteStream(zipPath);
-    const archive = archiver("zip", { zlib: { level: 9 } });
-    output.on("close", () => resolve());
-    archive.on("error", reject);
-    archive.pipe(output);
+    await new Promise<void>((resolve, reject) => {
+      const output = createWriteStream(zipPath);
+      const archive = archiver("zip", { zlib: { level: 9 } });
+      output.on("close", () => resolve());
+      archive.on("error", reject);
+      archive.pipe(output);
 
-    void (async () => {
-      try {
-        archive.append(JSON.stringify(storyboard, null, 2), { name: "storyboard.json" });
-        archive.append(voiceScriptToMarkdown(projectToContext(project), script), { name: "script.md" });
-        archive.append(await storage.get(captions.srtKey), { name: "captions.srt" });
-        archive.append(await storage.get(captions.vttKey), { name: "captions.vtt" });
-        if (videoMp4Key) archive.append(await storage.get(videoMp4Key), { name: "demo.mp4" });
-        let i = 0;
-        for (const shot of screenshots) {
-          try {
-            archive.append(await storage.get(shot.storageKey), { name: `screens/${String(i).padStart(2, "0")}-${shot.kind.toLowerCase()}.png` });
-            i++;
-          } catch {
-            /* skip missing object */
+      void (async () => {
+        try {
+          archive.append(JSON.stringify(storyboard, null, 2), { name: "storyboard.json" });
+          archive.append(voiceScriptToMarkdown(projectToContext(project), script), { name: "script.md" });
+          archive.append(await storage.get(captions.srtKey), { name: "captions.srt" });
+          archive.append(await storage.get(captions.vttKey), { name: "captions.vtt" });
+          if (videoMp4Key) archive.append(await storage.get(videoMp4Key), { name: "demo.mp4" });
+          let i = 0;
+          for (const shot of screenshots) {
+            try {
+              archive.append(await storage.get(shot.storageKey), { name: `screens/${String(i).padStart(2, "0")}-${shot.kind.toLowerCase()}.png` });
+              i++;
+            } catch {
+              /* skip missing object */
+            }
           }
+          await archive.finalize();
+        } catch (err) {
+          reject(err as Error);
         }
-        await archive.finalize();
-      } catch (err) {
-        reject(err as Error);
-      }
-    })();
-  });
+      })();
+    });
 
-  const zipBuf = await readFile(zipPath);
-  await storage.put(assetsZipKey, zipBuf, "application/zip");
+    const zipBuf = await readFile(zipPath);
+    await storage.put(assetsZipKey, zipBuf, "application/zip");
+    assetsZipKeyOrNull = assetsZipKey;
+  } catch (err) {
+    ctx.log.warn(
+      { err: String(err) },
+      "assets.zip skipped (exceeds the storage bucket's file-size limit or failed to build) — demo.mp4 + individual files are still exported",
+    );
+  }
 
   // 4. Record the Export (reuse the latest row if one exists).
   const existing = await prisma.export.findFirst({ where: { projectId: project.id }, orderBy: { createdAt: "desc" } });
@@ -106,12 +120,12 @@ export async function exportAssets(ctx: PipelineCtx, captions: CaptionKeys): Pro
     scriptMdKey,
     captionsSrtKey: captions.srtKey,
     captionsVttKey: captions.vttKey,
-    assetsZipKey,
+    assetsZipKey: assetsZipKeyOrNull,
   };
   const exp = existing
     ? await prisma.export.update({ where: { id: existing.id }, data })
     : await prisma.export.create({ data });
 
-  ctx.log.info({ exportId: exp.id, screenshots: screenshots.length }, "exportAssets complete");
+  ctx.log.info({ exportId: exp.id, screenshots: screenshotCount, zip: Boolean(assetsZipKeyOrNull) }, "exportAssets complete");
   return { exportId: exp.id };
 }
