@@ -1,5 +1,8 @@
 import { pino } from "pino";
+import { GoogleTTSProvider } from "./google.js";
 const log = pino({ name: "tts" });
+
+export { GoogleTTSProvider };
 
 export interface TTSResult {
   audio: Buffer | null;
@@ -56,11 +59,23 @@ class NoopTTSProvider implements TTSProvider {
   }
 }
 
+/**
+ * Resolve the active TTS provider.
+ *  - "elevenlabs" → studio-grade neural voice when a key is set; otherwise it
+ *    transparently falls back to the free Google voice so demos still get audio.
+ *  - "google" / unset → free Google voiceover (no key, works out of the box).
+ *  - "none" → explicit opt-out (silent video).
+ * Synthesis only runs when the project's voice mode is tts_provider AND consent
+ * was confirmed, so defaulting to a real provider never synthesizes silently.
+ */
 export function getTTS(): TTSProvider {
-  const choice = (process.env.TTS_PROVIDER ?? "none").toLowerCase();
+  const choice = (process.env.TTS_PROVIDER ?? "google").toLowerCase();
+  if (choice === "none") return new NoopTTSProvider();
   if (choice === "elevenlabs") {
     const p = new ElevenLabsProvider();
     if (p.available) return p;
+    log.warn("TTS_PROVIDER=elevenlabs but ELEVENLABS_API_KEY missing — using free Google voice");
+    return new GoogleTTSProvider();
   }
-  return new NoopTTSProvider();
+  return new GoogleTTSProvider();
 }

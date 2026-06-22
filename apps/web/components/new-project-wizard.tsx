@@ -54,14 +54,14 @@ export function NewProjectWizard() {
     mainPromise: "",
     durationSeconds: 60,
     format: "16:9",
-    language: "en",
+    language: "fr",
     tone: "premium",
-    voiceMode: "script_only",
+    voiceMode: "tts_provider",
     loginUrl: "",
     email: "",
     password: "",
     scenario: "",
-    consent: false,
+    consent: true,
     startNow: true,
   });
 

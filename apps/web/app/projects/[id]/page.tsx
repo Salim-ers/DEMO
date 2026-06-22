@@ -9,7 +9,9 @@ import { GenerateButton } from "../../../components/generate-button.js";
 import { PipelineTimeline } from "../../../components/pipeline-timeline.js";
 import { StoryboardPreview, type PreviewScene } from "../../../components/storyboard-preview.js";
 import { DownloadCenter, type DownloadItem } from "../../../components/download-center.js";
+import { UserImagesPanel, type UploadedImage } from "../../../components/user-images-panel.js";
 import { prettyStatus } from "../../../lib/format.js";
+import { AssetKind } from "@demoforge/db";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +75,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     signed(exp?.assetsZipKey),
   ]);
 
+  const uploadAssets = await prisma.asset.findMany({
+    where: { projectId: project.id, kind: AssetKind.UPLOAD },
+    orderBy: { createdAt: "asc" },
+  });
+  const uploads: UploadedImage[] = await Promise.all(
+    uploadAssets.map(async (a) => ({
+      id: a.id,
+      contentType: a.contentType,
+      bytes: a.bytes,
+      url: await signed(a.storageKey),
+    })),
+  );
+
   const downloads: DownloadItem[] = [
     { label: "Vidéo de démo", sublabel: `demo.mp4 · ${project.format}`, href: videoUrl, kind: "video" },
     { label: "Storyboard", sublabel: "storyboard.json", href: storyboardUrl, kind: "json" },
@@ -116,6 +131,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             voiceMode={String(project.voiceScript?.mode ?? project.voiceMode)}
             language={project.language}
           />
+          <UserImagesPanel projectId={project.id} initial={uploads} />
           <DownloadCenter items={downloads} />
         </div>
       </div>

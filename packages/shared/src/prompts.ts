@@ -64,7 +64,7 @@ export function storyboardUserPrompt(
 Audience: ${ctx.targetAudience}
 Main promise: ${ctx.mainPromise}
 Tone: ${ctx.tone}
-Language: ${ctx.language}
+Language: ${ctx.language}  ← write EVERY voiceoverText and captionText in THIS language. Do not use English unless the language is English.
 Target duration: ${ctx.durationSeconds}s
 Format: ${ctx.format}
 
@@ -78,10 +78,10 @@ Produce the storyboard JSON now. Total scene durations should sum close to ${ctx
 
 export const VOICE_SYSTEM = `You write voiceover for premium B2B SaaS demos.
 Rules: short sentences, natural spoken rhythm, no hype, no filler, second-person ("you/your team").
-Return ONLY JSON: { "lines": [{ "sceneId": string, "text": string }] }.`;
+Write every line in the language specified by the user. Return ONLY JSON: { "lines": [{ "sceneId": string, "text": string }] }.`;
 
 export function voiceUserPrompt(ctx: ProjectContext, scenes: { id: string; voiceoverText: string }[]): string {
-  return `Product: ${ctx.productName}. Tone: ${ctx.tone}. Language: ${ctx.language}.
+  return `Product: ${ctx.productName}. Tone: ${ctx.tone}. Language: ${ctx.language} (write the voiceover in THIS language).
 Rewrite each scene's voiceover so it is concise and human. Keep the same scene ids and order.
 Scenes:
 ${scenes.map((s) => `- ${s.id}: ${s.voiceoverText}`).join("\n")}`;

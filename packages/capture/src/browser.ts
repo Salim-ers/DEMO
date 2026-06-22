@@ -41,6 +41,17 @@ export async function createBrowserSession(opts: SessionOptions = {}): Promise<B
     // We DO NOT bypass bot protections, CAPTCHA, or 2FA. See README "Compliance".
   });
 
+  // The worker runs through tsx/esbuild with `keepNames` enabled, which rewrites
+  // named functions/arrows inside our `page.evaluate(...)` callbacks as
+  // `__name(fn, "name")`. Playwright serializes those callbacks as source and runs
+  // them in the page, where `__name` does not exist — every evaluate then throws
+  // "ReferenceError: __name is not defined" and the whole capture is skipped.
+  // Inject a no-op `__name` shim into every document so evaluated code resolves it.
+  // Passed as a raw string (not a function) so esbuild can't rewrite the shim itself.
+  await context.addInitScript({
+    content: "globalThis.__name = globalThis.__name || function (fn) { return fn; };",
+  });
+
   const page = await context.newPage();
   const deadline = Date.now() + MAX_BROWSER_SESSION_MS;
 

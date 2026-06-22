@@ -1,4 +1,4 @@
-import { prisma, JobStatus } from "@demoforge/db";
+import { prisma, JobStatus, AssetKind } from "@demoforge/db";
 import { generateStoryboard as buildStoryboard } from "@demoforge/storyboard";
 import type { CaptureStepResult, Scenario, ScenarioStep, PageMetadata } from "@demoforge/shared";
 import { projectToContext, sceneTypeToDb } from "../db-map.js";
@@ -40,12 +40,31 @@ export async function generateStoryboard(ctx: PipelineCtx): Promise<{ storyboard
     error: s.error ?? undefined,
   }));
 
+  // Weave in the user's own uploaded photos/screenshots as extra product scenes.
+  // They're first-class captures so they get the same browser-frame treatment,
+  // camera motion and narration — and they carry the demo even if the live site
+  // capture is blocked (login walls, bot protection, etc.).
+  const uploads = await prisma.asset.findMany({
+    where: { projectId: project.id, kind: AssetKind.UPLOAD },
+    orderBy: { createdAt: "asc" },
+  });
+  const uploadCaptures: CaptureStepResult[] = uploads.map((a, i) => ({
+    index: 1_000 + i,
+    intent: "votre visuel",
+    url: project.url,
+    status: "ok" as const,
+    screenshotAssetKey: a.id,
+    startedAt: a.createdAt.toISOString(),
+    finishedAt: a.createdAt.toISOString(),
+  }));
+  const allCaptures = [...captures, ...uploadCaptures];
+
   const scenario: Scenario = {
     raw: scenarioRow?.raw ?? "Demonstrate the core product workflow.",
     steps: ((scenarioRow?.steps as unknown as ScenarioStep[]) ?? [{ intent: "open dashboard" }]),
   };
 
-  const { storyboard, source } = await buildStoryboard(projectToContext(project), scenario, captures);
+  const { storyboard, source } = await buildStoryboard(projectToContext(project), scenario, allCaptures);
 
   const sb = await prisma.storyboard.upsert({
     where: { projectId: project.id },

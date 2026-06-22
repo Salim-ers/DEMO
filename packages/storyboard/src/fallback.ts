@@ -18,6 +18,7 @@ export function buildStoryboardFallback(
   const okCaptures = captures.filter((c) => c.status === "ok");
   const totalMs = ctx.durationSeconds * 1000;
   const scenes: StoryboardScene[] = [];
+  const t = copyFor(ctx.language);
 
   // --- 1. Title card (hook) -------------------------------------------------
   scenes.push({
@@ -26,7 +27,7 @@ export function buildStoryboardFallback(
     sourceAssetId: null,
     visualInstruction: `Product wordmark "${ctx.productName}" on a clean dark canvas, subtle accent underline.`,
     voiceoverText: shortHook(ctx),
-    captionText: ctx.productName,
+    captionText: ctx.productName.trim(),
     durationMs: 2600,
     cameraMotion: "none",
     highlightSelector: null,
@@ -39,8 +40,8 @@ export function buildStoryboardFallback(
     type: "benefit_card",
     sourceAssetId: null,
     visualInstruction: "Short problem statement, single line, generous whitespace.",
-    voiceoverText: problemLine(ctx),
-    captionText: "The problem",
+    voiceoverText: t.problem(ctx),
+    captionText: t.labels.problem,
     durationMs: 3000,
     cameraMotion: "none",
     highlightSelector: null,
@@ -51,7 +52,6 @@ export function buildStoryboardFallback(
   okCaptures.forEach((cap, i) => {
     const motion = CAMERA_CYCLE[i % CAMERA_CYCLE.length]!;
     const title = cap.metadata?.title?.trim();
-    const button = cap.metadata?.visibleButtons?.[0];
     scenes.push({
       id: slugId("scene", `cap-${cap.index}-${cap.url}`),
       type: "screen_capture",
@@ -59,12 +59,14 @@ export function buildStoryboardFallback(
       visualInstruction: `Show "${cap.intent}" screen${title ? ` (${title})` : ""}. ${
         motion === "slow_zoom_in" ? "Slow push toward the primary action." : "Gentle motion across the view."
       }`,
-      voiceoverText: actionLine(ctx, cap.intent, button),
-      captionText: capitalize(cap.intent),
+      // Premium, grammatically-safe narration that rotates per screen. The real
+      // screenshot + caption carry the specifics; the line carries the benefit.
+      voiceoverText: t.action(i, ctx),
+      captionText: t.labels.inProduct,
       durationMs: 0, // filled by the distributor below
       cameraMotion: motion,
-      highlightSelector: button ? `text=${button}` : null,
-      callouts: button ? [{ text: button, x: 0.5, y: 0.5 }] : [],
+      highlightSelector: null,
+      callouts: [],
     });
   });
 
@@ -75,8 +77,8 @@ export function buildStoryboardFallback(
       type: "benefit_card",
       sourceAssetId: null,
       visualInstruction: "Benefit grid stand-in (no captures available).",
-      voiceoverText: actionLine(ctx, "your core workflow", undefined),
-      captionText: "In the product",
+      voiceoverText: t.action(0, ctx),
+      captionText: t.labels.inProduct,
       durationMs: 0,
       cameraMotion: "none",
       highlightSelector: null,
@@ -90,8 +92,8 @@ export function buildStoryboardFallback(
     type: "benefit_card",
     sourceAssetId: null,
     visualInstruction: "Three compact outcome chips: faster, clearer, fewer tabs.",
-    voiceoverText: roiLine(ctx),
-    captionText: "The outcome",
+    voiceoverText: t.roi(ctx),
+    captionText: t.labels.outcome,
     durationMs: 3200,
     cameraMotion: "none",
     highlightSelector: null,
@@ -104,8 +106,8 @@ export function buildStoryboardFallback(
     type: "outro",
     sourceAssetId: null,
     visualInstruction: `Wordmark + URL ${ctx.url}, restrained accent.`,
-    voiceoverText: ctaLine(ctx),
-    captionText: ctx.url.replace(/^https?:\/\//, ""),
+    voiceoverText: t.cta(ctx),
+    captionText: ctx.url.replace(/^https?:\/\//, "").replace(/\/$/, ""),
     durationMs: 2600,
     cameraMotion: "none",
     highlightSelector: null,
@@ -133,24 +135,64 @@ function distributeDurations(scenes: StoryboardScene[], totalMs: number) {
 
 /* --------------------------- copy generators ----------------------------- */
 /* Intentionally concrete and hype-free. No "welcome to", no "revolutionary".  */
+/* Localized so the deterministic (no-LLM) path still speaks the user's language. */
 
+const host = (url: string) => url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
+/** The hook is the user's own promise — already in their language. */
 function shortHook(ctx: ProjectContext): string {
-  return `${ctx.mainPromise}`;
-}
-function problemLine(ctx: ProjectContext): string {
-  return `Most teams lose time switching tabs to find what actually needs attention.`;
-}
-function actionLine(ctx: ProjectContext, intent: string, button?: string): string {
-  const verb = intent.replace(/^(open|show|view)\s+/i, "").trim();
-  if (button) return `Here you ${lower(intent)} — ${lower(button)} is one click away.`;
-  return `Here you ${lower(intent)}, with the important details up front.`;
-}
-function roiLine(ctx: ProjectContext): string {
-  return `The result: your team sees priorities first, acts faster, and skips the busywork.`;
-}
-function ctaLine(ctx: ProjectContext): string {
-  return `See it on your own data — start at ${ctx.url.replace(/^https?:\/\//, "")}.`;
+  return ctx.mainPromise.trim();
 }
 
-const capitalize = (s: string) => (s ? s[0]!.toUpperCase() + s.slice(1) : s);
-const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+interface Copy {
+  labels: { problem: string; outcome: string; inProduct: string };
+  problem: (ctx: ProjectContext) => string;
+  roi: (ctx: ProjectContext) => string;
+  cta: (ctx: ProjectContext) => string;
+  /** Rotating, grammatically-safe product-in-action narration, by screen index. */
+  action: (i: number, ctx: ProjectContext) => string;
+}
+
+const FR: Copy = {
+  labels: { problem: "Le problème", outcome: "Le résultat", inProduct: "Dans le produit" },
+  problem: () =>
+    `Trop d'outils dispersés, et l'information se perd. Vos équipes passent un temps précieux à la chercher.`,
+  roi: () =>
+    `Résultat : moins de friction, des décisions plus rapides, et une équipe concentrée sur l'essentiel.`,
+  cta: (ctx) => `Découvrez-le sur vos propres données — rendez-vous sur ${host(ctx.url)}.`,
+  action: (i, ctx) => {
+    const lines = [
+      `${ctx.productName.trim()} réunit toute votre activité dans une interface claire et professionnelle.`,
+      `Chaque écran va droit au but : l'information utile, immédiatement.`,
+      `Vous passez d'une vue à l'autre sans friction, sans rouvrir dix onglets.`,
+      `Les détails qui comptent restent toujours sous les yeux.`,
+      `Une expérience pensée pour aller vite, sans rien perdre en clarté.`,
+      `Tout est centralisé, lisible, et prêt à être partagé avec votre équipe.`,
+    ];
+    return lines[i % lines.length]!;
+  },
+};
+
+const EN: Copy = {
+  labels: { problem: "The problem", outcome: "The outcome", inProduct: "In the product" },
+  problem: () => `Most teams lose time switching tabs to find what actually needs attention.`,
+  roi: () => `The result: your team sees priorities first, acts faster, and skips the busywork.`,
+  cta: (ctx) => `See it on your own data — start at ${host(ctx.url)}.`,
+  action: (i, ctx) => {
+    const lines = [
+      `${ctx.productName.trim()} brings your whole workflow into one clean, professional view.`,
+      `Every screen gets to the point: the useful information, right away.`,
+      `Move from one view to the next with zero friction — no ten open tabs.`,
+      `The details that matter stay in front of you the whole time.`,
+      `Built to move fast without ever losing clarity.`,
+      `Everything is centralized, readable, and ready to share with your team.`,
+    ];
+    return lines[i % lines.length]!;
+  },
+};
+
+/** Pick the copy pack for a project language; unknown languages get English. */
+function copyFor(language: string): Copy {
+  const base = (language || "en").toLowerCase().split(/[-_]/)[0];
+  return base === "fr" ? FR : EN;
+}
