@@ -50,6 +50,20 @@ export async function renderDemoVideo(opts: RenderOptions): Promise<string> {
   const serveUrl = await bundle({
     entryPoint: entryPoint(),
     onProgress: () => undefined,
+    // The Remotion sources use NodeNext-style ".js" import specifiers that point
+    // at ".ts"/".tsx" files (e.g. entry.tsx -> "./Root.js"). Remotion's webpack
+    // doesn't resolve those by default, so teach it the same mapping the Next.js
+    // build uses — otherwise bundling fails with "Can't resolve './Root.js'".
+    webpackOverride: (config) => {
+      config.resolve = config.resolve ?? {};
+      config.resolve.extensionAlias = {
+        ...(config.resolve.extensionAlias ?? {}),
+        ".js": [".ts", ".tsx", ".js", ".jsx"],
+        ".mjs": [".mts", ".mjs"],
+        ".cjs": [".cts", ".cjs"],
+      };
+      return config;
+    },
   });
 
   const composition = await selectComposition({
