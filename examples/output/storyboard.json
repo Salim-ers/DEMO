@@ -1,0 +1,109 @@
+{
+  "title": "Northwind CRM — Close more deals with less busywork.",
+  "targetAudience": "RevOps leaders at 50–500 person B2B SaaS companies",
+  "durationSeconds": 60,
+  "scenes": [
+    {
+      "id": "scene_11mtskd",
+      "type": "title_card",
+      "sourceAssetId": null,
+      "visualInstruction": "Product wordmark \"Northwind CRM\" on a clean dark canvas, subtle accent underline.",
+      "voiceoverText": "Close more deals with less busywork.",
+      "captionText": "Northwind CRM",
+      "durationMs": 2600,
+      "cameraMotion": "none",
+      "highlightSelector": null,
+      "callouts": []
+    },
+    {
+      "id": "scene_17q4zf4",
+      "type": "benefit_card",
+      "sourceAssetId": null,
+      "visualInstruction": "Short problem statement, single line, generous whitespace.",
+      "voiceoverText": "Most teams lose time switching tabs to find what actually needs attention.",
+      "captionText": "The problem",
+      "durationMs": 3000,
+      "cameraMotion": "none",
+      "highlightSelector": null,
+      "callouts": []
+    },
+    {
+      "id": "scene_fx3r9j",
+      "type": "screen_capture",
+      "sourceAssetId": "asset_dashboard",
+      "visualInstruction": "Show \"open dashboard\" screen (Dashboard). Slow push toward the primary action.",
+      "voiceoverText": "Here you open dashboard — new customer is one click away.",
+      "captionText": "Open dashboard",
+      "durationMs": 7000,
+      "cameraMotion": "slow_zoom_in",
+      "highlightSelector": "text=New customer",
+      "callouts": [
+        {
+          "text": "New customer",
+          "x": 0.5,
+          "y": 0.5
+        }
+      ]
+    },
+    {
+      "id": "scene_1nmm5lg",
+      "type": "screen_capture",
+      "sourceAssetId": "asset_create",
+      "visualInstruction": "Show \"create customer\" screen (New customer). Gentle motion across the view.",
+      "voiceoverText": "Here you create customer — save is one click away.",
+      "captionText": "Create customer",
+      "durationMs": 7000,
+      "cameraMotion": "ken_burns",
+      "highlightSelector": "text=Save",
+      "callouts": [
+        {
+          "text": "Save",
+          "x": 0.5,
+          "y": 0.5
+        }
+      ]
+    },
+    {
+      "id": "scene_ljrbgt",
+      "type": "screen_capture",
+      "sourceAssetId": "asset_analytics",
+      "visualInstruction": "Show \"show analytics\" screen (Analytics). Gentle motion across the view.",
+      "voiceoverText": "Here you show analytics — export is one click away.",
+      "captionText": "Show analytics",
+      "durationMs": 7000,
+      "cameraMotion": "slow_zoom_out",
+      "highlightSelector": "text=Export",
+      "callouts": [
+        {
+          "text": "Export",
+          "x": 0.5,
+          "y": 0.5
+        }
+      ]
+    },
+    {
+      "id": "scene_19b7bip",
+      "type": "benefit_card",
+      "sourceAssetId": null,
+      "visualInstruction": "Three compact outcome chips: faster, clearer, fewer tabs.",
+      "voiceoverText": "The result: your team sees priorities first, acts faster, and skips the busywork.",
+      "captionText": "The outcome",
+      "durationMs": 3200,
+      "cameraMotion": "none",
+      "highlightSelector": null,
+      "callouts": []
+    },
+    {
+      "id": "scene_12foksc",
+      "type": "outro",
+      "sourceAssetId": null,
+      "visualInstruction": "Wordmark + URL https://northwind.example.com, restrained accent.",
+      "voiceoverText": "See it on your own data — start at northwind.example.com.",
+      "captionText": "northwind.example.com",
+      "durationMs": 2600,
+      "cameraMotion": "none",
+      "highlightSelector": null,
+      "callouts": []
+    }
+  ]
+}

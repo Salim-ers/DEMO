@@ -1,0 +1,183 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { Check, X, Loader2, Circle, Minus } from "lucide-react";
+import type { JobState, JobName } from "@demoforge/shared";
+import { cn } from "../lib/cn.js";
+
+const STAGE_LABEL: Record<JobName, string> = {
+  analyzeProject: "Analyze project",
+  captureWebsite: "Capture real screens",
+  generateStoryboard: "Build storyboard",
+  generateVoiceScript: "Write voiceover",
+  generateCaptions: "Generate captions",
+  renderVideo: "Render video",
+  exportAssets: "Export assets",
+};
+const STAGE_HINT: Record<JobName, string> = {
+  analyzeProject: "Parsing your scenario into steps",
+  captureWebsite: "Driving a headless browser, screenshotting each step",
+  generateStoryboard: "Sequencing a grounded hook → product → proof arc",
+  generateVoiceScript: "Timing narration to each scene",
+  generateCaptions: "Burning subtitles to SRT + VTT",
+  renderVideo: "Compositing in Remotion, encoding H.264",
+  exportAssets: "Bundling MP4, storyboard, script & captions",
+};
+
+interface StatusResponse {
+  status: "queued" | "running" | "succeeded" | "failed" | string;
+  progress: number;
+  stages: JobState[];
+}
+
+export function PipelineTimeline({
+  projectId,
+  renderJobId,
+  initial,
+}: {
+  projectId: string;
+  renderJobId: string | null;
+  initial: StatusResponse | null;
+}) {
+  const [state, setState] = useState<StatusResponse | null>(initial);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!renderJobId) return;
+    let alive = true;
+
+    async function poll() {
+      try {
+        const res = await fetch(`/api/projects/${projectId}/status`, { cache: "no-store" });
+        if (res.ok && alive) {
+          const data = (await res.json()) as StatusResponse;
+          setState(data);
+          if (data.status === "succeeded" || data.status === "failed") return; // stop polling
+        }
+      } catch {
+        /* transient — keep polling */
+      }
+      if (alive) timer.current = setTimeout(poll, 2500);
+    }
+
+    poll();
+    return () => {
+      alive = false;
+      if (timer.current) clearTimeout(timer.current);
+    };
+  }, [projectId, renderJobId]);
+
+  if (!renderJobId || !state) {
+    return (
+      <div className="card p-6">
+        <p className="text-sm text-muted">No render run yet. Start the pipeline to capture and render this demo.</p>
+      </div>
+    );
+  }
+
+  const stages = state.stages;
+  const activeIndex = stages.findIndex((s) => s.status === "running");
+
+  return (
+    <div className="card overflow-hidden">
+      <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
+        <div className="flex items-center gap-2.5">
+          <span className="eyebrow">Render pipeline</span>
+          <StatusPill status={state.status} />
+        </div>
+        <span className="font-mono text-xs tabular-nums text-muted">{state.progress}%</span>
+      </div>
+
+      {/* progress rail */}
+      <div className="h-0.5 w-full bg-white/5">
+        <div
+          className="h-full bg-gradient-to-r from-accent/70 to-accent transition-all duration-700"
+          style={{ width: `${state.progress}%` }}
+        />
+      </div>
+
+      <ol className="relative px-6 py-5">
+        {stages.map((stage, i) => {
+          const isLast = i === stages.length - 1;
+          const name = stage.name as JobName;
+          return (
+            <li key={stage.name} className="relative flex gap-4 pb-6 last:pb-0">
+              {!isLast && (
+                <span
+                  className={cn(
+                    "absolute left-[13px] top-7 h-[calc(100%-12px)] w-px",
+                    stage.status === "succeeded" ? "bg-accent/40" : "bg-hairline",
+                  )}
+                />
+              )}
+              <StageNode status={stage.status} />
+              <div className="min-w-0 flex-1 pt-0.5">
+                <div className="flex items-center justify-between gap-3">
+                  <p
+                    className={cn(
+                      "text-sm font-medium",
+                      stage.status === "queued" ? "text-faint" : "text-ink",
+                      i === activeIndex && "text-accent",
+                    )}
+                  >
+                    {STAGE_LABEL[name] ?? stage.name}
+                  </p>
+                  {stage.status === "running" && (
+                    <span className="font-mono text-[11px] text-accent">working…</span>
+                  )}
+                  {stage.status === "skipped" && <span className="font-mono text-[11px] text-faint">skipped</span>}
+                </div>
+                <p className="mt-0.5 truncate text-xs text-faint">
+                  {stage.error ? <span className="text-bad">{stage.error}</span> : STAGE_HINT[name]}
+                </p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+function StageNode({ status }: { status: JobState["status"] }) {
+  const base = "relative z-10 flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full border";
+  if (status === "succeeded")
+    return (
+      <span className={cn(base, "border-accent bg-accent text-white")}>
+        <Check size={14} strokeWidth={3} />
+      </span>
+    );
+  if (status === "failed")
+    return (
+      <span className={cn(base, "border-bad bg-bad/15 text-bad")}>
+        <X size={14} strokeWidth={3} />
+      </span>
+    );
+  if (status === "running")
+    return (
+      <span className={cn(base, "border-accent text-accent")}>
+        <span className="absolute inset-0 rounded-full border border-accent animate-pulse-ring" />
+        <Loader2 size={14} className="animate-spin" />
+      </span>
+    );
+  if (status === "skipped")
+    return (
+      <span className={cn(base, "border-hairline text-faint")}>
+        <Minus size={14} />
+      </span>
+    );
+  return (
+    <span className={cn(base, "border-hairline text-faint")}>
+      <Circle size={8} className="fill-faint" />
+    </span>
+  );
+}
+
+function StatusPill({ status }: { status: string }) {
+  const map: Record<string, string> = {
+    queued: "text-muted",
+    running: "text-accent",
+    succeeded: "text-ok",
+    failed: "text-bad",
+  };
+  return <span className={cn("text-xs font-medium capitalize", map[status] ?? "text-muted")}>{status}</span>;
+}

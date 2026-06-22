@@ -1,0 +1,304 @@
+// DemoForge data model. PostgreSQL + Prisma.
+// Security note: no plaintext secret is ever stored here. Credentials live in a
+// vault; only an opaque CredentialVaultRef is persisted.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  SKIPPED
+}
+
+enum SceneType {
+  SCREEN_CAPTURE
+  ZOOM
+  TRANSITION
+  TITLE_CARD
+  BENEFIT_CARD
+  HIGGSFIELD_BROLL
+  OUTRO
+}
+
+enum VoiceMode {
+  UPLOADED_HUMAN_VOICE
+  TTS_PROVIDER
+  SCRIPT_ONLY
+}
+
+enum AssetKind {
+  SCREENSHOT_DESKTOP
+  SCREENSHOT_MOBILE
+  VIDEO_SEGMENT
+  UPLOAD
+  AUDIO
+  BROLL
+  RENDER_OUTPUT
+  EXPORT_ZIP
+}
+
+enum ProviderKind {
+  LLM_ANTHROPIC
+  LLM_OPENAI
+  HIGGSFIELD
+  ELEVENLABS
+  S3
+}
+
+// --------------------------------------------------------------------------
+
+model User {
+  id         String      @id @default(cuid())
+  email      String      @unique
+  name       String?
+  image      String?
+  createdAt  DateTime    @default(now())
+  members    Membership[]
+  auditLogs  AuditLog[]
+}
+
+model Workspace {
+  id          String        @id @default(cuid())
+  name        String
+  createdAt   DateTime      @default(now())
+  members     Membership[]
+  projects    Project[]
+  providers   IntegrationProvider[]
+}
+
+model Membership {
+  id          String     @id @default(cuid())
+  role        String     @default("owner") // owner | admin | member
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+
+  @@unique([userId, workspaceId])
+}
+
+model Project {
+  id              String              @id @default(cuid())
+  workspace       Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId     String
+
+  productName     String
+  url             String
+  targetAudience  String
+  mainPromise     String
+  durationSeconds Int
+  format          String              // "16:9" | "9:16" | "1:1"
+  language        String              @default("en")
+  tone            String
+  voiceMode       VoiceMode           @default(SCRIPT_ONLY)
+
+  status          String              @default("draft") // draft|capturing|storyboarding|rendering|ready|failed
+
+  scenarios       DemoScenario[]
+  credentialRef   CredentialVaultRef?
+  captureRuns     CaptureRun[]
+  storyboard      Storyboard?
+  voiceScript     VoiceScript?
+  renderJobs      RenderJob[]
+  exports         Export[]
+  assets          Asset[]
+  auditLogs       AuditLog[]
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+model DemoScenario {
+  id         String   @id @default(cuid())
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String
+  raw        String                       // natural language description
+  steps      Json                         // ScenarioStep[]
+  createdAt  DateTime @default(now())
+}
+
+// Only an opaque reference — never the secret itself.
+model CredentialVaultRef {
+  id          String   @id @default(cuid())
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String   @unique
+  vault       String   @default("local") // local | doppler | infisical | aws_sm | vault
+  ref         String                      // pointer/handle returned by the vault
+  loginUrl    String?
+  emailHint   String?                     // masked, e.g. j•••@acme.io
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+model CaptureRun {
+  id          String        @id @default(cuid())
+  project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String
+  status      JobStatus     @default(QUEUED)
+  headless    Boolean       @default(true)
+  authStateKey String?                     // persisted Playwright storageState (asset key)
+  maskPII     Boolean       @default(true)
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  error       String?
+  steps       CaptureStep[]
+  createdAt   DateTime      @default(now())
+}
+
+model CaptureStep {
+  id            String      @id @default(cuid())
+  run           CaptureRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
+  runId         String
+  index         Int
+  intent        String
+  url           String
+  status        String      @default("ok") // ok|broken|skipped
+  screenshot    Asset?      @relation("StepScreenshot", fields: [screenshotId], references: [id])
+  screenshotId  String?
+  mobileShot    Asset?      @relation("StepMobileShot", fields: [mobileShotId], references: [id])
+  mobileShotId  String?
+  videoSegment  Asset?      @relation("StepVideo", fields: [videoId], references: [id])
+  videoId       String?
+  metadata      Json?
+  error         String?
+  createdAt     DateTime    @default(now())
+
+  @@unique([runId, index])
+}
+
+model Asset {
+  id            String     @id @default(cuid())
+  project       Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId     String
+  kind          AssetKind
+  storageKey    String                       // key in S3/MinIO
+  contentType   String
+  width         Int?
+  height        Int?
+  durationMs    Int?
+  bytes         Int?
+  createdAt     DateTime   @default(now())
+
+  stepScreenshot CaptureStep[] @relation("StepScreenshot")
+  stepMobile     CaptureStep[] @relation("StepMobileShot")
+  stepVideo      CaptureStep[] @relation("StepVideo")
+}
+
+model Storyboard {
+  id           String            @id @default(cuid())
+  project      Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId    String            @unique
+  title        String
+  targetAudience String
+  durationSeconds Int
+  source       String            @default("llm") // llm | deterministic
+  scenes       StoryboardScene[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model StoryboardScene {
+  id                String      @id @default(cuid())
+  storyboard        Storyboard  @relation(fields: [storyboardId], references: [id], onDelete: Cascade)
+  storyboardId      String
+  order             Int
+  sceneKey          String                      // stable id used in render props
+  type              SceneType
+  sourceAssetId     String?
+  visualInstruction String
+  voiceoverText     String
+  captionText       String
+  durationMs        Int
+  cameraMotion      String      @default("none")
+  highlightSelector String?
+  callouts          Json        @default("[]")
+
+  @@unique([storyboardId, order])
+}
+
+model VoiceScript {
+  id              String    @id @default(cuid())
+  project         Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId       String    @unique
+  mode            VoiceMode
+  language        String
+  fullText        String
+  lines           Json                          // VoiceLine[]
+  ttsProvider     String?
+  humanAudioKey   String?
+  consentConfirmed Boolean  @default(false)
+  audioAssetId    String?                        // synthesized/normalized audio asset
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model RenderJob {
+  id           String     @id @default(cuid())
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId    String
+  status       JobStatus  @default(QUEUED)
+  format       String                           // "16:9" | "9:16" | "1:1"
+  // Per-stage state so the UI stepper can show granular progress. JobState[].
+  stages       Json       @default("[]")
+  progress     Int        @default(0)           // 0..100
+  outputAssetId String?
+  error        String?
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Export {
+  id              String   @id @default(cuid())
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId       String
+  videoMp4Key     String?
+  video916Key     String?
+  video11Key      String?
+  storyboardJsonKey String?
+  scriptMdKey     String?
+  captionsSrtKey  String?
+  captionsVttKey  String?
+  assetsZipKey    String?
+  createdAt       DateTime @default(now())
+}
+
+model IntegrationProvider {
+  id          String       @id @default(cuid())
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  kind        ProviderKind
+  enabled     Boolean      @default(false)
+  // Only a vault reference to the API key — never the key itself.
+  secretRef   String?
+  baseUrl     String?
+  config      Json         @default("{}")
+  createdAt   DateTime     @default(now())
+
+  @@unique([workspaceId, kind])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  workspaceId String?
+  project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  projectId   String?
+  actor       User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actorId     String?
+  action      String                           // e.g. "project.access", "credentials.read"
+  meta        Json     @default("{}")
+  createdAt   DateTime @default(now())
+
+  @@index([projectId])
+  @@index([action])
+}

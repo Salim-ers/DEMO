@@ -1,0 +1,33 @@
+1
+00:00:00,000 --> 00:00:02,600
+Close more deals with less busywork.
+
+2
+00:00:02,600 --> 00:00:05,600
+Most teams lose time switching tabs to
+find what actually needs attention.
+
+3
+00:00:05,600 --> 00:00:12,600
+Here you open dashboard — new customer is
+one click away.
+
+4
+00:00:12,600 --> 00:00:19,600
+Here you create customer — save is one
+click away.
+
+5
+00:00:19,600 --> 00:00:26,600
+Here you show analytics — export is one
+click away.
+
+6
+00:00:26,600 --> 00:00:29,800
+The result: your team sees priorities
+first, acts faster, and skips the
+
+7
+00:00:29,800 --> 00:00:32,400
+See it on your own data — start at
+northwind.example.com.
