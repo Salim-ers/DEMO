@@ -1,7 +1,8 @@
 import { Worker, type Job } from "bullmq";
+import { Redis } from "ioredis";
 import { QUEUE_NAME, pipelineJobDataSchema } from "@demoforge/shared";
 import { prisma } from "@demoforge/db";
-import { createRedis } from "./redis.js";
+import { createRedis, redisUrl } from "./redis.js";
 import { runPipeline } from "./pipeline.js";
 import { logger } from "./logger.js";
 import { startHealthServer } from "./health.js";
@@ -42,16 +43,36 @@ function redacted(url?: string): string {
 
 /** Fail fast at boot with a clear message if Redis or the DB are unreachable. */
 async function verifyConnections(): Promise<void> {
-  const ping = createRedis();
+  const raw = process.env.REDIS_URL?.trim();
+  if (!raw) {
+    logger.fatal(
+      "❌ REDIS_URL is not set. On Railway, set it to the Redis service's PUBLIC url " +
+        "(Redis → Variables → REDIS_PUBLIC_URL). An unresolved ${{...}} reference reads as empty.",
+    );
+    throw new Error("REDIS_URL not set");
+  }
+
+  const target = redisUrl();
+  logger.info({ redis: redacted(target) }, "connecting to Redis…");
+  // A short-lived probe that gives up quickly (instead of retrying forever) so
+  // a bad URL surfaces as one clear error, not an endless ECONNREFUSED stream.
+  const ping = new Redis(target, {
+    family: 0,
+    lazyConnect: true,
+    connectTimeout: 10_000,
+    maxRetriesPerRequest: 1,
+    retryStrategy: (times) => (times > 2 ? null : 400),
+  });
   try {
+    await ping.connect();
     await ping.ping();
     redisOk = true;
-    logger.info({ url: redacted(process.env.REDIS_URL) }, "✅ Redis connected");
+    logger.info({ redis: redacted(target) }, "✅ Redis connected");
   } catch (err) {
-    logger.error({ err: String(err) }, "❌ Redis connection failed");
+    logger.error({ err: String(err), redis: redacted(target) }, "❌ Redis connection failed");
     throw err;
   } finally {
-    await ping.quit().catch(() => {});
+    ping.disconnect();
   }
 
   try {

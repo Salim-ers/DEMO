@@ -9,7 +9,12 @@ import { Redis } from "ioredis";
  * fails with ENOTFOUND/ECONNREFUSED at startup. It's a no-op for normal
  * IPv4 Redis (Upstash, public proxy URLs, localhost).
  */
+/** Resolved Redis URL. An empty string (e.g. an unresolved Railway reference)
+ *  must NOT silently fall back to localhost, so trim-then-`||` treats "" as unset. */
+export function redisUrl(): string {
+  return process.env.REDIS_URL?.trim() || "redis://localhost:6379";
+}
+
 export function createRedis(): Redis {
-  const url = process.env.REDIS_URL ?? "redis://localhost:6379";
-  return new Redis(url, { maxRetriesPerRequest: null, family: 0 });
+  return new Redis(redisUrl(), { maxRetriesPerRequest: null, family: 0 });
 }
