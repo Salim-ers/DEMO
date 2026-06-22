@@ -306,3 +306,20 @@ model AuditLog {
   @@index([projectId])
   @@index([action])
 }
+
+/// Liveness signal written by each running pipeline worker (apps/worker).
+/// The web app reads the most recent row to tell the user whether a worker is
+/// actually online — otherwise jobs would silently sit "Queued" forever.
+model WorkerHeartbeat {
+  id         String   @id @default(cuid())
+  workerId   String   @unique // hostname / Railway instance id
+  status     String   @default("online") // "online" | "draining"
+  activeJobs Int      @default(0)
+  queue      String? // queue name the worker consumes
+  version    String? // app version / git sha, for debugging fleets
+  lastJobAt  DateTime? // when the worker last picked up a job
+  lastSeenAt DateTime @default(now()) @updatedAt
+  createdAt  DateTime @default(now())
+
+  @@index([lastSeenAt])
+}

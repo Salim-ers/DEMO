@@ -1,0 +1,21 @@
+# Keep the worker image lean and reproducible: never ship host build output.
+# (Host node_modules are Windows-built and would break the Linux image.)
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/*.tsbuildinfo
+.git
+.github
+**/.env
+**/.env.local
+*.log
+/data
+storage-local
+.remotion
+playwright-report
+test-results
+coverage
+README.md
+examples
+infra

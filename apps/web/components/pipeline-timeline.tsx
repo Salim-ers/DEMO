@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Check, X, Loader2, Circle, Minus } from "lucide-react";
+import { Check, X, Loader2, Circle, Minus, AlertTriangle } from "lucide-react";
 import type { JobState, JobName } from "@demoforge/shared";
 import { cn } from "../lib/cn.js";
 
@@ -27,6 +27,7 @@ interface StatusResponse {
   status: "queued" | "running" | "succeeded" | "failed" | string;
   progress: number;
   stages: JobState[];
+  workerOnline?: boolean;
 }
 
 export function PipelineTimeline({
@@ -76,6 +77,10 @@ export function PipelineTimeline({
 
   const stages = state.stages;
   const activeIndex = stages.findIndex((s) => s.status === "running");
+  // The job is waiting/processing but no worker has sent a recent heartbeat —
+  // it will sit here forever until a worker is deployed (see apps/worker).
+  const workerMissing =
+    state.workerOnline === false && (state.status === "queued" || state.status === "running");
 
   return (
     <div className="card overflow-hidden">
@@ -86,6 +91,20 @@ export function PipelineTimeline({
         </div>
         <span className="font-mono text-xs tabular-nums text-muted">{state.progress}%</span>
       </div>
+
+      {workerMissing && (
+        <div className="flex items-start gap-3 border-b border-bad/30 bg-bad/10 px-6 py-4">
+          <AlertTriangle size={18} className="mt-0.5 shrink-0 text-bad" />
+          <div className="text-sm leading-relaxed">
+            <p className="font-medium text-bad">Aucun worker actif</p>
+            <p className="mt-0.5 text-muted">
+              Le job est en file d'attente mais aucun worker ne tourne pour l'exécuter, donc rien ne se passe. Déploie le
+              worker (<span className="font-mono text-xs">apps/worker</span>) sur Railway/Render et vérifie qu'il partage
+              le même <span className="font-mono text-xs">REDIS_URL</span> que Vercel.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* progress rail */}
       <div className="h-0.5 w-full bg-white/5">

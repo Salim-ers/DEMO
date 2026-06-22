@@ -1,5 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "outDir": "dist", "rootDir": "src", "types": ["node"] },
+  // jsx is set because the worker transitively imports Remotion .tsx components
+  // from @demoforge/render; the worker itself contains no JSX.
+  "compilerOptions": { "outDir": "dist", "rootDir": "src", "types": ["node"], "jsx": "react-jsx" },
   "include": ["src/**/*.ts"]
 }
