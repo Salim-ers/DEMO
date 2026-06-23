@@ -25,12 +25,12 @@ export const BenefitCard: React.FC<{
       <Backdrop theme={theme} />
       <AbsoluteFill style={{ alignItems: "flex-start", justifyContent: "center", flexDirection: "column", padding: "0 12%", gap: 22 * scale, opacity, transform: `translateY(${y}px)` }}>
         {kicker ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 10 * scale }}>
-            <span style={{ width: 26 * scale, height: 2, background: theme.accent }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 12 * scale }}>
+            <span style={{ width: 34 * scale, height: 3, borderRadius: 2, background: `linear-gradient(90deg, ${theme.accent}, ${theme.accent2})`, boxShadow: `0 0 14px ${theme.accentGlow}` }} />
             <span style={{ color: theme.accent, fontFamily: theme.fontMono, fontSize: 20 * scale, letterSpacing: 2, textTransform: "uppercase" }}>{kicker}</span>
           </div>
         ) : null}
-        <div style={{ maxWidth: 1300 * scale, color: theme.text, fontFamily: theme.fontFamily, fontSize: 62 * scale, fontWeight: 620, lineHeight: 1.15, letterSpacing: -1.4 * scale }}>{heading}</div>
+        <div style={{ maxWidth: 1300 * scale, color: theme.text, fontFamily: theme.fontDisplay, fontSize: 64 * scale, fontWeight: 640, lineHeight: 1.12, letterSpacing: -1.6 * scale }}>{heading}</div>
         {sub ? <div style={{ maxWidth: 1100 * scale, color: theme.textMuted, fontFamily: theme.fontFamily, fontSize: 30 * scale, fontWeight: 440, lineHeight: 1.4 }}>{sub}</div> : null}
       </AbsoluteFill>
     </AbsoluteFill>

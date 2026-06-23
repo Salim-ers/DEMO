@@ -15,16 +15,50 @@ export type DemoDuration = (typeof DEMO_DURATIONS)[number];
 export const DEMO_TONES = ["premium", "pedagogical", "sales", "investor_demo", "onboarding"] as const;
 export type DemoTone = (typeof DEMO_TONES)[number];
 
+/** Art-direction presets selectable in the wizard ("Video style"). */
+export const VIDEO_STYLES = [
+  "clean_saas", "premium_motion", "luxury_product", "startup_launch", "investor_demo", "social_short",
+] as const;
+export type VideoStyle = (typeof VIDEO_STYLES)[number];
+
+export const VIDEO_STYLE_LABEL: Record<VideoStyle, string> = {
+  clean_saas: "Clean SaaS Demo",
+  premium_motion: "Premium Motion Explainer",
+  luxury_product: "Luxury Product Demo",
+  startup_launch: "Startup Launch Video",
+  investor_demo: "Investor Demo",
+  social_short: "Social Short",
+};
+
+/** Fallback style intent used when a reference-style URL can't be analyzed. */
+export const REFERENCE_STYLE_FALLBACK =
+  "Premium SaaS explainer video with animated UI, motion graphics, cinematic transitions, " +
+  "strong product storytelling, elegant color palette, professional voiceover and polished sales-demo pacing.";
+
 export const VOICE_MODES = ["uploaded_human_voice", "tts_provider", "script_only"] as const;
 export type VoiceMode = (typeof VOICE_MODES)[number];
 
 export const SCENE_TYPES = [
+  // Legacy / base types (kept for back-compat with existing storyboards).
   "screen_capture", "zoom", "transition", "title_card", "benefit_card", "higgsfield_broll", "outro",
+  // Premium SaaS motion-engine scene types (the new commercial arc).
+  "cinematic_intro", "problem_motion_card", "promise_card", "product_stage", "product_zoom",
+  "feature_callout", "metric_moment", "workflow_map", "benefit_grid", "final_cta",
 ] as const;
 export type SceneType = (typeof SCENE_TYPES)[number];
 
+/** Scene types that are pure motion-graphics statements (no product screenshot). */
+export const STATEMENT_SCENE_TYPES = [
+  "title_card", "benefit_card", "transition", "outro",
+  "cinematic_intro", "problem_motion_card", "promise_card", "metric_moment", "workflow_map",
+  "benefit_grid", "final_cta",
+] as const;
+
 export const CAPTURE_VIEWPORTS = {
-  desktop: { width: 1440, height: 900 },
+  // Full-HD desktop so screenshots are pixel-sharp at the 1080p render size
+  // (with deviceScaleFactor 2 the actual capture is 3840×2160). Env-overridable
+  // via CAPTURE_WIDTH / CAPTURE_HEIGHT / CAPTURE_DEVICE_SCALE_FACTOR.
+  desktop: { width: 1920, height: 1080 },
   mobile: { width: 390, height: 844 },
 } as const;
 

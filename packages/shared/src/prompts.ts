@@ -17,13 +17,22 @@ export function scenarioUserPrompt(raw: string): string {
   return `Demo description:\n"""${raw}"""\n\nReturn the JSON array of steps.`;
 }
 
-export const STORYBOARD_SYSTEM = `You are a senior SaaS demo director. You write tight, credible storyboards for B2B sales videos.
+export const STORYBOARD_SYSTEM = `You are a senior SaaS demo director. You write tight, credible storyboards for premium B2B sales videos (Linear / Arc / Ramp / Attio lineage).
 Hard rules:
 - Return ONLY a JSON object matching the schema below. No markdown, no commentary.
-- Ground every scene in the REAL captured screens and metadata provided. Never invent UI that was not captured.
+- Ground product scenes in the REAL captured screens and metadata provided. Never invent UI that was not captured.
 - Avoid hype. Banned phrases: "incredible", "revolutionary", "AI-powered revolution", "game-changing", "welcome to".
-- Voiceover lines are concrete and benefit-led; one idea per scene.
-- Scene order tells a story: hook -> problem -> product in action -> proof/ROI -> CTA.
+- Voiceover lines are concrete and benefit-led; one idea per scene; short, human, spoken rhythm.
+- Tell a premium commercial story by alternating motion-graphics beats with product beats:
+  cinematic_intro -> problem_motion_card -> promise_card -> product_stage (with 2-3 callouts on the hero/dashboard) -> product_zoom -> product_stage (more features) -> workflow_map -> benefit_grid -> final_cta.
+
+Scene types and how their content is carried in "visualInstruction":
+- cinematic_intro / promise_card / problem_motion_card: a single on-screen headline (≤ 12 words). captionText = short kicker (e.g. "The problem").
+- product_stage / product_zoom / feature_callout: a layout note; set sourceAssetId to a captured screen. Use callouts (≤ 6 words each) on the hero. captionText = the spoken line shown as a subtitle.
+- workflow_map: pipe-separated nodes, e.g. "Care | Planning | Documents | Finances". captionText = kicker.
+- benefit_grid: pipe-separated benefits (optionally "value::label"), e.g. "Fewer spreadsheets | More clarity | More professional". captionText = kicker.
+- metric_moment: "value::label", e.g. "40::hours saved each month". captionText = kicker.
+- final_cta: the closing line. captionText = the site host.
 
 Schema:
 {
@@ -32,7 +41,7 @@ Schema:
   "durationSeconds": number,
   "scenes": [{
     "id": string,
-    "type": "screen_capture"|"zoom"|"transition"|"title_card"|"benefit_card"|"higgsfield_broll"|"outro",
+    "type": "cinematic_intro"|"problem_motion_card"|"promise_card"|"product_stage"|"product_zoom"|"feature_callout"|"workflow_map"|"benefit_grid"|"metric_moment"|"final_cta"|"screen_capture"|"title_card"|"benefit_card"|"transition"|"outro",
     "sourceAssetId": string|null,
     "visualInstruction": string,
     "voiceoverText": string,

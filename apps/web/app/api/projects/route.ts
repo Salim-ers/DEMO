@@ -43,6 +43,8 @@ export async function POST(req: Request) {
       language: input.language,
       tone: input.tone,
       voiceMode: VOICE_MODE_DB[input.voiceMode] ?? VoiceMode.SCRIPT_ONLY,
+      videoStyle: input.videoStyle ?? null,
+      referenceUrl: input.referenceUrl || null,
       status: "draft",
       scenarios: {
         create: { raw: input.scenario, steps: [] }, // parsed into steps by the worker

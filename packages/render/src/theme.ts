@@ -1,47 +1,40 @@
+import { type Brand, resolveBrand, rgba } from "./styles/videoBrand.js";
+
 /**
- * Visual system for the rendered video. Tuned for a sober, premium, corporate
- * look (Linear / Vercel / Superhuman lineage): near-black canvas, restrained
- * accent, high-contrast type, generous spacing. No gadget colors.
+ * Visual system for the rendered video. This is the resolved art direction (see
+ * styles/videoBrand.ts) plus the legacy token names every component already
+ * reads. Tuned for a premium, designed look — deep colour, real depth, elegant
+ * type — not a flat slideshow.
  */
-export interface Theme {
-  bg: string;
-  bgElevated: string;
-  panel: string;
-  border: string;
-  text: string;
-  textMuted: string;
-  accent: string;
-  accentSoft: string;
-  accentGlow: string;
-  fontFamily: string;
-  fontMono: string;
+export interface Theme extends Brand {
+  /** @deprecated alias kept for components that predate the brand system. */
+  fontMonoLegacy?: string;
 }
 
-export function makeTheme(accent: string): Theme {
-  return {
-    bg: "#08090C",
-    bgElevated: "#0E1014",
-    panel: "#13161C",
-    border: "rgba(255,255,255,0.08)",
-    text: "#F5F7FA",
-    textMuted: "rgba(245,247,250,0.62)",
+export interface ThemeOptions {
+  productName?: string;
+  siteHost?: string;
+  /** A video-style preset id (e.g. "luxury_product"); auto-detected if absent. */
+  style?: Brand["style"] | null;
+}
+
+/**
+ * Build the full theme from a captured accent (+ optional product context).
+ * Back-compat: callers that only pass an accent still get a complete premium
+ * theme; Horse Ledger auto-resolves to the luxury equestrian palette.
+ */
+export function makeTheme(accent: string, opts: ThemeOptions = {}): Theme {
+  const brand = resolveBrand({
     accent,
-    accentSoft: hexToRgba(accent, 0.14),
-    accentGlow: hexToRgba(accent, 0.30),
-    fontFamily:
-      'Inter, "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontMono:
-      'ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace',
-  };
+    productName: opts.productName,
+    siteHost: opts.siteHost,
+    style: opts.style ?? null,
+  });
+  return brand;
 }
 
 export function hexToRgba(hex: string, alpha: number): string {
-  const h = hex.replace("#", "");
-  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
-  const r = parseInt(full.slice(0, 2), 16);
-  const g = parseInt(full.slice(2, 4), 16);
-  const b = parseInt(full.slice(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  return rgba(hex, alpha);
 }
 
 /** Scale a base size by the smaller axis so layouts hold across formats. */

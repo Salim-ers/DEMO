@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import { access } from "node:fs/promises";
+import { getRenderQuality } from "./quality.js";
 
 /** Resolve the ffmpeg binary: prefer ffmpeg-static if installed, else PATH. */
 export async function ffmpegPath(): Promise<string> {
@@ -34,12 +35,14 @@ function run(bin: string, args: string[]): Promise<void> {
  */
 export async function normalizeMp4(input: string, output: string): Promise<string> {
   const bin = await ffmpegPath();
+  const q = getRenderQuality();
   await run(bin, [
     "-y",
     "-i", input,
     "-c:v", "copy",
     "-c:a", "aac",
-    "-b:a", "160k",
+    "-b:a", q.audioBitrate,
+    "-ar", String(q.audioSampleRate),
     "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
     "-movflags", "+faststart",
     output,
@@ -68,22 +71,26 @@ export async function flattenImageOnColor(input: string, output: string, color =
 }
 
 /**
- * Last-resort shrink for an oversized render: downscale to 720p and re-encode at
- * a higher CRF so the file fits restrictive object-storage limits. Lossy but keeps
- * the demo deliverable instead of failing the whole pipeline.
+ * Last-resort shrink for an oversized render: keep 1080p but raise CRF so the
+ * file fits restrictive object-storage limits (e.g. Supabase's default 50 MB
+ * per-file cap). Stays premium-looking — a far better fallback than dropping to
+ * 720p. For true high-bitrate masters, raise the storage bucket's file limit.
  */
 export async function shrinkMp4(input: string, output: string): Promise<string> {
   const bin = await ffmpegPath();
+  const q = getRenderQuality();
   await run(bin, [
     "-y",
     "-i", input,
-    "-vf", "scale='min(1280,iw)':-2",
+    "-vf", "scale='min(1920,iw)':-2",
     "-c:v", "libx264",
+    "-profile:v", "high",
     "-pix_fmt", "yuv420p",
-    "-preset", "veryfast",
-    "-crf", "30",
+    "-preset", "medium",
+    "-crf", "23",
     "-c:a", "aac",
-    "-b:a", "128k",
+    "-b:a", q.audioBitrate,
+    "-ar", String(q.audioSampleRate),
     "-movflags", "+faststart",
     output,
   ]);

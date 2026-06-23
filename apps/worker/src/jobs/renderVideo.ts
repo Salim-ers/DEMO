@@ -3,8 +3,8 @@ import path from "node:path";
 import { readFile, mkdir } from "node:fs/promises";
 import { prisma, AssetKind } from "@demoforge/db";
 import { getStorage } from "@demoforge/integrations";
-import { storyboardToRenderProps, renderDemoVideo, normalizeMp4, shrinkMp4 } from "@demoforge/render";
-import { RENDER_DEFAULTS } from "@demoforge/shared";
+import { storyboardToRenderProps, renderDemoVideo, normalizeMp4, shrinkMp4, probeVideo, buildQualityReport } from "@demoforge/render";
+import { RENDER_DEFAULTS, STATEMENT_SCENE_TYPES } from "@demoforge/shared";
 import { dbStoryboardToDomain, projectToContext } from "../db-map.js";
 import { setStage } from "../status.js";
 import { JOBS } from "@demoforge/shared";
@@ -71,12 +71,17 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
     /* keep raw */
   }
 
+  // Optional background-music bed (royalty-free), ducked under the voice.
+  const musicUrl = process.env.RENDER_MUSIC_URL?.trim() || null;
+
   const props = storyboardToRenderProps(projectToContext(project), storyboard, {
     fps: RENDER_DEFAULTS.fps,
     accentColor,
     audioUrl,
+    musicUrl,
     logoUrl,
     siteHost,
+    videoStyle: project.videoStyle ?? null,
     resolveImageUrl: (assetId) => urlMap.get(assetId) ?? null,
   });
 
@@ -109,16 +114,18 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
   const outKey = `renders/${project.id}/demo.mp4`;
   let buf = await readFile(deliverPath);
   let bytes = buf.byteLength;
+  let uploadedPath = deliverPath;
   try {
     ({ bytes } = await storage.put(outKey, buf, "video/mp4"));
   } catch (err) {
     // Object storage rejected the file (e.g. Supabase per-file size limit).
-    // Re-encode smaller (720p) and retry once so the demo still ships.
+    // Re-encode (still 1080p, higher CRF) and retry once so the demo still ships.
     if (/EntityTooLarge|exceeded the maximum|413|too large/i.test(String(err))) {
-      ctx.log.warn({ bytes: buf.byteLength }, "render too large for storage; shrinking to 720p and retrying");
-      const smallPath = path.join(tmpDir, "demo-720p.mp4");
+      ctx.log.warn({ bytes: buf.byteLength }, "render too large for storage; shrinking and retrying");
+      const smallPath = path.join(tmpDir, "demo-small.mp4");
       await shrinkMp4(deliverPath, smallPath);
       buf = await readFile(smallPath);
+      uploadedPath = smallPath;
       ({ bytes } = await storage.put(outKey, buf, "video/mp4"));
       ctx.log.info({ bytes: buf.byteLength }, "shrunk render uploaded");
     } else {
@@ -137,7 +144,37 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
     },
   });
 
-  await prisma.renderJob.update({ where: { id: ctx.renderJobId }, data: { outputAssetId: asset.id } });
+  // --- Automated quality gate -------------------------------------------------
+  // Probe the delivered file and grade it against the premium spec, then persist
+  // a report the UI can show. Failures are surfaced (not silently swallowed) but
+  // don't discard an otherwise-deliverable render.
+  let qualityReport: unknown = null;
+  try {
+    const probe = await probeVideo(uploadedPath);
+    const statementTypes = new Set<string>(STATEMENT_SCENE_TYPES);
+    const captureScenes = storyboard.scenes.filter((s) => !statementTypes.has(s.type));
+    const report = buildQualityReport(probe, {
+      screenshotCount: captureScenes.length,
+      motionSceneCount: storyboard.scenes.filter((s) => statementTypes.has(s.type)).length,
+      calloutCount: storyboard.scenes.reduce((a, s) => a + (s.callouts?.length ?? 0), 0),
+      hasCaptions: captureScenes.length > 0,
+      voiceMode: String(project.voiceMode).toLowerCase(),
+      ttsProviderConfigured: Boolean(process.env.TTS_PROVIDER && process.env.TTS_PROVIDER.toLowerCase() !== "none"),
+      targetDurationSec: project.durationSeconds,
+      minScreenshotWidth: null,
+    });
+    qualityReport = report;
+    const failed = report.checks.filter((c) => c.status === "fail");
+    if (failed.length) ctx.log.warn({ failed: failed.map((c) => c.id), score: report.score }, "quality gate: failing checks");
+    else ctx.log.info({ score: report.score }, "quality gate passed");
+  } catch (err) {
+    ctx.log.warn({ err: String(err) }, "quality report skipped (probe failed)");
+  }
+
+  await prisma.renderJob.update({
+    where: { id: ctx.renderJobId },
+    data: { outputAssetId: asset.id, qualityReport: (qualityReport as object) ?? undefined },
+  });
 
   ctx.log.info({ outputAssetId: asset.id, bytes }, "renderVideo complete");
   return { outputAssetId: asset.id };

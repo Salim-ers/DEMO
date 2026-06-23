@@ -1,6 +1,6 @@
 import {
   type Storyboard, type ProjectContext, type RenderProps, type RenderScene,
-  renderPropsSchema, FORMAT_DIMENSIONS, RENDER_DEFAULTS, msToFrames,
+  renderPropsSchema, FORMAT_DIMENSIONS, RENDER_DEFAULTS, msToFrames, STATEMENT_SCENE_TYPES,
 } from "@demoforge/shared";
 
 export interface MapOptions {
@@ -8,15 +8,19 @@ export interface MapOptions {
   accentColor?: string;
   /** Public/signed URL for the audio track, if any. */
   audioUrl?: string | null;
+  /** Background-music track URL (ducked under the voice), if any. */
+  musicUrl?: string | null;
   /** Signed URL for the product's real logo, shown in the intro/outro. */
   logoUrl?: string | null;
   /** Real site host for the browser-frame address bar. */
   siteHost?: string;
+  /** Art-direction preset id (e.g. "luxury_product"); auto-detected if absent. */
+  videoStyle?: string | null;
   /** Resolve a storyboard scene's sourceAssetId to a displayable image URL. */
   resolveImageUrl?: (assetId: string) => string | null;
 }
 
-const STATEMENT_TYPES = new Set(["title_card", "benefit_card", "outro", "transition"]);
+const STATEMENT_TYPES = new Set<string>(STATEMENT_SCENE_TYPES);
 
 /**
  * Convert a validated Storyboard into Remotion RenderProps. This is the single
@@ -47,9 +51,12 @@ export function storyboardToRenderProps(
       id: s.id,
       type: s.type,
       imageUrl,
-      // Statement cards show the spoken claim; capture scenes keep the layout note.
-      visualInstruction: isStatement ? s.voiceoverText || s.visualInstruction : s.visualInstruction,
-      // Capture scenes burn in the narration line; cards reuse their short label.
+      // The storyboard owns the on-screen content: a heading, or a structured
+      // payload ("a | b" / "value::label") for grids/metrics/maps, or a layout
+      // note for captures. We pass it through untouched.
+      visualInstruction: s.visualInstruction,
+      // Capture-backed scenes burn in the narration line as the subtitle; pure
+      // statement/motion cards keep their short kicker/label (no subtitle).
       captionText: isStatement ? s.captionText : s.voiceoverText || s.captionText,
       durationInFrames: msToFrames(s.durationMs, fps),
       cameraMotion: s.cameraMotion,
@@ -66,9 +73,11 @@ export function storyboardToRenderProps(
     width: dims.width,
     height: dims.height,
     audioUrl: opts.audioUrl ?? null,
+    musicUrl: opts.musicUrl ?? null,
     accentColor: opts.accentColor ?? "#6366F1",
     logoUrl: opts.logoUrl ?? null,
     siteHost: opts.siteHost ?? ctx.url.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+    videoStyle: opts.videoStyle ?? null,
     scenes,
   } satisfies RenderProps);
 }

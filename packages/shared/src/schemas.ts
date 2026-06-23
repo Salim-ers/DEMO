@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {
-  VIDEO_FORMATS, DEMO_DURATIONS, DEMO_TONES, VOICE_MODES, SCENE_TYPES,
+  VIDEO_FORMATS, DEMO_DURATIONS, DEMO_TONES, VOICE_MODES, SCENE_TYPES, VIDEO_STYLES,
 } from "./constants.js";
 
 /* -------------------------------------------------------------------------- */
@@ -23,6 +23,10 @@ export const createProjectSchema = z.object({
   language: z.string().min(2).max(10).default("en"),
   tone: z.enum(DEMO_TONES),
   voiceMode: z.enum(VOICE_MODES),
+  /** Art-direction preset; defaults applied server-side if omitted. */
+  videoStyle: z.enum(VIDEO_STYLES).optional(),
+  /** Optional reference-style URL (intent only — never copied). */
+  referenceUrl: z.string().url().optional().or(z.literal("")),
 });
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 
@@ -176,11 +180,15 @@ export const renderPropsSchema = z.object({
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   audioUrl: z.string().nullable(),
+  /** Background-music bed URL, ducked under the voice. */
+  musicUrl: z.string().nullable().default(null),
   accentColor: z.string().default("#6366F1"),
   /** The product's real logo (extracted from the site) for the intro/outro. */
   logoUrl: z.string().nullable().default(null),
   /** The real site host shown in the browser-frame address bar. */
   siteHost: z.string().default(""),
+  /** Art-direction preset id (e.g. "luxury_product"); auto-detected if null. */
+  videoStyle: z.string().nullable().default(null),
   scenes: z.array(renderSceneSchema).min(1),
 });
 export type RenderProps = z.infer<typeof renderPropsSchema>;

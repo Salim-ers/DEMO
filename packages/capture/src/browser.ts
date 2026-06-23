@@ -23,19 +23,35 @@ export interface SessionOptions {
   locale?: string;
 }
 
+/** Desktop capture viewport, env-overridable (CAPTURE_WIDTH / CAPTURE_HEIGHT). */
+function desktopViewport(): { width: number; height: number } {
+  const w = parseInt(process.env.CAPTURE_WIDTH ?? "", 10);
+  const h = parseInt(process.env.CAPTURE_HEIGHT ?? "", 10);
+  return {
+    width: Number.isFinite(w) && w >= 1280 ? w : CAPTURE_VIEWPORTS.desktop.width,
+    height: Number.isFinite(h) && h >= 720 ? h : CAPTURE_VIEWPORTS.desktop.height,
+  };
+}
+
+/** Retina-class capture by default; raise to 3 for 4K-downscale masters. */
+function captureScaleFactor(): number {
+  const d = parseFloat(process.env.CAPTURE_DEVICE_SCALE_FACTOR ?? "");
+  return Number.isFinite(d) && d >= 1 && d <= 3 ? d : 2;
+}
+
 export async function createBrowserSession(opts: SessionOptions = {}): Promise<BrowserSession> {
   const headless = opts.headless ?? (process.env.PLAYWRIGHT_HEADLESS ?? "true") === "true";
-  const viewport = CAPTURE_VIEWPORTS[opts.viewport ?? "desktop"];
+  const viewport = (opts.viewport ?? "desktop") === "mobile" ? CAPTURE_VIEWPORTS.mobile : desktopViewport();
 
   const browser = await chromium.launch({
     headless,
-    args: ["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+    args: ["--disable-blink-features=AutomationControlled", "--no-sandbox", "--force-color-profile=srgb", "--font-render-hinting=none"],
   });
 
   const context = await browser.newContext({
     viewport,
     locale: opts.locale ?? "en-US",
-    deviceScaleFactor: 2, // crisp screenshots
+    deviceScaleFactor: captureScaleFactor(), // crisp, retina-class screenshots
     storageState: opts.storageState as never,
     recordVideo: opts.recordVideoDir ? { dir: opts.recordVideoDir, size: viewport } : undefined,
     // We DO NOT bypass bot protections, CAPTCHA, or 2FA. See README "Compliance".

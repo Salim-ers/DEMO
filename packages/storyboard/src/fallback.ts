@@ -1,119 +1,133 @@
 import {
   type Storyboard, type StoryboardScene, type CaptureStepResult, type Scenario,
-  type ProjectContext, type CameraMotion, slugId, clamp,
+  type ProjectContext, type CameraMotion, type Callout, slugId, clamp,
 } from "@demoforge/shared";
 
-// Gentle, alternating "breathing" zoom — clean and premium, no janky pans.
-const CAMERA_CYCLE: CameraMotion[] = ["slow_zoom_in", "slow_zoom_out"];
-
 /**
- * Deterministic storyboard builder. Runs with no LLM. Produces a credible
- * hook → problem → product-in-action → benefits → proof → CTA arc, grounded in
- * the real captured screens. Scene durations are distributed to hit the target.
+ * Deterministic storyboard builder for the Premium SaaS Motion Engine. Runs with
+ * no LLM and produces a commercial arc:
+ *
+ *   cinematic_intro → problem_motion_card → promise_card →
+ *   product_stage (+callouts) → product_zoom → product_stage… →
+ *   workflow_map → benefit_grid → final_cta
+ *
+ * It is grounded in the real captured screens (woven into the product beats) and
+ * speaks the project's language. Horse Ledger (and equestrian products) get a
+ * curated luxury script; every other product gets a premium generic script.
  */
 export function buildStoryboardFallback(
   ctx: ProjectContext,
-  scenario: Scenario,
+  _scenario: Scenario,
   captures: CaptureStepResult[],
 ): Storyboard {
   const okCaptures = captures.filter((c) => c.status === "ok");
   const totalMs = ctx.durationSeconds * 1000;
+  const copy = pickCopy(ctx);
   const scenes: StoryboardScene[] = [];
-  const t = copyFor(ctx.language);
 
-  // --- 1. Title card (hook) -------------------------------------------------
-  scenes.push({
-    id: slugId("scene", `${ctx.productName}-title`),
-    type: "title_card",
-    sourceAssetId: null,
-    visualInstruction: `Product wordmark "${ctx.productName}" on a clean dark canvas, subtle accent underline.`,
-    voiceoverText: shortHook(ctx),
-    captionText: ctx.productName.trim(),
-    durationMs: 2600,
-    cameraMotion: "none",
-    highlightSelector: null,
-    callouts: [],
-  });
-
-  // --- 2. Problem framing ---------------------------------------------------
-  scenes.push({
-    id: slugId("scene", `${ctx.productName}-problem`),
-    type: "benefit_card",
-    sourceAssetId: null,
-    visualInstruction: "Short problem statement, single line, generous whitespace.",
-    voiceoverText: t.problem(ctx),
-    captionText: t.labels.problem,
-    durationMs: 3000,
-    cameraMotion: "none",
-    highlightSelector: null,
-    callouts: [],
-  });
-
-  // --- 3..N. Product in action (one scene per captured screen) -------------
-  okCaptures.forEach((cap, i) => {
-    const motion = CAMERA_CYCLE[i % CAMERA_CYCLE.length]!;
-    const title = cap.metadata?.title?.trim();
-    // Prefer the real section name (nav label) for grounded, unique narration.
-    const section = cap.intent?.trim() || title;
+  const push = (s: Partial<StoryboardScene> & Pick<StoryboardScene, "id" | "type" | "visualInstruction" | "voiceoverText" | "captionText">) =>
     scenes.push({
-      id: slugId("scene", `cap-${cap.index}-${cap.url}`),
-      type: "screen_capture",
-      sourceAssetId: cap.screenshotAssetKey ?? null,
-      visualInstruction: `Show "${cap.intent}" screen${title ? ` (${title})` : ""}. ${
-        motion === "slow_zoom_in" ? "Slow push toward the primary action." : "Gentle motion across the view."
-      }`,
-      // Narration names the actual area shown, so no two lines repeat.
-      voiceoverText: t.action(i, ctx, section),
-      captionText: t.labels.inProduct,
-      durationMs: 0, // filled by the distributor below
-      cameraMotion: motion,
-      highlightSelector: null,
-      callouts: [],
-    });
-  });
-
-  // If nothing captured, add a single placeholder demo beat so render still works.
-  if (okCaptures.length === 0) {
-    scenes.push({
-      id: slugId("scene", `${ctx.productName}-placeholder`),
-      type: "benefit_card",
       sourceAssetId: null,
-      visualInstruction: "Benefit grid stand-in (no captures available).",
-      voiceoverText: t.action(0, ctx),
-      captionText: t.labels.inProduct,
       durationMs: 0,
       cameraMotion: "none",
       highlightSelector: null,
       callouts: [],
+      ...s,
+    });
+
+  // --- 1. Cinematic intro (brand + hook) -----------------------------------
+  push({
+    id: slugId("scene", `${ctx.productName}-intro`),
+    type: "cinematic_intro",
+    visualInstruction: copy.hookHeading(ctx),
+    voiceoverText: copy.hook(ctx),
+    captionText: ctx.productName.trim(),
+    durationMs: 3200,
+  });
+
+  // --- 2. Problem (motion card) --------------------------------------------
+  push({
+    id: slugId("scene", `${ctx.productName}-problem`),
+    type: "problem_motion_card",
+    visualInstruction: copy.problemHeading,
+    voiceoverText: copy.problem,
+    captionText: copy.problemKicker,
+    durationMs: 4200,
+  });
+
+  // --- 3. Promise ----------------------------------------------------------
+  push({
+    id: slugId("scene", `${ctx.productName}-promise`),
+    type: "promise_card",
+    visualInstruction: copy.promiseHeading(ctx),
+    voiceoverText: copy.promise(ctx),
+    captionText: copy.promiseKicker,
+    durationMs: 3600,
+  });
+
+  // --- 4..N. Product in action ---------------------------------------------
+  // First capture = dashboard hero (callouts). Second = a zoomed feature. Rest
+  // = staged product views. Narration names the real section for unique lines.
+  okCaptures.forEach((cap, i) => {
+    const section = cleanLabel(cap.intent) ?? cleanLabel(cap.metadata?.title);
+    const isHero = i === 0;
+    const isZoom = i === 1;
+    const type = isZoom ? "product_zoom" : "product_stage";
+    const motion: CameraMotion = isZoom ? "slow_zoom_in" : i % 2 === 0 ? "slow_zoom_out" : "ken_burns";
+    push({
+      id: slugId("scene", `cap-${cap.index}-${cap.url}`),
+      type,
+      sourceAssetId: cap.screenshotAssetKey ?? null,
+      visualInstruction: `Stage "${cap.intent}"${section ? ` (${section})` : ""} in a premium browser frame.`,
+      voiceoverText: copy.action(i, ctx, section ?? undefined),
+      captionText: "",
+      durationMs: 0, // distributed below
+      cameraMotion: motion,
+      callouts: isHero ? copy.dashboardCallouts : [],
+    });
+  });
+
+  // No captures (login wall / bot protection): substitute a workflow map so the
+  // story still lands without empty product beats.
+  if (okCaptures.length === 0) {
+    push({
+      id: slugId("scene", `${ctx.productName}-workflow-fallback`),
+      type: "workflow_map",
+      visualInstruction: copy.workflowNodes.join(" | "),
+      voiceoverText: copy.workflowVoice,
+      captionText: copy.workflowKicker,
+      durationMs: 0,
     });
   }
 
-  // --- N+1. Proof / ROI -----------------------------------------------------
-  scenes.push({
-    id: slugId("scene", `${ctx.productName}-roi`),
-    type: "benefit_card",
-    sourceAssetId: null,
-    visualInstruction: "Three compact outcome chips: faster, clearer, fewer tabs.",
-    voiceoverText: t.roi(ctx),
-    captionText: t.labels.outcome,
-    durationMs: 3200,
-    cameraMotion: "none",
-    highlightSelector: null,
-    callouts: [],
+  // --- N+1. Workflow map (everything connected) ----------------------------
+  push({
+    id: slugId("scene", `${ctx.productName}-workflow`),
+    type: "workflow_map",
+    visualInstruction: copy.workflowNodes.join(" | "),
+    voiceoverText: copy.workflowVoice,
+    captionText: copy.workflowKicker,
+    durationMs: 4200,
   });
 
-  // --- Outro / CTA ----------------------------------------------------------
-  scenes.push({
-    id: slugId("scene", `${ctx.productName}-outro`),
-    type: "outro",
-    sourceAssetId: null,
-    visualInstruction: `Wordmark + URL ${ctx.url}, restrained accent.`,
-    voiceoverText: t.cta(ctx),
-    captionText: ctx.url.replace(/^https?:\/\//, "").replace(/\/$/, ""),
-    durationMs: 2600,
-    cameraMotion: "none",
-    highlightSelector: null,
-    callouts: [],
+  // --- N+2. Benefit grid (outcome) -----------------------------------------
+  push({
+    id: slugId("scene", `${ctx.productName}-benefits`),
+    type: "benefit_grid",
+    visualInstruction: copy.benefitItems.join(" | "),
+    voiceoverText: copy.benefitVoice,
+    captionText: copy.benefitKicker,
+    durationMs: 4200,
+  });
+
+  // --- Final CTA -----------------------------------------------------------
+  push({
+    id: slugId("scene", `${ctx.productName}-cta`),
+    type: "final_cta",
+    visualInstruction: copy.ctaHeading(ctx),
+    voiceoverText: copy.cta(ctx),
+    captionText: host(ctx.url),
+    durationMs: 3600,
   });
 
   distributeDurations(scenes, totalMs);
@@ -126,113 +140,167 @@ export function buildStoryboardFallback(
   };
 }
 
-/** Spread remaining time across screen_capture/placeholder scenes (fixed cards keep their time). */
+/** Spread remaining time across flexible (product) scenes; fixed cards keep theirs. */
 function distributeDurations(scenes: StoryboardScene[], totalMs: number) {
   const flexible = scenes.filter((s) => s.durationMs === 0);
   const fixedMs = scenes.filter((s) => s.durationMs > 0).reduce((a, s) => a + s.durationMs, 0);
-  const remaining = Math.max(flexible.length * 2200, totalMs - fixedMs);
-  const per = clamp(Math.round(remaining / Math.max(1, flexible.length)), 2200, 7000);
+  const remaining = Math.max(flexible.length * 3200, totalMs - fixedMs);
+  const per = clamp(Math.round(remaining / Math.max(1, flexible.length)), 3200, 7000);
   for (const s of flexible) s.durationMs = per;
 }
 
-/* --------------------------- copy generators ----------------------------- */
-/* Intentionally concrete and hype-free. No "welcome to", no "revolutionary".  */
-/* Localized so the deterministic (no-LLM) path still speaks the user's language. */
+/* ----------------------------- copy packs -------------------------------- */
 
 const host = (url: string) => url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
-/** The hook is the user's own promise — already in their language. */
-function shortHook(ctx: ProjectContext): string {
-  return ctx.mainPromise.trim();
-}
-
-interface Copy {
-  labels: { problem: string; outcome: string; inProduct: string };
-  problem: (ctx: ProjectContext) => string;
-  roi: (ctx: ProjectContext) => string;
-  cta: (ctx: ProjectContext) => string;
-  /**
-   * Product-in-action narration, unique per screen. When a clean section label is
-   * known (e.g. a real app/nav page name), it's woven in as "Section : benefit"
-   * so each line names the actual area shown — no repetition. Falls back to a
-   * rotating premium line when the label is messy/absent.
-   */
+interface PremiumCopy {
+  hook: (ctx: ProjectContext) => string;
+  hookHeading: (ctx: ProjectContext) => string;
+  problem: string;
+  problemHeading: string;
+  problemKicker: string;
+  promise: (ctx: ProjectContext) => string;
+  promiseHeading: (ctx: ProjectContext) => string;
+  promiseKicker: string;
   action: (i: number, ctx: ProjectContext, section?: string) => string;
+  dashboardCallouts: Callout[];
+  workflowNodes: string[];
+  workflowKicker: string;
+  workflowVoice: string;
+  benefitItems: string[];
+  benefitKicker: string;
+  benefitVoice: string;
+  cta: (ctx: ProjectContext) => string;
+  ctaHeading: (ctx: ProjectContext) => string;
 }
 
 /** A short label is "clean" enough to put in front of a colon in copy. */
 function cleanLabel(s?: string): string | null {
   const t = (s ?? "").replace(/\s+/g, " ").trim();
   if (!t || t.length > 24) return null;
-  if (!/^[\p{L}][\p{L}\s'’-]*$/u.test(t)) return null; // letters/spaces/'/- only
+  if (!/^[\p{L}][\p{L}\s'’-]*$/u.test(t)) return null;
   if (t.split(" ").length > 3) return null;
   return t[0]!.toUpperCase() + t.slice(1);
 }
 
-const FR: Copy = {
-  labels: { problem: "Le problème", outcome: "Le résultat", inProduct: "Dans le produit" },
-  problem: () =>
-    `Trop d'outils dispersés, et l'information se perd. Vos équipes passent un temps précieux à la chercher.`,
-  roi: () =>
-    `Résultat : moins de friction, des décisions plus rapides, et une équipe concentrée sur l'essentiel.`,
-  cta: (ctx) => `Découvrez-le sur vos propres données — rendez-vous sur ${host(ctx.url)}.`,
-  action: (i, ctx, section) => {
-    const benefits = [
-      `tout est réuni au même endroit, clair et exploitable.`,
-      `l'information utile, immédiatement, sans la chercher.`,
-      `une vue nette, pensée pour aller droit au but.`,
-      `vos données à jour, prêtes à être partagées.`,
-      `chaque détail à sa place, d'un seul coup d'œil.`,
-      `la gestion du quotidien, enfin simplifiée.`,
-      `du suivi à la décision, sans friction.`,
-      `pensé pour votre équipe, sans courbe d'apprentissage.`,
+const DASHBOARD_CALLOUTS_FR: Callout[] = [
+  { text: "Vision claire", x: 0.28, y: 0.4 },
+  { text: "Données centralisées", x: 0.72, y: 0.38 },
+  { text: "Décisions plus rapides", x: 0.5, y: 0.66 },
+];
+const DASHBOARD_CALLOUTS_EN: Callout[] = [
+  { text: "Clear overview", x: 0.28, y: 0.4 },
+  { text: "Everything centralized", x: 0.72, y: 0.38 },
+  { text: "Faster decisions", x: 0.5, y: 0.66 },
+];
+
+/** Luxury equestrian script for Horse Ledger — the exact premium tone requested. */
+const EQUESTRIAN_FR: PremiumCopy = {
+  hook: () =>
+    `Dans une structure équine, chaque détail compte : un soin à planifier, un document à retrouver, une pension à suivre, une information à partager avec l'équipe.`,
+  hookHeading: () => `Gérez votre structure équine, sans rien laisser au hasard.`,
+  problem: `Les informations sont souvent dispersées entre messages, tableurs, documents et outils séparés.`,
+  problemHeading: `Des informations dispersées entre messages, tableurs, documents et outils séparés.`,
+  problemKicker: "Le problème",
+  promise: () =>
+    `Horse Ledger centralise tout dans une plateforme claire, élégante et pensée pour le terrain.`,
+  promiseHeading: () => `Tout votre haras, réuni dans une plateforme claire et élégante.`,
+  promiseKicker: "La plateforme",
+  action: (i, _ctx, section) => {
+    const lines = [
+      `Depuis le tableau de bord, vous gardez une vision immédiate de vos chevaux, de vos tâches, de vos finances et de vos priorités.`,
+      `Chaque fiche cheval rassemble les informations essentielles : identité, propriétaire, santé, documents et suivi quotidien.`,
+      `Suivez les rendez-vous vétérinaires, le maréchal-ferrant, l'ostéopathie, les rappels et les tâches importantes.`,
+      `Contrats, factures, documents sanitaires et fichiers administratifs sont centralisés et faciles à retrouver.`,
+      `Pensions, prestations, paiements et retards se suivent clairement, sans tableur.`,
+      `Alimentation, litière, produits de soin et matériel : vos stocks restent toujours à jour.`,
     ];
-    const label = cleanLabel(section);
-    if (label) return `${label} : ${benefits[i % benefits.length]!}`;
-    const generic = [
-      `${ctx.productName.trim()} réunit toute votre activité dans une interface claire et professionnelle.`,
-      `Chaque écran va droit au but : l'information utile, immédiatement.`,
+    if (i < lines.length) return lines[i]!;
+    const s = cleanLabel(section);
+    return s ? `${s} : tout est réuni, clair et exploitable.` : `Chaque espace de travail va droit au but, sans friction.`;
+  },
+  dashboardCallouts: DASHBOARD_CALLOUTS_FR,
+  workflowNodes: ["Chevaux", "Soins", "Planning", "Documents", "Finances"],
+  workflowKicker: "Tout centralisé",
+  workflowVoice: `Votre équipe gagne du temps, évite les doubles saisies et travaille avec une donnée fiable.`,
+  benefitItems: ["Moins de tableurs", "Plus de clarté", "Une gestion plus professionnelle"],
+  benefitKicker: "Le résultat",
+  benefitVoice: `Horse Ledger apporte aux haras, écuries et structures de course une gestion plus fluide, plus professionnelle et plus sécurisée.`,
+  cta: (ctx) => `Découvrez la plateforme sur ${host(ctx.url)}.`,
+  ctaHeading: () => `La gestion équine centralisée, élégante et professionnelle.`,
+};
+
+const GENERIC_FR: PremiumCopy = {
+  hook: (ctx) => ctx.mainPromise.trim(),
+  hookHeading: (ctx) => ctx.mainPromise.trim(),
+  problem: `Trop d'outils dispersés, et l'information se perd — vos équipes passent un temps précieux à la chercher.`,
+  problemHeading: `Trop d'outils dispersés, et l'information se perd.`,
+  problemKicker: "Le problème",
+  promise: (ctx) => `${ctx.productName.trim()} réunit tout dans une plateforme claire, rapide et élégante.`,
+  promiseHeading: (ctx) => `${ctx.productName.trim()}, tout réuni au même endroit.`,
+  promiseKicker: "La solution",
+  action: (i, ctx, section) => {
+    const lines = [
+      `Depuis le tableau de bord, vous gardez une vision immédiate de votre activité et de vos priorités.`,
+      `Chaque écran va droit au but : l'information utile, immédiatement, sans la chercher.`,
       `Vous passez d'une vue à l'autre sans friction, sans rouvrir dix onglets.`,
+      `Vos données restent à jour, claires et prêtes à être partagées avec l'équipe.`,
       `Les détails qui comptent restent toujours sous les yeux.`,
-      `Une expérience pensée pour aller vite, sans rien perdre en clarté.`,
-      `Tout est centralisé, lisible, et prêt à être partagé avec votre équipe.`,
     ];
-    return generic[i % generic.length]!;
+    if (i < lines.length) return lines[i]!;
+    const s = cleanLabel(section);
+    return s ? `${s} : tout est réuni, clair et exploitable.` : `Une expérience pensée pour aller vite, sans perdre en clarté.`;
   },
+  dashboardCallouts: DASHBOARD_CALLOUTS_FR,
+  workflowNodes: ["Données", "Suivi", "Équipe", "Décisions"],
+  workflowKicker: "Tout connecté",
+  workflowVoice: `Votre équipe gagne du temps, évite les doubles saisies et travaille avec une donnée fiable.`,
+  benefitItems: ["Moins de friction", "Plus de clarté", "Des décisions plus rapides"],
+  benefitKicker: "Le résultat",
+  benefitVoice: `Résultat : moins de friction, des décisions plus rapides, et une équipe concentrée sur l'essentiel.`,
+  cta: (ctx) => `Découvrez-le sur vos propres données — rendez-vous sur ${host(ctx.url)}.`,
+  ctaHeading: (ctx) => `${ctx.productName.trim()} — ${ctx.mainPromise.trim()}`,
 };
 
-const EN: Copy = {
-  labels: { problem: "The problem", outcome: "The outcome", inProduct: "In the product" },
-  problem: () => `Most teams lose time switching tabs to find what actually needs attention.`,
-  roi: () => `The result: your team sees priorities first, acts faster, and skips the busywork.`,
-  cta: (ctx) => `See it on your own data — start at ${host(ctx.url)}.`,
+const GENERIC_EN: PremiumCopy = {
+  hook: (ctx) => ctx.mainPromise.trim(),
+  hookHeading: (ctx) => ctx.mainPromise.trim(),
+  problem: `Too many scattered tools, and information gets lost — teams waste real time hunting for it.`,
+  problemHeading: `Too many scattered tools, and information gets lost.`,
+  problemKicker: "The problem",
+  promise: (ctx) => `${ctx.productName.trim()} brings it all into one clear, fast, elegant platform.`,
+  promiseHeading: (ctx) => `${ctx.productName.trim()}, everything in one place.`,
+  promiseKicker: "The solution",
   action: (i, ctx, section) => {
-    const benefits = [
-      `everything in one place, clear and ready to use.`,
-      `the useful information, right away — no hunting.`,
-      `a clean view built to get straight to the point.`,
-      `your data up to date and ready to share.`,
-      `every detail in its place, at a glance.`,
-      `day-to-day management, finally simplified.`,
-      `from tracking to decision, with zero friction.`,
-      `made for your team, with no learning curve.`,
-    ];
-    const label = cleanLabel(section);
-    if (label) return `${label}: ${benefits[i % benefits.length]!}`;
-    const generic = [
-      `${ctx.productName.trim()} brings your whole workflow into one clean, professional view.`,
-      `Every screen gets to the point: the useful information, right away.`,
+    const lines = [
+      `From the dashboard, you get an immediate view of your activity and your priorities.`,
+      `Every screen gets to the point: the useful information, right away — no hunting.`,
       `Move from one view to the next with zero friction — no ten open tabs.`,
+      `Your data stays up to date, clear, and ready to share with the team.`,
       `The details that matter stay in front of you the whole time.`,
-      `Built to move fast without ever losing clarity.`,
-      `Everything is centralized, readable, and ready to share with your team.`,
     ];
-    return generic[i % generic.length]!;
+    if (i < lines.length) return lines[i]!;
+    const s = cleanLabel(section);
+    return s ? `${s}: everything in one place, clear and ready to use.` : `Built to move fast without ever losing clarity.`;
   },
+  dashboardCallouts: DASHBOARD_CALLOUTS_EN,
+  workflowNodes: ["Data", "Tracking", "Team", "Decisions"],
+  workflowKicker: "All connected",
+  workflowVoice: `Your team saves time, avoids double entry, and works from reliable data.`,
+  benefitItems: ["Less friction", "More clarity", "Faster decisions"],
+  benefitKicker: "The outcome",
+  benefitVoice: `The result: less friction, faster decisions, and a team focused on what matters.`,
+  cta: (ctx) => `See it on your own data — start at ${host(ctx.url)}.`,
+  ctaHeading: (ctx) => `${ctx.productName.trim()} — ${ctx.mainPromise.trim()}`,
 };
 
-/** Pick the copy pack for a project language; unknown languages get English. */
-function copyFor(language: string): Copy {
-  const base = (language || "en").toLowerCase().split(/[-_]/)[0];
-  return base === "fr" ? FR : EN;
+const isEquestrian = (ctx: ProjectContext) =>
+  /\bhorse\b|ledger|equine|equestr|écuri|haras|cheval|chevaux/i.test(
+    `${ctx.productName} ${ctx.url} ${ctx.targetAudience} ${ctx.mainPromise}`,
+  );
+
+function pickCopy(ctx: ProjectContext): PremiumCopy {
+  const fr = (ctx.language || "en").toLowerCase().startsWith("fr");
+  if (isEquestrian(ctx) && fr) return EQUESTRIAN_FR;
+  return fr ? GENERIC_FR : GENERIC_EN;
 }

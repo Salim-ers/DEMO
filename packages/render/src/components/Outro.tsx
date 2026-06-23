@@ -27,10 +27,10 @@ export const Outro: React.FC<{
         {logoUrl ? (
           <BrandLockup url={logoUrl} scale={scale} height={140} />
         ) : (
-          <span style={{ color: theme.text, fontFamily: theme.fontFamily, fontSize: 70 * scale, fontWeight: 660, letterSpacing: -1.6 * scale }}>{productName}</span>
+          <span style={{ color: theme.text, fontFamily: theme.fontDisplay, fontSize: 70 * scale, fontWeight: 680, letterSpacing: -1.6 * scale }}>{productName}</span>
         )}
-        <span style={{ color: theme.textMuted, fontFamily: theme.fontFamily, fontSize: 32 * scale, fontWeight: 460, textAlign: "center", maxWidth: 1000 * scale }}>{cta}</span>
-        <div style={{ opacity: btnOpacity, marginTop: 8 * scale, padding: `${16 * scale}px ${34 * scale}px`, borderRadius: 12 * scale, background: theme.accent, color: "white", fontFamily: theme.fontFamily, fontSize: 26 * scale, fontWeight: 600, boxShadow: `0 16px 50px ${theme.accentGlow}` }}>
+        <span style={{ color: theme.textMuted, fontFamily: theme.fontFamily, fontSize: 32 * scale, fontWeight: 460, textAlign: "center", maxWidth: 1000 * scale, lineHeight: 1.35 }}>{cta}</span>
+        <div style={{ opacity: btnOpacity, marginTop: 10 * scale, padding: `${17 * scale}px ${38 * scale}px`, borderRadius: 14 * scale, background: `linear-gradient(135deg, ${theme.accent}, ${theme.accent2})`, color: "white", fontFamily: theme.fontFamily, fontSize: 26 * scale, fontWeight: 620, letterSpacing: 0.2, boxShadow: `0 18px 56px ${theme.accentGlow}, 0 0 0 1px ${theme.accentSoft}, 0 2px 0 rgba(255,255,255,0.18) inset` }}>
           {host ? host : "Demander une démo"}
         </div>
       </AbsoluteFill>

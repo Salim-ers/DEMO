@@ -3,6 +3,7 @@ import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } fr
 import type { Theme } from "../theme.js";
 import { Backdrop } from "./Backdrop.js";
 import { BrandLockup } from "./BrandLockup.js";
+import { KineticTitle } from "./KineticTitle.js";
 
 /** Short, restrained product intro: wordmark + one-line promise. */
 export const TitleCard: React.FC<{
@@ -30,9 +31,9 @@ export const TitleCard: React.FC<{
           {logoUrl ? (
             <BrandLockup url={logoUrl} scale={scale} />
           ) : (
-            <div style={{ display: "flex", alignItems: "center", gap: 20 * scale }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 24 * scale }}>
               <Logo theme={theme} scale={scale} />
-              <span style={{ color: theme.text, fontFamily: theme.fontFamily, fontSize: 84 * scale, fontWeight: 680, letterSpacing: -2 * scale }}>{productName}</span>
+              <KineticTitle text={productName} theme={theme} scale={scale} fontSize={84} align="left" accentWords={[productName.split(/\s+/).slice(-1)[0] ?? ""]} />
             </div>
           )}
         </div>

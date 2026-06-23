@@ -2,6 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { mkdir } from "node:fs/promises";
 import { renderPropsSchema, type RenderProps, type VideoFormat } from "@demoforge/shared";
+import { getRenderQuality } from "./quality.js";
 
 export type CompositionId = "Demo16x9" | "Demo9x16" | "DemoSquare";
 
@@ -72,6 +73,8 @@ export async function renderDemoVideo(opts: RenderOptions): Promise<string> {
     inputProps: props as unknown as Record<string, unknown>,
   });
 
+  const q = getRenderQuality();
+
   await renderMedia({
     composition,
     serveUrl,
@@ -80,11 +83,18 @@ export async function renderDemoVideo(opts: RenderOptions): Promise<string> {
     inputProps: props as unknown as Record<string, unknown>,
     concurrency: opts.concurrency ?? null,
     chromiumOptions: { gl: "angle" },
-    // Keep the file streamable and well under typical object-storage per-file
-    // limits (Supabase defaults to 50 MB). CRF 24 is visually clean for screen
-    // captures while roughly halving size vs Remotion's default. The worker also
-    // re-encodes smaller as a fallback if an upload is still rejected.
-    crf: 24,
+    // Premium master: low CRF for visually-lossless screen content, a slower
+    // x264 preset for better compression efficiency at that quality, 8-bit
+    // 4:2:0 (H.264 High profile) for universal playback, and an optional
+    // up-scale to 1440p/4K. CRF is the quality driver; the configured video
+    // bitrate is advisory (surfaced in the quality report). The worker still
+    // re-encodes smaller as a last-resort fallback if storage rejects the file.
+    crf: q.crf,
+    x264Preset: q.x264Preset,
+    pixelFormat: q.pixelFormat,
+    scale: q.scale,
+    audioCodec: "aac",
+    audioBitrate: q.audioBitrate,
     onProgress: ({ progress }) => opts.onProgress?.(progress),
   });
 

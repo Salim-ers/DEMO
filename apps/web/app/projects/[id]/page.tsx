@@ -139,6 +139,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             voiceMode={String(project.voiceScript?.mode ?? project.voiceMode)}
             language={project.language}
           />
+          <QualityReportPanel report={(renderJob?.qualityReport as QReport | null) ?? null} />
           <UserImagesPanel projectId={project.id} initial={uploads} />
           <DownloadCenter items={downloads} />
         </div>
@@ -186,6 +187,67 @@ function VideoPanel({ url, format }: { url: string | null; format: string }) {
           </span>
           <p className="text-sm text-muted">Votre démo rendue s'affichera ici</p>
           <p className="font-mono text-[11px] text-faint">Lancez le pipeline pour produire demo.mp4</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface QCheck { id: string; label: string; status: "pass" | "warn" | "fail"; detail: string }
+interface QReport {
+  resolution: string; fps: number; videoCodec: string; bitrateMbps: number;
+  audioCodec: string | null; audioBitrateKbps: number | null; durationSec: number; fileMb: number;
+  screenshotCount: number; motionSceneCount: number; calloutCount: number; voiceMode: string;
+  score: number; checks: QCheck[]; recommendations: string[];
+}
+
+/** Post-render quality report: score, automated checks and recommendations. */
+function QualityReportPanel({ report }: { report: QReport | null }) {
+  if (!report) return null;
+  const dot = (s: QCheck["status"]) => (s === "pass" ? "bg-ok" : s === "warn" ? "bg-yellow-400" : "bg-bad");
+  const scoreTone = report.score >= 85 ? "text-ok" : report.score >= 65 ? "text-yellow-400" : "text-bad";
+  const metrics: Array<[string, string]> = [
+    ["Résolution", report.resolution],
+    ["Débit", `${report.bitrateMbps} Mbps`],
+    ["Codec", report.videoCodec.toUpperCase()],
+    ["FPS", String(report.fps)],
+    ["Audio", report.audioCodec ? `${report.audioCodec.toUpperCase()} ${report.audioBitrateKbps ?? "?"}k` : "—"],
+    ["Durée", `${report.durationSec}s`],
+    ["Taille", `${report.fileMb} Mo`],
+    ["Scènes motion", String(report.motionSceneCount)],
+    ["Callouts", String(report.calloutCount)],
+  ];
+  return (
+    <div className="card overflow-hidden">
+      <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
+        <span className="eyebrow">Rapport qualité</span>
+        <span className={`text-lg font-semibold tabular-nums ${scoreTone}`}>{report.score}/100</span>
+      </div>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-3 px-6 py-4">
+        {metrics.map(([k, v]) => (
+          <div key={k} className="min-w-0">
+            <div className="text-[10px] font-medium uppercase tracking-wide text-faint">{k}</div>
+            <div className="truncate text-sm text-ink">{v}</div>
+          </div>
+        ))}
+      </div>
+      <ul className="divide-y divide-hairline border-t border-hairline">
+        {report.checks.map((c) => (
+          <li key={c.id} className="flex items-center gap-3 px-6 py-2.5">
+            <span className={`h-2 w-2 shrink-0 rounded-full ${dot(c.status)}`} />
+            <span className="flex-1 text-sm text-ink">{c.label}</span>
+            <span className="font-mono text-xs text-faint">{c.detail}</span>
+          </li>
+        ))}
+      </ul>
+      {report.recommendations.length > 0 && (
+        <div className="border-t border-hairline px-6 py-4">
+          <div className="mb-2 text-[10px] font-medium uppercase tracking-wide text-faint">Recommandations</div>
+          <ul className="list-disc space-y-1 pl-4 text-sm text-muted">
+            {report.recommendations.map((r, i) => (
+              <li key={i}>{r}</li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

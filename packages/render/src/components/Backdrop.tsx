@@ -1,32 +1,13 @@
 import React from "react";
-import { AbsoluteFill } from "remotion";
 import type { Theme } from "../theme.js";
+import { PremiumStage } from "./PremiumStage.js";
 
 /**
- * Premium backdrop: pure black canvas with soft, tasteful color glows — no grid.
- * Deliberately restrained so it reads as "fond noir" while still feeling alive
- * and colorful rather than flat.
+ * Backwards-compatible alias for the premium backdrop. Existing scenes call
+ * <Backdrop/>; the real depth, glows, grain and grid now live in PremiumStage.
  */
-export const Backdrop: React.FC<{ theme: Theme; intensity?: number }> = ({
+export const Backdrop: React.FC<{ theme: Theme; intensity?: number; halo?: boolean }> = ({
   theme,
   intensity = 1,
-}) => {
-  return (
-    <AbsoluteFill style={{ backgroundColor: "#000000" }}>
-      {/* Main accent glow, top-center. */}
-      <AbsoluteFill
-        style={{
-          background: `radial-gradient(90% 70% at 50% -15%, ${theme.accentGlow} 0%, rgba(0,0,0,0) 60%)`,
-          opacity: intensity,
-        }}
-      />
-      {/* A second, cooler glow low-left for subtle depth and color. */}
-      <AbsoluteFill
-        style={{
-          background: `radial-gradient(70% 60% at 12% 115%, ${theme.accentSoft} 0%, rgba(0,0,0,0) 55%)`,
-          opacity: 0.7 * intensity,
-        }}
-      />
-    </AbsoluteFill>
-  );
-};
+  halo = false,
+}) => <PremiumStage theme={theme} intensity={intensity} halo={halo} />;

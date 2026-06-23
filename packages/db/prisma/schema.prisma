@@ -31,6 +31,17 @@ enum SceneType {
   BENEFIT_CARD
   HIGGSFIELD_BROLL
   OUTRO
+  // Premium SaaS motion-engine scene types.
+  CINEMATIC_INTRO
+  PROBLEM_MOTION_CARD
+  PROMISE_CARD
+  PRODUCT_STAGE
+  PRODUCT_ZOOM
+  FEATURE_CALLOUT
+  METRIC_MOMENT
+  WORKFLOW_MAP
+  BENEFIT_GRID
+  FINAL_CTA
 }
 
 enum VoiceMode {
@@ -104,6 +115,8 @@ model Project {
   language        String              @default("en")
   tone            String
   voiceMode       VoiceMode           @default(SCRIPT_ONLY)
+  videoStyle      String?             // art-direction preset (videoBrand): premium_motion | luxury_product | ...
+  referenceUrl    String?             // optional reference-style URL (intent only, never copied)
 
   status          String              @default("draft") // draft|capturing|storyboarding|rendering|ready|failed
 
@@ -255,6 +268,7 @@ model RenderJob {
   stages       Json       @default("[]")
   progress     Int        @default(0)           // 0..100
   outputAssetId String?
+  qualityReport Json?                            // post-render QualityReport (resolution, bitrates, scores…)
   error        String?
   startedAt    DateTime?
   finishedAt   DateTime?

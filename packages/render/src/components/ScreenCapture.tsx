@@ -2,10 +2,10 @@ import React from "react";
 import { AbsoluteFill, Img, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import type { CameraMotion, Callout as CalloutType } from "@demoforge/shared";
 import type { Theme } from "../theme.js";
-import { Backdrop } from "./Backdrop.js";
-import { BrowserFrame } from "./BrowserFrame.js";
-import { Callout } from "./Callout.js";
-import { Cursor } from "./Cursor.js";
+import { PremiumStage } from "./PremiumStage.js";
+import { BrowserMockup } from "./BrowserMockup.js";
+import { FeatureCallout, type CalloutIcon } from "./FeatureCallout.js";
+import { AnimatedCursor } from "./AnimatedCursor.js";
 
 export interface ScreenCaptureProps {
   imageUrl: string | null;
@@ -20,29 +20,32 @@ export interface ScreenCaptureProps {
   scale: number;
 }
 
-/** Map a camera motion to per-frame transform over the scene's lifetime. */
+/** Map a camera motion to a per-frame transform. Cinematic but content-safe:
+ *  the whole screen stays visible (objectFit: contain), so moves are gentle. */
 function useCameraTransform(motion: CameraMotion): { scale: number; tx: number; ty: number } {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const p = interpolate(frame, [0, durationInFrames], [0, 1], { extrapolateRight: "clamp" });
-  const ease = p * p * (3 - 2 * p); // smoothstep — no aggressive zoom
+  const ease = p * p * (3 - 2 * p); // smoothstep
 
-  // Barely-there drift only. The whole screen must stay visible (the screenshots
-  // are shown in full, not cropped), so motion is kept to ~1.5% — enough to feel
-  // alive, never a "zoom" that hides content.
   switch (motion) {
     case "slow_zoom_in":
-      return { scale: interpolate(ease, [0, 1], [1.0, 1.018]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.0, 1.05]), tx: 0, ty: interpolate(ease, [0, 1], [0.4, 0]) };
     case "slow_zoom_out":
-      return { scale: interpolate(ease, [0, 1], [1.018, 1.0]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.06, 1.0]), tx: 0, ty: 0 };
     case "pan_left":
+      return { scale: 1.05, tx: interpolate(ease, [0, 1], [1.6, -1.6]), ty: 0 };
     case "pan_right":
+      return { scale: 1.05, tx: interpolate(ease, [0, 1], [-1.6, 1.6]), ty: 0 };
     case "ken_burns":
+      return { scale: interpolate(ease, [0, 1], [1.02, 1.06]), tx: interpolate(ease, [0, 1], [-1, 1]), ty: interpolate(ease, [0, 1], [0.6, -0.6]) };
     case "none":
     default:
-      return { scale: interpolate(ease, [0, 1], [1.0, 1.012]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.0, 1.02]), tx: 0, ty: 0 };
   }
 }
+
+const ICON_CYCLE: CalloutIcon[] = ["eye", "layers", "bolt", "check", "clock", "shield"];
 
 export const ScreenCapture: React.FC<ScreenCaptureProps> = (props) => {
   const { imageUrl, url, callouts, cameraMotion, highlight, theme, width, height, scale } = props;
@@ -50,17 +53,19 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = (props) => {
   const { fps } = useVideoConfig();
   const cam = useCameraTransform(cameraMotion);
 
-  const intro = interpolate(frame, [0, Math.round(fps * 0.5)], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const frameOpacity = intro;
-  const frameRise = interpolate(intro, [0, 1], [24, 0]);
+  const intro = interpolate(frame, [0, Math.round(fps * 0.6)], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const frameRise = interpolate(intro, [0, 1], [40, 0]);
+  // A whisper of 3D tilt that settles to flat — gives depth on entry.
+  const tiltX = interpolate(intro, [0, 1], [3.2, 0]);
+  const tiltY = interpolate(intro, [0, 1], [-2.4, 0]);
 
-  const margin = width * 0.05;
+  const margin = width * 0.055;
 
   return (
     <AbsoluteFill>
-      <Backdrop theme={theme} />
-      <AbsoluteFill style={{ padding: margin, opacity: frameOpacity, transform: `translateY(${frameRise}px)` }}>
-        <BrowserFrame theme={theme} url={url} scale={scale}>
+      <PremiumStage theme={theme} halo />
+      <AbsoluteFill style={{ padding: margin, opacity: intro, transform: `translateY(${frameRise}px)` }}>
+        <BrowserMockup theme={theme} url={url} scale={scale} tiltX={tiltX} tiltY={tiltY}>
           <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
             <div
               style={{
@@ -86,29 +91,39 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = (props) => {
                   width: `${highlight.w * 100}%`,
                   height: `${highlight.h * 100}%`,
                   border: `2px solid ${theme.accent}`,
-                  borderRadius: 10 * scale,
-                  boxShadow: `0 0 0 6px ${theme.accentSoft}`,
-                  opacity: interpolate(frame, [Math.round(fps * 0.4), Math.round(fps * 0.8)], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+                  borderRadius: 12 * scale,
+                  boxShadow: `0 0 0 6px ${theme.accentSoft}, 0 0 40px ${theme.accentGlow}`,
+                  opacity: interpolate(frame, [Math.round(fps * 0.5), Math.round(fps * 0.9)], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
                 }}
               />
             ) : null}
 
             {callouts.map((c, i) => (
-              <Callout key={i} text={c.text} x={c.x} y={c.y} theme={theme} delay={Math.round(fps * (0.6 + i * 0.25))} scale={scale} />
+              <FeatureCallout
+                key={i}
+                text={c.text}
+                x={c.x}
+                y={c.y}
+                theme={theme}
+                icon={ICON_CYCLE[i % ICON_CYCLE.length]}
+                delay={Math.round(fps * (0.7 + i * 0.45))}
+                scale={scale}
+              />
             ))}
 
             {callouts[0] ? (
-              <Cursor
-                from={{ x: 0.5, y: 0.85 }}
+              <AnimatedCursor
+                from={{ x: 0.52, y: 0.88 }}
                 to={{ x: callouts[0].x, y: callouts[0].y }}
                 width={width - margin * 2}
-                height={height - margin * 2 - 44 * scale}
-                clickAtFrame={Math.round(fps * 1.0)}
+                height={height - margin * 2 - 46 * scale}
+                theme={theme}
+                clickAtFrame={Math.round(fps * 1.1)}
                 scale={scale}
               />
             ) : null}
           </div>
-        </BrowserFrame>
+        </BrowserMockup>
       </AbsoluteFill>
     </AbsoluteFill>
   );
@@ -123,6 +138,6 @@ const CapturePlaceholder: React.FC<{ theme: Theme; scale: number }> = ({ theme, 
         <path d="M21 15l-5-5L5 21" />
       </svg>
     </div>
-    <div style={{ color: theme.textMuted, fontFamily: theme.fontFamily, fontSize: 18 * scale }}>Capture unavailable for this step</div>
+    <div style={{ color: theme.textMuted, fontFamily: theme.fontFamily, fontSize: 18 * scale }}>Capture indisponible pour cette étape</div>
   </AbsoluteFill>
 );

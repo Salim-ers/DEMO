@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, ImagePlus, Loader2, Sparkles, X } from "lucide-react";
 import {
-  DEMO_DURATIONS, VIDEO_FORMATS, DEMO_TONES, VOICE_MODES,
+  DEMO_DURATIONS, VIDEO_FORMATS, DEMO_TONES, VOICE_MODES, VIDEO_STYLES, VIDEO_STYLE_LABEL,
 } from "@demoforge/shared";
 import { Button } from "./ui/button.js";
 import { Input, Textarea, Select } from "./ui/input.js";
@@ -18,6 +18,8 @@ interface FormState {
   format: string;
   language: string;
   tone: string;
+  videoStyle: string;
+  referenceUrl: string;
   voiceMode: string;
   loginUrl: string;
   email: string;
@@ -37,9 +39,9 @@ const TONE_LABEL: Record<string, string> = {
   onboarding: "Onboarding",
 };
 const VOICE_LABEL: Record<string, string> = {
-  script_only: "Script seul (à enregistrer vous-même)",
-  uploaded_human_voice: "Importer ma propre voix",
-  tts_provider: "Voix off IA (avec consentement)",
+  script_only: "Script seul — enregistrement studio (recommandé premium)",
+  uploaded_human_voice: "Voix humaine (upload) — recommandé",
+  tts_provider: "Voix IA premium (ElevenLabs, si clé configurée)",
 };
 
 export function NewProjectWizard() {
@@ -54,11 +56,15 @@ export function NewProjectWizard() {
     url: "",
     targetAudience: "",
     mainPromise: "",
-    durationSeconds: 60,
+    durationSeconds: 90,
     format: "16:9",
     language: "fr",
     tone: "premium",
-    voiceMode: "tts_provider",
+    videoStyle: "premium_motion",
+    referenceUrl: "",
+    // Premium commercial demos default to a written script for studio / human
+    // recording — never a robotic auto-voice. AI voice stays opt-in.
+    voiceMode: "script_only",
     loginUrl: "",
     email: "",
     password: "",
@@ -199,7 +205,23 @@ export function NewProjectWizard() {
                   <option value="de">Deutsch</option>
                 </Select>
               </Field>
+              <Field label="Style vidéo">
+                <Select value={form.videoStyle} onChange={(e) => set("videoStyle", e.target.value)}>
+                  {VIDEO_STYLES.map((s) => (
+                    <option key={s} value={s}>
+                      {VIDEO_STYLE_LABEL[s] ?? s}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
             </div>
+            <Field label="Référence de style (URL, optionnel)" hint="Ex. une vidéo YouTube dont vous aimez le rythme et le motion design. Nous nous en inspirons sans jamais la copier.">
+              <Input
+                placeholder="https://www.youtube.com/watch?v=…"
+                value={form.referenceUrl}
+                onChange={(e) => set("referenceUrl", e.target.value)}
+              />
+            </Field>
             <Field label="Voix off">
               <Select value={form.voiceMode} onChange={(e) => set("voiceMode", e.target.value)}>
                 {VOICE_MODES.map((v) => (

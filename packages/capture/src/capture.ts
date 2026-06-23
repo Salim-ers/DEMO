@@ -2,11 +2,32 @@ import type { Page } from "playwright";
 import { type PageMetadata, pageMetadataSchema, CAPTURE_VIEWPORTS } from "@demoforge/shared";
 import { redactMetadataText } from "./mask.js";
 
+/**
+ * Wait for the page to be visually settled before a screenshot: webfonts loaded
+ * (so text isn't captured mid-swap / in a fallback face) and a brief beat for
+ * entrance animations to land. `animations: "disabled"` then freezes any looping
+ * CSS animation/transition at its end state for a clean, sharp frame.
+ */
+export async function waitForCaptureReady(page: Page, settleMs = 450): Promise<void> {
+  await page
+    .evaluate(async () => {
+      try {
+        if (document.fonts?.ready) await document.fonts.ready;
+      } catch {
+        /* ignore */
+      }
+    })
+    .catch(() => {});
+  await page.waitForTimeout(settleMs);
+}
+
 /** Full-page (or viewport) PNG. Returns the raw buffer for the caller to store. */
 export async function captureScreenshot(
   page: Page,
-  opts: { fullPage?: boolean } = {},
+  opts: { fullPage?: boolean; waitReady?: boolean } = {},
 ): Promise<Buffer> {
+  if (opts.waitReady !== false) await waitForCaptureReady(page);
+  // PNG is lossless; never recompressed before render so the UI stays pixel-sharp.
   return page.screenshot({ type: "png", fullPage: opts.fullPage ?? false, animations: "disabled" });
 }
 
