@@ -101,7 +101,7 @@ export function Landing() {
             opacity: 0,
             duration: 0.85,
             ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 86%" },
+            scrollTrigger: { trigger: el, start: "top 90%", once: true },
           });
         });
 
@@ -113,9 +113,17 @@ export function Landing() {
             duration: 0.6,
             stagger: 0.09,
             ease: "power3.out",
-            scrollTrigger: { trigger: group, start: "top 84%" },
+            scrollTrigger: { trigger: group, start: "top 88%", once: true },
           });
         });
+
+        // Fonts and the logo image shift layout after init — recompute trigger
+        // positions so no section is ever left stuck at opacity 0.
+        ScrollTrigger.refresh();
+        if (typeof document !== "undefined" && document.fonts) {
+          document.fonts.ready.then(() => ScrollTrigger.refresh());
+        }
+        gsap.delayedCall(0.5, () => ScrollTrigger.refresh());
       }
     },
     { scope: root },
@@ -129,10 +137,10 @@ export function Landing() {
         <div className="hero-halo pointer-events-none absolute left-1/2 top-[42%] -z-10 h-[680px] w-[680px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-bronze-sheen opacity-[0.16] blur-[90px]" />
         <div className="hero-ring pointer-events-none absolute left-1/2 top-[42%] -z-10 h-[520px] w-[520px] max-w-[110vw] -translate-x-1/2 -translate-y-1/2 animate-spin-slow rounded-full border border-dashed border-accent/20" />
 
-        <div className="hero-emblem-wrap relative mb-9">
+        <div className="hero-emblem-wrap relative mb-8">
           <div className="hero-emblem">
-            <div className="origin-center scale-[0.66] sm:scale-90 lg:scale-100">
-              <LogoEmblem size={300} className="animate-float ring-1 ring-espresso/5" />
+            <div className="origin-center scale-[0.62] sm:scale-[0.82] lg:scale-100">
+              <LogoEmblem size={420} className="animate-float drop-shadow-[0_28px_70px_rgba(60,42,28,0.24)]" />
             </div>
           </div>
         </div>
@@ -317,7 +325,7 @@ export function Landing() {
         <div data-reveal className="relative overflow-hidden rounded-[2rem] bg-bronze-sheen px-8 py-20 text-center shadow-soft sm:px-16">
           <div className="absolute inset-0 opacity-20 [background:radial-gradient(60%_120%_at_50%_0%,#fff_0%,transparent_60%)]" />
           <div className="relative flex flex-col items-center">
-            <LogoEmblem size={92} className="mb-8 ring-4 ring-ivory/20" />
+            <LogoEmblem variant="white" size={124} className="mb-6" />
             <h2 className="display mx-auto max-w-2xl text-[clamp(2rem,4.5vw,3rem)] font-semibold leading-tight text-ivory">
               Votre prochaine démo mérite un studio
             </h2>

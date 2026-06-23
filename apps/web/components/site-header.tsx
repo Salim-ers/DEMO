@@ -15,7 +15,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-hairline/80 bg-canvas/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
         <Link href="/" aria-label="StudioOne — accueil">
-          <Logo size={30} />
+          <Logo size={46} />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

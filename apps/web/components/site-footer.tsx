@@ -25,7 +25,7 @@ export function SiteFooter() {
     <footer className="border-t border-hairline bg-surface">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
         <div className="max-w-xs">
-          <Logo size={32} />
+          <Logo size={52} />
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Des démos produit soignées, façon studio. De vrais écrans, un flux élégant, un rendu premium.
           </p>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Plus, Search, Menu, X, Sparkles } from "lucide-react";
-import { Logo, LogoMark } from "./brand/logo.js";
+import { Logo, LogoEmblem } from "./brand/logo.js";
 import { NAV_GROUPS } from "./nav-items.js";
 import { CommandPalette } from "./command-palette.js";
 import { cn } from "../lib/cn.js";
@@ -20,8 +20,8 @@ function openCommand() {
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
-      <Link href="/dashboard" onClick={onNavigate} className="mb-5 px-2" aria-label="StudioOne — accueil">
-        <Logo size={30} />
+      <Link href="/dashboard" onClick={onNavigate} className="mb-5 px-1" aria-label="StudioOne — accueil">
+        <Logo size={46} />
       </Link>
 
       <Link
@@ -137,9 +137,8 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
           <button type="button" onClick={() => setDrawer(true)} aria-label="Ouvrir le menu" className="text-muted hover:text-ink">
             <Menu size={22} />
           </button>
-          <Link href="/dashboard" className="flex items-center gap-2" aria-label="StudioOne">
-            <LogoMark size={26} />
-            <span className="font-script text-lg text-espresso">Studio One</span>
+          <Link href="/dashboard" className="flex items-center" aria-label="StudioOne">
+            <LogoEmblem size={40} />
           </Link>
           <button type="button" onClick={openCommand} aria-label="Rechercher" className="ml-auto text-muted hover:text-ink">
             <Search size={20} />
