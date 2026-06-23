@@ -27,23 +27,20 @@ function useCameraTransform(motion: CameraMotion): { scale: number; tx: number; 
   const p = interpolate(frame, [0, durationInFrames], [0, 1], { extrapolateRight: "clamp" });
   const ease = p * p * (3 - 2 * p); // smoothstep — no aggressive zoom
 
-  // Deliberately subtle ("breathing") motion — premium product videos drift, they
-  // don't lurch. Magnitudes kept small so screenshots never feel jittery or zoomed
-  // past the content.
+  // Barely-there drift only. The whole screen must stay visible (the screenshots
+  // are shown in full, not cropped), so motion is kept to ~1.5% — enough to feel
+  // alive, never a "zoom" that hides content.
   switch (motion) {
     case "slow_zoom_in":
-      return { scale: interpolate(ease, [0, 1], [1.0, 1.035]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.0, 1.018]), tx: 0, ty: 0 };
     case "slow_zoom_out":
-      return { scale: interpolate(ease, [0, 1], [1.035, 1.0]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.018, 1.0]), tx: 0, ty: 0 };
     case "pan_left":
-      return { scale: 1.03, tx: interpolate(ease, [0, 1], [0.8, -0.8]), ty: 0 };
     case "pan_right":
-      return { scale: 1.03, tx: interpolate(ease, [0, 1], [-0.8, 0.8]), ty: 0 };
     case "ken_burns":
-      return { scale: interpolate(ease, [0, 1], [1.02, 1.05]), tx: 0, ty: interpolate(ease, [0, 1], [-0.5, 0.5]) };
     case "none":
     default:
-      return { scale: interpolate(ease, [0, 1], [1.0, 1.02]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.0, 1.012]), tx: 0, ty: 0 };
   }
 }
 
@@ -57,7 +54,7 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = (props) => {
   const frameOpacity = intro;
   const frameRise = interpolate(intro, [0, 1], [24, 0]);
 
-  const margin = width * 0.07;
+  const margin = width * 0.05;
 
   return (
     <AbsoluteFill>
@@ -74,7 +71,7 @@ export const ScreenCapture: React.FC<ScreenCaptureProps> = (props) => {
               }}
             >
               {imageUrl ? (
-                <Img src={imageUrl} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }} />
+                <Img src={imageUrl} style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center center" }} />
               ) : (
                 <CapturePlaceholder theme={theme} scale={scale} />
               )}

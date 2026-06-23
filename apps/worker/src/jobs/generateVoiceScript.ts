@@ -1,6 +1,6 @@
 import { prisma, AssetKind } from "@demoforge/db";
 import { buildVoiceScript } from "@demoforge/voice";
-import { getTTS, getStorage } from "@demoforge/integrations";
+import { getTTS, GoogleTTSProvider, getStorage } from "@demoforge/integrations";
 import { dbStoryboardToDomain, projectToContext, voiceModeToDb, voiceModeToDomain } from "../db-map.js";
 import type { PipelineCtx } from "../pipeline.js";
 
@@ -38,7 +38,14 @@ export async function generateVoiceScript(ctx: PipelineCtx): Promise<{ voiceScri
   let audioAssetId: string | undefined;
   if (mode === "tts_provider" && script.consentConfirmed) {
     const tts = getTTS();
-    const out = await tts.synthesize(script.fullText, { language: script.language, consent: true });
+    let out = await tts.synthesize(script.fullText, { language: script.language, consent: true });
+    // Never ship a silent demo: if the configured provider (e.g. ElevenLabs with
+    // a missing/invalid key or exhausted quota) returns no audio, fall back to the
+    // free Google voice so there is always a voiceover.
+    if ((out.status !== "generated" || !out.audio) && tts.name !== "google") {
+      ctx.log.warn({ provider: tts.name, status: out.status }, "primary TTS produced no audio; falling back to free voice");
+      out = await new GoogleTTSProvider().synthesize(script.fullText, { language: script.language, consent: true });
+    }
     if (out.status === "generated" && out.audio) {
       const key = `audio/${project.id}/voiceover.mp3`;
       const { bytes } = await getStorage().put(key, out.audio, out.contentType);

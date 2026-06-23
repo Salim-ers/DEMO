@@ -48,6 +48,26 @@ export async function normalizeMp4(input: string, output: string): Promise<strin
 }
 
 /**
+ * Flatten a (possibly transparent) logo onto a solid square so it renders cleanly
+ * as an opaque app-icon tile — Remotion's <Img> otherwise paints PNG transparency
+ * as a checkerboard. Centers the logo with padding on a `color` canvas.
+ */
+export async function flattenImageOnColor(input: string, output: string, color = "white", size = 512): Promise<string> {
+  const bin = await ffmpegPath();
+  const inner = Math.round(size * 0.8);
+  await run(bin, [
+    "-y",
+    "-f", "lavfi", "-i", `color=c=${color}:s=${size}x${size}`,
+    "-i", input,
+    "-filter_complex",
+    `[1]scale=${inner}:${inner}:force_original_aspect_ratio=decrease[lg];[0][lg]overlay=(W-w)/2:(H-h)/2:format=auto,format=rgb24`,
+    "-frames:v", "1",
+    output,
+  ]);
+  return output;
+}
+
+/**
  * Last-resort shrink for an oversized render: downscale to 720p and re-encode at
  * a higher CRF so the file fits restrictive object-storage limits. Lossy but keeps
  * the demo deliverable instead of failing the whole pipeline.

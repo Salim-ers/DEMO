@@ -12,6 +12,7 @@ export interface Theme {
   textMuted: string;
   accent: string;
   accentSoft: string;
+  accentGlow: string;
   fontFamily: string;
   fontMono: string;
 }
@@ -25,7 +26,8 @@ export function makeTheme(accent: string): Theme {
     text: "#F5F7FA",
     textMuted: "rgba(245,247,250,0.62)",
     accent,
-    accentSoft: hexToRgba(accent, 0.16),
+    accentSoft: hexToRgba(accent, 0.14),
+    accentGlow: hexToRgba(accent, 0.30),
     fontFamily:
       'Inter, "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
     fontMono:

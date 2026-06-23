@@ -20,6 +20,8 @@ export function buildSampleRenderProps(format: VideoFormat = "16:9"): RenderProp
     height: dims.height,
     audioUrl: null,
     accentColor: "#6366F1",
+    logoUrl: null,
+    siteHost: "northwind.example.com",
     scenes: [
       {
         id: "s_title",

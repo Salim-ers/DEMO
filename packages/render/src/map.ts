@@ -8,6 +8,10 @@ export interface MapOptions {
   accentColor?: string;
   /** Public/signed URL for the audio track, if any. */
   audioUrl?: string | null;
+  /** Signed URL for the product's real logo, shown in the intro/outro. */
+  logoUrl?: string | null;
+  /** Real site host for the browser-frame address bar. */
+  siteHost?: string;
   /** Resolve a storyboard scene's sourceAssetId to a displayable image URL. */
   resolveImageUrl?: (assetId: string) => string | null;
 }
@@ -63,6 +67,8 @@ export function storyboardToRenderProps(
     height: dims.height,
     audioUrl: opts.audioUrl ?? null,
     accentColor: opts.accentColor ?? "#6366F1",
+    logoUrl: opts.logoUrl ?? null,
+    siteHost: opts.siteHost ?? ctx.url.replace(/^https?:\/\//, "").replace(/\/$/, ""),
     scenes,
   } satisfies RenderProps);
 }

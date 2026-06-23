@@ -12,6 +12,8 @@ export interface SceneRendererProps {
   scene: RenderScene;
   productName: string;
   mainPromise: string;
+  logoUrl?: string | null;
+  siteHost?: string;
   theme: Theme;
   width: number;
   height: number;
@@ -24,11 +26,11 @@ export interface SceneRendererProps {
  * human-readable copy used for statement cards.
  */
 export const SceneRenderer: React.FC<SceneRendererProps> = ({
-  scene, productName, mainPromise, theme, width, height, scale,
+  scene, productName, mainPromise, logoUrl, siteHost, theme, width, height, scale,
 }) => {
   switch (scene.type) {
     case "title_card":
-      return <TitleCard productName={productName} promise={scene.visualInstruction || mainPromise} theme={theme} scale={scale} />;
+      return <TitleCard productName={productName} promise={scene.visualInstruction || mainPromise} logoUrl={logoUrl} theme={theme} scale={scale} />;
 
     case "benefit_card":
       return <BenefitCard kicker={scene.captionText || deriveKicker(scene)} heading={scene.visualInstruction} theme={theme} scale={scale} />;
@@ -37,7 +39,7 @@ export const SceneRenderer: React.FC<SceneRendererProps> = ({
       return <Transition label={scene.visualInstruction || "Next"} theme={theme} scale={scale} />;
 
     case "outro":
-      return <Outro productName={productName} cta={scene.visualInstruction || mainPromise} theme={theme} scale={scale} />;
+      return <Outro productName={productName} cta={scene.visualInstruction || mainPromise} logoUrl={logoUrl} host={siteHost} theme={theme} scale={scale} />;
 
     case "screen_capture":
     case "zoom":
@@ -46,6 +48,7 @@ export const SceneRenderer: React.FC<SceneRendererProps> = ({
       return (
         <ScreenCapture
           imageUrl={scene.imageUrl}
+          url={siteHost}
           caption={scene.captionText}
           callouts={scene.callouts}
           cameraMotion={scene.cameraMotion}

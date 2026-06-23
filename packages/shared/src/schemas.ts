@@ -177,6 +177,10 @@ export const renderPropsSchema = z.object({
   height: z.number().int().positive(),
   audioUrl: z.string().nullable(),
   accentColor: z.string().default("#6366F1"),
+  /** The product's real logo (extracted from the site) for the intro/outro. */
+  logoUrl: z.string().nullable().default(null),
+  /** The real site host shown in the browser-frame address bar. */
+  siteHost: z.string().default(""),
   scenes: z.array(renderSceneSchema).min(1),
 });
 export type RenderProps = z.infer<typeof renderPropsSchema>;

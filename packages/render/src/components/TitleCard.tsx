@@ -2,30 +2,39 @@ import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import type { Theme } from "../theme.js";
 import { Backdrop } from "./Backdrop.js";
+import { BrandLockup } from "./BrandLockup.js";
 
 /** Short, restrained product intro: wordmark + one-line promise. */
 export const TitleCard: React.FC<{
   productName: string;
   promise: string;
+  logoUrl?: string | null;
   theme: Theme;
   scale: number;
-}> = ({ productName, promise, theme, scale }) => {
+}> = ({ productName, promise, logoUrl, theme, scale }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const rise = spring({ frame, fps, config: { damping: 200, mass: 0.8 }, durationInFrames: Math.round(fps * 0.7) });
-  const titleY = interpolate(rise, [0, 1], [18, 0]);
-  const titleOpacity = interpolate(frame, [0, 12], [0, 1], { extrapolateRight: "clamp" });
-  const subOpacity = interpolate(frame, [10, 26], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const lineW = interpolate(frame, [12, 34], [0, 64 * scale], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const heroY = interpolate(rise, [0, 1], [22, 0]);
+  const heroScale = interpolate(rise, [0, 1], [0.965, 1]);
+  const titleOpacity = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
+  const subOpacity = interpolate(frame, [12, 28], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const lineW = interpolate(frame, [14, 36], [0, 64 * scale], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill>
       <Backdrop theme={theme} intensity={1.2} />
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 26 * scale, padding: "0 10%" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 * scale, opacity: titleOpacity, transform: `translateY(${titleY}px)` }}>
-          <Logo theme={theme} scale={scale} />
-          <span style={{ color: theme.text, fontFamily: theme.fontFamily, fontSize: 84 * scale, fontWeight: 680, letterSpacing: -2 * scale }}>{productName}</span>
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 28 * scale, padding: "0 8%" }}>
+        <div style={{ opacity: titleOpacity, transform: `translateY(${heroY}px) scale(${heroScale})` }}>
+          {logoUrl ? (
+            <BrandLockup url={logoUrl} scale={scale} />
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: 20 * scale }}>
+              <Logo theme={theme} scale={scale} />
+              <span style={{ color: theme.text, fontFamily: theme.fontFamily, fontSize: 84 * scale, fontWeight: 680, letterSpacing: -2 * scale }}>{productName}</span>
+            </div>
+          )}
         </div>
         <div style={{ width: lineW, height: 3, borderRadius: 2, background: theme.accent, boxShadow: `0 0 18px ${theme.accent}` }} />
         <div style={{ maxWidth: 1100 * scale, textAlign: "center", color: theme.textMuted, fontFamily: theme.fontFamily, fontSize: 34 * scale, fontWeight: 460, lineHeight: 1.35, opacity: subOpacity, letterSpacing: -0.4 }}>

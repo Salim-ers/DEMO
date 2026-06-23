@@ -53,10 +53,30 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
     if (audio) audioUrl = await storage.getUrl(audio.storageKey, 3600).catch(() => null);
   }
 
+  // Real brand logo + accent color (captured) + the real site host.
+  const logoKey = `branding/${project.id}/logo`;
+  const logoUrl = (await storage.exists(logoKey)) ? await storage.getUrl(logoKey, 3600).catch(() => null) : null;
+
+  const accentKey = `branding/${project.id}/accent`;
+  let accentColor = process.env.RENDER_ACCENT ?? "#6366F1";
+  if (await storage.exists(accentKey)) {
+    const captured = (await storage.get(accentKey).then((b) => b.toString().trim()).catch(() => "")) || "";
+    if (/^#[0-9a-fA-F]{6}$/.test(captured)) accentColor = captured;
+  }
+
+  let siteHost = project.url;
+  try {
+    siteHost = new URL(project.url).host;
+  } catch {
+    /* keep raw */
+  }
+
   const props = storyboardToRenderProps(projectToContext(project), storyboard, {
     fps: RENDER_DEFAULTS.fps,
-    accentColor: process.env.RENDER_ACCENT ?? "#6366F1",
+    accentColor,
     audioUrl,
+    logoUrl,
+    siteHost,
     resolveImageUrl: (assetId) => urlMap.get(assetId) ?? null,
   });
 
