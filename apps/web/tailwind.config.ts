@@ -46,6 +46,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "Fraunces", "Georgia", "serif"],
+        script: ["var(--font-script)", "Pacifico", "cursive"],
         mono: ["var(--font-mono)", "ui-monospace", "JetBrains Mono", "monospace"],
       },
       letterSpacing: {

@@ -1,6 +1,6 @@
 import { cn } from "../../lib/cn.js";
 
-/** The StudioOne badge mark — a bronze disc with an ivory film/play/cut glyph. */
+/** Compact film/play/cut glyph — used as the badge in the horizontal lockup. */
 export function LogoMark({ size = 30, className }: { size?: number; className?: string }) {
   return (
     <svg
@@ -29,7 +29,46 @@ export function LogoMark({ size = 30, className }: { size?: number; className?: 
   );
 }
 
-/** Full lockup: badge mark + the StudioOne wordmark (warm serif, two-tone). */
+/**
+ * The Studio One emblem — the real circular badge: bronze disc, ivory brush-script
+ * "Studio One" with a swash, and the video-edit glyph beneath. The script renders
+ * via the Pacifico web font (var --font-script).
+ */
+export function LogoEmblem({ size = 160, className }: { size?: number; className?: string }) {
+  return (
+    <div
+      className={cn("relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-bronze-sheen shadow-soft", className)}
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label="Studio One"
+    >
+      <div className="absolute inset-0 opacity-[0.18] [background:radial-gradient(60%_55%_at_50%_18%,#fff_0%,transparent_60%)]" />
+      <div className="relative flex flex-col items-center" style={{ transform: "translateY(-4%)" }}>
+        <span
+          className="font-script self-end leading-none text-ivory"
+          style={{ fontSize: size * 0.165, marginRight: size * 0.05, marginBottom: -size * 0.05 }}
+        >
+          Studio
+        </span>
+        <span className="font-script leading-none text-ivory" style={{ fontSize: size * 0.37 }}>
+          One
+        </span>
+        <svg width={size * 0.46} height={size * 0.16} viewBox="0 0 120 42" className="mt-[6%]" aria-hidden>
+          <path d="M4 14 q56 22 112 -4" fill="none" stroke="#F7F1E7" strokeWidth="4" strokeLinecap="round" />
+          <g transform="translate(38 18)">
+            <rect x="0" y="0" width="30" height="20" rx="4" fill="none" stroke="#F7F1E7" strokeWidth="2.6" />
+            <path d="M8 6 L20 10 L8 14 Z" fill="#F7F1E7" />
+            <line x1="2" y1="26" x2="24" y2="26" stroke="#F7F1E7" strokeWidth="2.4" strokeLinecap="round" />
+            <circle cx="13" cy="26" r="2.6" fill="#F7F1E7" />
+            <path d="M34 22 l4 3 -4 3" fill="none" stroke="#F7F1E7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+/** Horizontal lockup: glyph badge + Studio One brush-script wordmark. */
 export function Logo({
   size = 30,
   withWordmark = true,
@@ -45,8 +84,11 @@ export function Logo({
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <LogoMark size={size} />
       {withWordmark && (
-        <span className={cn("display text-[17px] font-semibold leading-none text-ink", wordmarkClassName)}>
-          Studio<span className="text-accent-deep">One</span>
+        <span
+          className={cn("font-script leading-none text-espresso", wordmarkClassName)}
+          style={{ fontSize: size * 0.62 }}
+        >
+          Studio One
         </span>
       )}
     </span>

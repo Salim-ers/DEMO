@@ -139,7 +139,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             voiceMode={String(project.voiceScript?.mode ?? project.voiceMode)}
             language={project.language}
           />
-          <QualityReportPanel report={(renderJob?.qualityReport as QReport | null) ?? null} />
+          <div id="quality" className="scroll-mt-24">
+            <QualityReportPanel report={(renderJob?.qualityReport as QReport | null) ?? null} />
+          </div>
           <UserImagesPanel projectId={project.id} initial={uploads} />
           <DownloadCenter items={downloads} />
         </div>

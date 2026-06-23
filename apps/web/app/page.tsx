@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Reveal } from "../components/reveal.js";
 import { Pricing } from "../components/pricing.js";
-import { LogoMark } from "../components/brand/logo.js";
+import { LogoMark, LogoEmblem } from "../components/brand/logo.js";
 
 export const metadata = {
   title: "Des démos produit soignées, façon studio",
@@ -70,22 +70,22 @@ export default function LandingPage() {
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-16 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:pt-24">
           <div className="animate-fade-up">
             <span className="chip border-accent/25 bg-accent-soft text-accent-deep">
-              <Sparkles size={13} /> De vrais écrans, jamais d'UI inventée
+              <Sparkles size={13} /> Moins de prompts. Plus de contrôle studio.
             </span>
             <h1 className="display mt-5 text-[clamp(2.5rem,6vw,4.25rem)] font-semibold leading-[1.04] text-ink">
-              Des démos produit,{" "}
-              <span className="bg-bronze-sheen bg-clip-text text-transparent">façon studio.</span>
+              Des démos produit{" "}
+              <span className="bg-bronze-sheen bg-clip-text text-transparent">prêtes à présenter.</span>
             </h1>
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted">
-              StudioOne transforme vos vraies interfaces en démos raffinées et prêtes à diffuser. Capture,
-              storyboard, voix off et rendu premium — dans un seul flux élégant.
+              StudioOne transforme de vrais écrans produit en démos soignées, structurées et haut de gamme —
+              sans jamais vous faire perdre le contrôle du processus créatif.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link href="/projects/new" className="btn-primary px-6 py-3 text-base">
-                Créer une démo <ArrowRight size={17} />
+                Démarrer un projet <ArrowRight size={17} />
               </Link>
-              <Link href="/dashboard" className="btn-secondary px-6 py-3 text-base">
-                Voir le tableau de bord
+              <Link href="/templates" className="btn-secondary px-6 py-3 text-base">
+                Voir les modèles
               </Link>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-faint">
@@ -259,6 +259,7 @@ function HeroPreview() {
   return (
     <div className="relative">
       <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-bronze-sheen opacity-10 blur-2xl" />
+      <LogoEmblem size={80} className="absolute -right-5 -top-6 z-20 rotate-6 ring-4 ring-canvas animate-float" />
       <div className="card overflow-hidden p-0 shadow-soft">
         <div className="flex items-center gap-2 border-b border-hairline px-4 py-3">
           <LogoMark size={20} />

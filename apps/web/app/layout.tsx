@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
+import { Inter, JetBrains_Mono, Fraunces, Pacifico } from "next/font/google";
 import { APP_NAME } from "@demoforge/shared";
 import { AppShell } from "../components/app-shell.js";
 import "./globals.css";
@@ -13,6 +13,8 @@ const display = Fraunces({
   display: "swap",
   weight: ["400", "500", "600", "700"],
 });
+// Brush script for the Studio One logotype.
+const script = Pacifico({ subsets: ["latin"], variable: "--font-script", display: "swap", weight: "400" });
 
 export const metadata: Metadata = {
   title: {
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${sans.variable} ${mono.variable} ${display.variable}`}>
+    <html lang="fr" className={`${sans.variable} ${mono.variable} ${display.variable} ${script.variable}`}>
       <body className="font-sans antialiased">
         <div className="relative z-10">
           <AppShell>{children}</AppShell>

@@ -119,6 +119,7 @@ model Project {
   referenceUrl    String?             // optional reference-style URL (intent only, never copied)
 
   status          String              @default("draft") // draft|capturing|storyboarding|rendering|ready|failed
+  archivedAt      DateTime?           // set when archived; hidden from the default project list
 
   scenarios       DemoScenario[]
   credentialRef   CredentialVaultRef?
