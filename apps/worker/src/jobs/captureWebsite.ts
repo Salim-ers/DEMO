@@ -1,7 +1,7 @@
 import { prisma, JobStatus, AssetKind } from "@demoforge/db";
 import {
   createBrowserSession, loginWithCredentials, runScenarioSteps, persistAuthState,
-  discoverInternalRoutes,
+  discoverInternalRoutes, captureAppTour,
 } from "@demoforge/capture";
 import { getVault, getStorage } from "@demoforge/integrations";
 import type { ScenarioStep, CaptureStepResult } from "@demoforge/shared";
@@ -68,39 +68,48 @@ export async function captureWebsite(ctx: PipelineCtx, steps: ScenarioStep[]): P
       });
     }
 
-    // Tour the real pages: after login this surfaces the product's own sections
-    // (dashboard + features); without login it walks the marketing site's pages.
-    // Falls back to the user's scenario steps if no navigation is discoverable.
-    let tourSteps = steps;
-    try {
-      const discovered = await discoverInternalRoutes(session.page, project.url, loggedIn ? 9 : 6);
-      if (discovered.length >= 2) {
-        ctx.log.info({ routes: discovered.length, loggedIn }, "auto-discovered routes to tour");
-        tourSteps = discovered;
+    const onScreenshot = async (stepIndex: number, kind: "desktop" | "mobile", png: Buffer) => {
+      const key = `captures/${project.id}/${run.id}/${stepIndex}-${kind}.png`;
+      const { bytes } = await storage.put(key, png, "image/png");
+      const asset = await prisma.asset.create({
+        data: {
+          projectId: project.id,
+          kind: kind === "mobile" ? AssetKind.SCREENSHOT_MOBILE : AssetKind.SCREENSHOT_DESKTOP,
+          storageKey: key,
+          contentType: "image/png",
+          bytes,
+        },
+      });
+      // Return the storage key; we reconcile keys -> Asset ids when persisting steps.
+      return key + "::" + asset.id;
+    };
+
+    // 1) Logged in → tour the actual product: dashboard + each feature page,
+    // navigated by CLICKING in-app links (a hard goto drops the SPA session).
+    if (loggedIn) {
+      try {
+        results = await captureAppTour(session.page, session.page.url(), { maskPII: true, onScreenshot, max: 9 });
+        ctx.log.info({ scenes: results.length }, "captured logged-in app tour");
+      } catch (err) {
+        ctx.log.warn({ err: String(err) }, "app tour failed; falling back to route tour");
       }
-    } catch (err) {
-      ctx.log.warn({ err: String(err) }, "route discovery failed; using scenario steps");
     }
 
-    results = await runScenarioSteps(session.page, tourSteps, {
-      baseUrl: project.url,
-      maskPII: true,
-      onScreenshot: async (stepIndex, kind, png) => {
-        const key = `captures/${project.id}/${run.id}/${stepIndex}-${kind}.png`;
-        const { bytes } = await storage.put(key, png, "image/png");
-        const asset = await prisma.asset.create({
-          data: {
-            projectId: project.id,
-            kind: kind === "mobile" ? AssetKind.SCREENSHOT_MOBILE : AssetKind.SCREENSHOT_DESKTOP,
-            storageKey: key,
-            contentType: "image/png",
-            bytes,
-          },
-        });
-        // Return the storage key; we reconcile keys -> Asset ids when persisting steps.
-        return key + "::" + asset.id;
-      },
-    });
+    // 2) Fallback (no login, or app tour yielded too little): walk discoverable
+    // pages, else the user's scenario steps (scrolling the current page).
+    if (results.length < 2) {
+      let tourSteps = steps;
+      try {
+        const discovered = await discoverInternalRoutes(session.page, project.url, 6);
+        if (discovered.length >= 2) {
+          ctx.log.info({ routes: discovered.length, loggedIn }, "auto-discovered routes to tour");
+          tourSteps = discovered;
+        }
+      } catch (err) {
+        ctx.log.warn({ err: String(err) }, "route discovery failed; using scenario steps");
+      }
+      results = await runScenarioSteps(session.page, tourSteps, { baseUrl: project.url, maskPII: true, onScreenshot });
+    }
 
     // Persist auth state for potential re-use (and to demonstrate persistAuthState).
     try {
