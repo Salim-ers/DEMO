@@ -1,6 +1,7 @@
 import { prisma, JobStatus, AssetKind } from "@demoforge/db";
 import {
   createBrowserSession, loginWithCredentials, runScenarioSteps, persistAuthState,
+  discoverInternalRoutes,
 } from "@demoforge/capture";
 import { getVault, getStorage } from "@demoforge/integrations";
 import type { ScenarioStep, CaptureStepResult } from "@demoforge/shared";
@@ -46,6 +47,8 @@ export async function captureWebsite(ctx: PipelineCtx, steps: ScenarioStep[]): P
   const guard = setTimeout(() => void session.close().catch(() => {}), MAX_BROWSER_SESSION_MS);
 
   let results: CaptureStepResult[] = [];
+  let loginStatus: string = email && password ? "attempted" : "no_credentials";
+  let loggedIn = false;
   try {
     await session.page.goto(project.url, { waitUntil: "domcontentloaded", timeout: 30_000 }).catch(() => {});
 
@@ -55,15 +58,31 @@ export async function captureWebsite(ctx: PipelineCtx, steps: ScenarioStep[]): P
         email,
         password,
       });
-      ctx.log.info({ status: login.status }, "login attempt");
-      if (login.status === "manual_step_required") {
-        await prisma.auditLog.create({
-          data: { projectId: project.id, action: "capture.manual_required", meta: { reason: login.reason ?? "" } },
-        });
-      }
+      loginStatus = login.status;
+      loggedIn = login.status === "logged_in";
+      ctx.log.info({ status: login.status, reason: login.reason }, "login attempt");
+      // Record the outcome so the web app can tell the user whether we actually
+      // got inside their product (vs. only seeing the public marketing site).
+      await prisma.auditLog.create({
+        data: { projectId: project.id, action: "capture.login", meta: { status: login.status, reason: login.reason ?? "" } },
+      });
     }
 
-    results = await runScenarioSteps(session.page, steps, {
+    // Tour the real pages: after login this surfaces the product's own sections
+    // (dashboard + features); without login it walks the marketing site's pages.
+    // Falls back to the user's scenario steps if no navigation is discoverable.
+    let tourSteps = steps;
+    try {
+      const discovered = await discoverInternalRoutes(session.page, project.url, loggedIn ? 9 : 6);
+      if (discovered.length >= 2) {
+        ctx.log.info({ routes: discovered.length, loggedIn }, "auto-discovered routes to tour");
+        tourSteps = discovered;
+      }
+    } catch (err) {
+      ctx.log.warn({ err: String(err) }, "route discovery failed; using scenario steps");
+    }
+
+    results = await runScenarioSteps(session.page, tourSteps, {
       baseUrl: project.url,
       maskPII: true,
       onScreenshot: async (stepIndex, kind, png) => {
@@ -120,7 +139,7 @@ export async function captureWebsite(ctx: PipelineCtx, steps: ScenarioStep[]): P
     data: { status: okCount > 0 ? JobStatus.SUCCEEDED : JobStatus.FAILED, finishedAt: new Date() },
   });
 
-  ctx.log.info({ captured: okCount, total: results.length }, "captureWebsite complete");
+  ctx.log.info({ captured: okCount, total: results.length, loginStatus, loggedIn }, "captureWebsite complete");
   return { captureRunId: run.id };
 }
 

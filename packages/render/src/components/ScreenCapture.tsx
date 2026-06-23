@@ -27,20 +27,23 @@ function useCameraTransform(motion: CameraMotion): { scale: number; tx: number; 
   const p = interpolate(frame, [0, durationInFrames], [0, 1], { extrapolateRight: "clamp" });
   const ease = p * p * (3 - 2 * p); // smoothstep — no aggressive zoom
 
+  // Deliberately subtle ("breathing") motion — premium product videos drift, they
+  // don't lurch. Magnitudes kept small so screenshots never feel jittery or zoomed
+  // past the content.
   switch (motion) {
     case "slow_zoom_in":
-      return { scale: interpolate(ease, [0, 1], [1.0, 1.08]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.0, 1.035]), tx: 0, ty: 0 };
     case "slow_zoom_out":
-      return { scale: interpolate(ease, [0, 1], [1.08, 1.0]), tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.035, 1.0]), tx: 0, ty: 0 };
     case "pan_left":
-      return { scale: 1.06, tx: interpolate(ease, [0, 1], [1.5, -1.5]), ty: 0 };
+      return { scale: 1.03, tx: interpolate(ease, [0, 1], [0.8, -0.8]), ty: 0 };
     case "pan_right":
-      return { scale: 1.06, tx: interpolate(ease, [0, 1], [-1.5, 1.5]), ty: 0 };
+      return { scale: 1.03, tx: interpolate(ease, [0, 1], [-0.8, 0.8]), ty: 0 };
     case "ken_burns":
-      return { scale: interpolate(ease, [0, 1], [1.04, 1.1]), tx: interpolate(ease, [0, 1], [-1, 1]), ty: interpolate(ease, [0, 1], [-0.6, 0.6]) };
+      return { scale: interpolate(ease, [0, 1], [1.02, 1.05]), tx: 0, ty: interpolate(ease, [0, 1], [-0.5, 0.5]) };
     case "none":
     default:
-      return { scale: 1.0, tx: 0, ty: 0 };
+      return { scale: interpolate(ease, [0, 1], [1.0, 1.02]), tx: 0, ty: 0 };
   }
 }
 

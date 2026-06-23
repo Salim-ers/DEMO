@@ -75,6 +75,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     signed(exp?.assetsZipKey),
   ]);
 
+  const loginAudit = await prisma.auditLog.findFirst({
+    where: { projectId: project.id, action: "capture.login" },
+    orderBy: { createdAt: "desc" },
+  });
+  const loginMeta = (loginAudit?.meta as { status?: string; reason?: string } | null) ?? null;
+
   const uploadAssets = await prisma.asset.findMany({
     where: { projectId: project.id, kind: AssetKind.UPLOAD },
     orderBy: { createdAt: "asc" },
@@ -114,6 +120,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <GenerateButton projectId={project.id} hasRun={Boolean(renderJob)} />
       </header>
 
+      {loginMeta && <LoginBanner status={loginMeta.status} reason={loginMeta.reason} />}
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr_1fr]">
         <div className="flex flex-col gap-6">
           <VideoPanel url={videoUrl} format={project.format} />
@@ -135,6 +143,32 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <DownloadCenter items={downloads} />
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Tells the user whether the capture actually logged into their app. */
+function LoginBanner({ status, reason }: { status?: string; reason?: string }) {
+  if (status === "logged_in") {
+    return (
+      <div className="mb-6 rounded-xl border border-ok/30 bg-ok/10 px-4 py-3 text-sm text-ok">
+        ✅ Connecté à votre application — la démo filme l'outil, pas seulement le site public.
+      </div>
+    );
+  }
+  if (status === "no_credentials") {
+    return (
+      <div className="mb-6 rounded-xl border border-hairline bg-surface px-4 py-3 text-sm text-muted">
+        La démo filme votre site public. Ajoutez vos identifiants au projet pour filmer l'outil connecté.
+      </div>
+    );
+  }
+  // attempted but not logged in (failed / manual_step_required / key mismatch)
+  return (
+    <div className="mb-6 rounded-xl border border-bad/30 bg-bad/10 px-4 py-3 text-sm text-bad">
+      ⚠️ Connexion à votre application impossible{reason ? ` (${reason})` : ""}. La démo montre donc le site public.
+      Vérifiez que <span className="font-mono text-xs">LOCAL_SECRET_ENCRYPTION_KEY</span> est <strong>identique</strong> sur
+      Vercel et Railway, puis relancez le pipeline.
     </div>
   );
 }

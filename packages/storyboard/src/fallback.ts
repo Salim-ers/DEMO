@@ -3,7 +3,8 @@ import {
   type ProjectContext, type CameraMotion, slugId, clamp,
 } from "@demoforge/shared";
 
-const CAMERA_CYCLE: CameraMotion[] = ["slow_zoom_in", "ken_burns", "slow_zoom_out", "pan_right"];
+// Gentle, alternating "breathing" zoom — clean and premium, no janky pans.
+const CAMERA_CYCLE: CameraMotion[] = ["slow_zoom_in", "slow_zoom_out"];
 
 /**
  * Deterministic storyboard builder. Runs with no LLM. Produces a credible
@@ -52,6 +53,8 @@ export function buildStoryboardFallback(
   okCaptures.forEach((cap, i) => {
     const motion = CAMERA_CYCLE[i % CAMERA_CYCLE.length]!;
     const title = cap.metadata?.title?.trim();
+    // Prefer the real section name (nav label) for grounded, unique narration.
+    const section = cap.intent?.trim() || title;
     scenes.push({
       id: slugId("scene", `cap-${cap.index}-${cap.url}`),
       type: "screen_capture",
@@ -59,9 +62,8 @@ export function buildStoryboardFallback(
       visualInstruction: `Show "${cap.intent}" screen${title ? ` (${title})` : ""}. ${
         motion === "slow_zoom_in" ? "Slow push toward the primary action." : "Gentle motion across the view."
       }`,
-      // Premium, grammatically-safe narration that rotates per screen. The real
-      // screenshot + caption carry the specifics; the line carries the benefit.
-      voiceoverText: t.action(i, ctx),
+      // Narration names the actual area shown, so no two lines repeat.
+      voiceoverText: t.action(i, ctx, section),
       captionText: t.labels.inProduct,
       durationMs: 0, // filled by the distributor below
       cameraMotion: motion,
@@ -149,8 +151,22 @@ interface Copy {
   problem: (ctx: ProjectContext) => string;
   roi: (ctx: ProjectContext) => string;
   cta: (ctx: ProjectContext) => string;
-  /** Rotating, grammatically-safe product-in-action narration, by screen index. */
-  action: (i: number, ctx: ProjectContext) => string;
+  /**
+   * Product-in-action narration, unique per screen. When a clean section label is
+   * known (e.g. a real app/nav page name), it's woven in as "Section : benefit"
+   * so each line names the actual area shown — no repetition. Falls back to a
+   * rotating premium line when the label is messy/absent.
+   */
+  action: (i: number, ctx: ProjectContext, section?: string) => string;
+}
+
+/** A short label is "clean" enough to put in front of a colon in copy. */
+function cleanLabel(s?: string): string | null {
+  const t = (s ?? "").replace(/\s+/g, " ").trim();
+  if (!t || t.length > 24) return null;
+  if (!/^[\p{L}][\p{L}\s'’-]*$/u.test(t)) return null; // letters/spaces/'/- only
+  if (t.split(" ").length > 3) return null;
+  return t[0]!.toUpperCase() + t.slice(1);
 }
 
 const FR: Copy = {
@@ -160,8 +176,20 @@ const FR: Copy = {
   roi: () =>
     `Résultat : moins de friction, des décisions plus rapides, et une équipe concentrée sur l'essentiel.`,
   cta: (ctx) => `Découvrez-le sur vos propres données — rendez-vous sur ${host(ctx.url)}.`,
-  action: (i, ctx) => {
-    const lines = [
+  action: (i, ctx, section) => {
+    const benefits = [
+      `tout est réuni au même endroit, clair et exploitable.`,
+      `l'information utile, immédiatement, sans la chercher.`,
+      `une vue nette, pensée pour aller droit au but.`,
+      `vos données à jour, prêtes à être partagées.`,
+      `chaque détail à sa place, d'un seul coup d'œil.`,
+      `la gestion du quotidien, enfin simplifiée.`,
+      `du suivi à la décision, sans friction.`,
+      `pensé pour votre équipe, sans courbe d'apprentissage.`,
+    ];
+    const label = cleanLabel(section);
+    if (label) return `${label} : ${benefits[i % benefits.length]!}`;
+    const generic = [
       `${ctx.productName.trim()} réunit toute votre activité dans une interface claire et professionnelle.`,
       `Chaque écran va droit au but : l'information utile, immédiatement.`,
       `Vous passez d'une vue à l'autre sans friction, sans rouvrir dix onglets.`,
@@ -169,7 +197,7 @@ const FR: Copy = {
       `Une expérience pensée pour aller vite, sans rien perdre en clarté.`,
       `Tout est centralisé, lisible, et prêt à être partagé avec votre équipe.`,
     ];
-    return lines[i % lines.length]!;
+    return generic[i % generic.length]!;
   },
 };
 
@@ -178,8 +206,20 @@ const EN: Copy = {
   problem: () => `Most teams lose time switching tabs to find what actually needs attention.`,
   roi: () => `The result: your team sees priorities first, acts faster, and skips the busywork.`,
   cta: (ctx) => `See it on your own data — start at ${host(ctx.url)}.`,
-  action: (i, ctx) => {
-    const lines = [
+  action: (i, ctx, section) => {
+    const benefits = [
+      `everything in one place, clear and ready to use.`,
+      `the useful information, right away — no hunting.`,
+      `a clean view built to get straight to the point.`,
+      `your data up to date and ready to share.`,
+      `every detail in its place, at a glance.`,
+      `day-to-day management, finally simplified.`,
+      `from tracking to decision, with zero friction.`,
+      `made for your team, with no learning curve.`,
+    ];
+    const label = cleanLabel(section);
+    if (label) return `${label}: ${benefits[i % benefits.length]!}`;
+    const generic = [
       `${ctx.productName.trim()} brings your whole workflow into one clean, professional view.`,
       `Every screen gets to the point: the useful information, right away.`,
       `Move from one view to the next with zero friction — no ten open tabs.`,
@@ -187,7 +227,7 @@ const EN: Copy = {
       `Built to move fast without ever losing clarity.`,
       `Everything is centralized, readable, and ready to share with your team.`,
     ];
-    return lines[i % lines.length]!;
+    return generic[i % generic.length]!;
   },
 };
 

@@ -83,6 +83,12 @@ export async function runScenarioSteps(
 
       await page.waitForTimeout(600); // settle
 
+      // 2c. Re-clear overlays right before the shot. On SPA route changes the
+      // cookie/consent banner is re-injected a beat after navigation, so the
+      // earlier (post-nav) dismissal can miss it — this second pass catches it.
+      await dismissOverlays(page).catch(() => {});
+      await page.waitForTimeout(250);
+
       // 3. Health check.
       const health = await detectBrokenState(page);
       if (health.broken) {
@@ -127,6 +133,66 @@ export async function runScenarioSteps(
   }
 
   return results;
+}
+
+/**
+ * Discover the app/site's own pages to tour. Reads same-origin links from the
+ * primary navigation (nav / sidebar / header / [role=navigation]) on the current
+ * page — after login this surfaces the real product sections (dashboard, the
+ * different feature areas, settings…), which is exactly what a usage demo should
+ * walk through. Returns at most `max` distinct routes as ready-to-run steps.
+ */
+export async function discoverInternalRoutes(page: Page, baseUrl: string, max = 8): Promise<ScenarioStep[]> {
+  let origin: string;
+  try {
+    origin = new URL(baseUrl).origin;
+  } catch {
+    return [];
+  }
+
+  const raw: Array<{ href: string; text: string }> = await page
+    .evaluate(() => {
+      const containers = Array.from(
+        document.querySelectorAll('nav, aside, header, [role="navigation"], [class*="sidebar" i], [class*="menu" i]'),
+      );
+      const scope = containers.length > 0 ? containers : [document.body];
+      const seen = new Set<string>();
+      const out: Array<{ href: string; text: string }> = [];
+      for (const c of scope) {
+        for (const a of Array.from(c.querySelectorAll("a[href]"))) {
+          const el = a as HTMLAnchorElement;
+          const href = el.href;
+          if (!href || seen.has(href)) continue;
+          seen.add(href);
+          out.push({ href, text: (el.textContent || "").trim() });
+        }
+      }
+      return out;
+    })
+    .catch(() => [] as Array<{ href: string; text: string }>);
+
+  // Skip auth + lead-capture pages (forms, not product). Intentionally keeps
+  // "contact" so an authenticated app's "Contacts" feature is still toured.
+  const skip = /(log\s*-?\s*in|log\s*-?\s*out|sign\s*-?\s*in|sign\s*-?\s*up|s'?inscrire|s'?identifier|register|connexion|d[ée]connexion|password|mot-de-passe|mailto:|tel:|\.pdf|\.zip|demande-demo|demande_demo|\/devis|\/quote)/i;
+  const seenPath = new Set<string>();
+  const steps: ScenarioStep[] = [];
+  for (const { href, text } of raw) {
+    let u: URL;
+    try {
+      u = new URL(href);
+    } catch {
+      continue;
+    }
+    if (u.origin !== origin) continue; // same-site only
+    const path = (u.pathname.replace(/\/+$/, "") || "/") + u.search;
+    if (seenPath.has(path)) continue;
+    if (skip.test(href) || skip.test(text)) continue;
+    if (!text || text.length > 40) continue; // skip empty / oversized labels
+    seenPath.add(path);
+    steps.push({ intent: text, urlHint: u.pathname + u.search });
+    if (steps.length >= max) break;
+  }
+  return steps;
 }
 
 /**
