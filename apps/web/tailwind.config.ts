@@ -90,6 +90,14 @@ const config: Config = {
           "0%,100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-7px)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "spin-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "pulse-ring": "pulse-ring 1.6s ease-out infinite",
@@ -98,6 +106,8 @@ const config: Config = {
         reveal: "reveal 0.7s cubic-bezier(0.22,1,0.36,1) both",
         "scale-in": "scale-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
         float: "float 6s ease-in-out infinite",
+        marquee: "marquee 32s linear infinite",
+        "spin-slow": "spin-slow 26s linear infinite",
       },
     },
   },
