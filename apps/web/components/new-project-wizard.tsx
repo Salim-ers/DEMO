@@ -325,7 +325,7 @@ function Stepper({ step }: { step: number }) {
               className={cn(
                 "flex h-7 w-7 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
                 i < step
-                  ? "border-accent bg-accent text-white"
+                  ? "border-accent bg-accent text-ivory"
                   : i === step
                     ? "border-accent text-accent"
                     : "border-hairline text-faint",

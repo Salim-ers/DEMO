@@ -107,7 +107,7 @@ export function PipelineTimeline({
       )}
 
       {/* progress rail */}
-      <div className="h-0.5 w-full bg-white/5">
+      <div className="h-0.5 w-full bg-elevated">
         <div
           className="h-full bg-gradient-to-r from-accent/70 to-accent transition-all duration-700"
           style={{ width: `${state.progress}%` }}
@@ -161,7 +161,7 @@ function StageNode({ status }: { status: JobState["status"] }) {
   const base = "relative z-10 flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full border";
   if (status === "succeeded")
     return (
-      <span className={cn(base, "border-accent bg-accent text-white")}>
+      <span className={cn(base, "border-accent bg-accent text-ivory")}>
         <Check size={14} strokeWidth={3} />
       </span>
     );

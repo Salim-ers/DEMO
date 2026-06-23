@@ -105,14 +105,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   return (
     <div>
-      <Link href="/" className="mb-7 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink">
+      <Link href="/dashboard" className="mb-7 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink">
         <ArrowLeft size={16} /> Retour aux projets
       </Link>
 
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="mb-2 flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tighter text-ink">{project.productName}</h1>
+            <h1 className="display text-3xl font-semibold text-ink">{project.productName}</h1>
             <Badge tone={STATUS_TONE[project.status] ?? "neutral"}>{prettyStatus(project.status)}</Badge>
           </div>
           <p className="font-mono text-sm text-faint">{host}</p>

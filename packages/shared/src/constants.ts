@@ -1,4 +1,4 @@
-export const APP_NAME = "DemoForge";
+export const APP_NAME = "StudioOne";
 
 export const VIDEO_FORMATS = ["16:9", "9:16", "1:1"] as const;
 export type VideoFormat = (typeof VIDEO_FORMATS)[number];

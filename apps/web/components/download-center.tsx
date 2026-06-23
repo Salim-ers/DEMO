@@ -39,7 +39,7 @@ export function DownloadCenter({ items }: { items: DownloadItem[] }) {
                   download
                   aria-disabled={disabled}
                   className={`flex items-center gap-3.5 px-6 py-3.5 transition-colors ${
-                    disabled ? "pointer-events-none opacity-40" : "hover:bg-white/5"
+                    disabled ? "pointer-events-none opacity-40" : "hover:bg-elevated"
                   }`}
                 >
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-hairline bg-elevated">

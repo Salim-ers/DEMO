@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A6703B"/>
+      <stop offset="0.55" stop-color="#8A5A2C"/>
+      <stop offset="1" stop-color="#6F4521"/>
+    </linearGradient>
+  </defs>
+  <circle cx="160" cy="160" r="160" fill="url(#bg)"/>
+  <text x="208" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="40" fill="#F7F1E7">Studio</text>
+  <text x="150" y="206" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="104" fill="#F7F1E7">One</text>
+  <path d="M70 222 q90 26 180 -4" fill="none" stroke="#F7F1E7" stroke-width="7" stroke-linecap="round"/>
+  <g transform="translate(160 250)">
+    <rect x="-26" y="-3" width="40" height="27" rx="5" fill="none" stroke="#F7F1E7" stroke-width="3"/>
+    <path d="M-18 4 L-5 10 L-18 16 Z" fill="#F7F1E7"/>
+    <line x1="-24" y1="32" x2="2" y2="32" stroke="#F7F1E7" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="-11" cy="32" r="3.4" fill="#F7F1E7"/>
+    <path d="M8 28 l5 4 -5 4" fill="none" stroke="#F7F1E7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

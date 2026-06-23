@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
@@ -14,15 +14,16 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Ambient backdrop: a single soft accent glow at the top, faint grid below. */
+/* Ambient backdrop: a warm bronze haze at the top, a whisper of paper grain. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(120% 80% at 50% -20%, theme("colors.accent.soft") 0%, transparent 55%);
   z-index: 0;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(154, 101, 52, 0.1) 0%, transparent 55%),
+    radial-gradient(90% 60% at 100% 0%, rgba(199, 154, 91, 0.08) 0%, transparent 50%);
 }
 
 @layer base {
@@ -30,13 +31,13 @@ body::before {
     border-color: theme("colors.hairline");
   }
   ::selection {
-    background: theme("colors.accent.ring");
-    color: white;
+    background: theme("colors.accent.soft");
+    color: theme("colors.accent.deep");
   }
   :focus-visible {
     outline: 2px solid theme("colors.accent.DEFAULT");
     outline-offset: 2px;
-    border-radius: 6px;
+    border-radius: 8px;
   }
   h1,
   h2,
@@ -47,14 +48,50 @@ body::before {
 
 @layer components {
   .eyebrow {
-    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-faint;
+    @apply font-mono text-[11px] uppercase tracking-[0.2em] text-accent-deep/80;
   }
+  /* Premium card surface — soft white, hairline border, warm elevation. */
   .card {
-    @apply rounded-2xl border border-hairline bg-panel/80 shadow-panel backdrop-blur-sm;
+    @apply rounded-2xl border border-hairline bg-panel shadow-panel;
   }
   .field-label {
     @apply mb-1.5 block text-sm font-medium text-muted;
   }
+  /* Display headings use the warm serif for an editorial, studio feel. */
+  .display {
+    @apply font-display tracking-tight;
+    font-optical-sizing: auto;
+  }
+  /* Anchor-styled CTAs reused across landing / pricing. */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-accent px-5 py-2.5 text-ivory shadow-glow hover:-translate-y-0.5 hover:shadow-soft;
+  }
+  .btn-secondary {
+    @apply btn border border-hairline bg-panel px-5 py-2.5 text-ink hover:border-accent/40 hover:bg-elevated;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-hairline bg-elevated/70 px-2.5 py-0.5 text-xs font-medium text-muted;
+  }
+}
+
+/* Scroll-reveal primitive (paired with components/reveal.tsx). */
+.reveal-init {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(6px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -65,20 +102,25 @@ body::before {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+  .reveal-init {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 
-/* Thin, unobtrusive scrollbars to match the surface treatment. */
+/* Thin, warm scrollbars to match the surface treatment. */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(58, 42, 28, 0.18);
   border-radius: 999px;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(58, 42, 28, 0.3);
   background-clip: content-box;
 }

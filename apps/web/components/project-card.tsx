@@ -23,7 +23,7 @@ export interface ProjectCardData {
   updatedAt: string;
 }
 
-export function ProjectCard({ p }: { p: ProjectCardData }) {
+export function ProjectCard({ p, index = 0 }: { p: ProjectCardData; index?: number }) {
   let host = p.url;
   try {
     host = new URL(p.url).host;
@@ -33,7 +33,8 @@ export function ProjectCard({ p }: { p: ProjectCardData }) {
   return (
     <Link
       href={`/projects/${p.id}`}
-      className="group card animate-fade-up p-5 transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-glow"
+      style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
+      className="group card animate-fade-up p-5 transition-all duration-200 hover:-translate-y-1 hover:border-accent/30 hover:shadow-soft"
     >
       <div className="mb-4 flex items-start justify-between">
         <div className="min-w-0">

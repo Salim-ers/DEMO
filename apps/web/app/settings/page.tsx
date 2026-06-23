@@ -1,6 +1,7 @@
 import { prisma, ProviderKind } from "@demoforge/db";
 import { getActiveWorkspaceId } from "../../lib/workspace.js";
 import { ProviderSettings, type ProviderRow } from "../../components/provider-settings.js";
+import { BillingPanel } from "../../components/billing-panel.js";
 
 export const dynamic = "force-dynamic";
 
@@ -32,12 +33,25 @@ export default async function SettingsPage() {
     <div className="mx-auto max-w-2xl">
       <header className="mb-8">
         <p className="eyebrow mb-2">Paramètres</p>
-        <h1 className="text-2xl font-semibold tracking-tighter text-ink">Fournisseurs</h1>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted">
-          Connectez des fournisseurs optionnels pour enrichir la génération. Tout fonctionne sans eux.
+        <h1 className="display text-3xl font-semibold text-ink">Paramètres</h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          Gérez votre abonnement StudioOne et connectez des fournisseurs optionnels.
         </p>
       </header>
-      <ProviderSettings initial={rows} />
+
+      <div className="space-y-10">
+        <BillingPanel />
+
+        <section>
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold tracking-tighter text-ink">Fournisseurs</h2>
+            <p className="mt-1 text-sm leading-relaxed text-muted">
+              Connectez des fournisseurs optionnels pour enrichir la génération. Tout fonctionne sans eux.
+            </p>
+          </div>
+          <ProviderSettings initial={rows} />
+        </section>
+      </div>
     </div>
   );
 }
