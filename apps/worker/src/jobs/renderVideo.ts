@@ -3,7 +3,7 @@ import path from "node:path";
 import { readFile, mkdir } from "node:fs/promises";
 import { prisma, AssetKind } from "@demoforge/db";
 import { getStorage } from "@demoforge/integrations";
-import { storyboardToRenderProps, renderDemoVideo, normalizeMp4 } from "@demoforge/render";
+import { storyboardToRenderProps, renderDemoVideo, normalizeMp4, shrinkMp4 } from "@demoforge/render";
 import { RENDER_DEFAULTS } from "@demoforge/shared";
 import { dbStoryboardToDomain, projectToContext } from "../db-map.js";
 import { setStage } from "../status.js";
@@ -87,8 +87,24 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
   }
 
   const outKey = `renders/${project.id}/demo.mp4`;
-  const buf = await readFile(deliverPath);
-  const { bytes } = await storage.put(outKey, buf, "video/mp4");
+  let buf = await readFile(deliverPath);
+  let bytes = buf.byteLength;
+  try {
+    ({ bytes } = await storage.put(outKey, buf, "video/mp4"));
+  } catch (err) {
+    // Object storage rejected the file (e.g. Supabase per-file size limit).
+    // Re-encode smaller (720p) and retry once so the demo still ships.
+    if (/EntityTooLarge|exceeded the maximum|413|too large/i.test(String(err))) {
+      ctx.log.warn({ bytes: buf.byteLength }, "render too large for storage; shrinking to 720p and retrying");
+      const smallPath = path.join(tmpDir, "demo-720p.mp4");
+      await shrinkMp4(deliverPath, smallPath);
+      buf = await readFile(smallPath);
+      ({ bytes } = await storage.put(outKey, buf, "video/mp4"));
+      ctx.log.info({ bytes: buf.byteLength }, "shrunk render uploaded");
+    } else {
+      throw err;
+    }
+  }
   const asset = await prisma.asset.create({
     data: {
       projectId: project.id,

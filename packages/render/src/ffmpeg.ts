@@ -27,23 +27,43 @@ function run(bin: string, args: string[]): Promise<void> {
 }
 
 /**
- * Normalize a rendered MP4 for stable delivery: H.264 high profile, yuv420p
- * (universally playable), faststart for web streaming, and EBU R128 loudness
- * normalization on the audio track when present.
+ * Normalize a rendered MP4 for stable delivery: keep the (already H.264, already
+ * compressed) video stream as-is — copying avoids re-bloating the file and any
+ * quality loss — and only re-encode the audio with EBU R128 loudness leveling,
+ * plus +faststart so the web player can stream/seek immediately.
  */
 export async function normalizeMp4(input: string, output: string): Promise<string> {
   const bin = await ffmpegPath();
   await run(bin, [
     "-y",
     "-i", input,
-    "-c:v", "libx264",
-    "-profile:v", "high",
-    "-pix_fmt", "yuv420p",
-    "-preset", "medium",
-    "-crf", "18",
+    "-c:v", "copy",
     "-c:a", "aac",
-    "-b:a", "192k",
+    "-b:a", "160k",
     "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
+    "-movflags", "+faststart",
+    output,
+  ]);
+  return output;
+}
+
+/**
+ * Last-resort shrink for an oversized render: downscale to 720p and re-encode at
+ * a higher CRF so the file fits restrictive object-storage limits. Lossy but keeps
+ * the demo deliverable instead of failing the whole pipeline.
+ */
+export async function shrinkMp4(input: string, output: string): Promise<string> {
+  const bin = await ffmpegPath();
+  await run(bin, [
+    "-y",
+    "-i", input,
+    "-vf", "scale='min(1280,iw)':-2",
+    "-c:v", "libx264",
+    "-pix_fmt", "yuv420p",
+    "-preset", "veryfast",
+    "-crf", "30",
+    "-c:a", "aac",
+    "-b:a", "128k",
     "-movflags", "+faststart",
     output,
   ]);

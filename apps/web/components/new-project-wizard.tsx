@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, ImagePlus, Loader2, Sparkles, X } from "lucide-react";
 import {
   DEMO_DURATIONS, VIDEO_FORMATS, DEMO_TONES, VOICE_MODES,
 } from "@demoforge/shared";
@@ -47,6 +47,8 @@ export function NewProjectWizard() {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const imgInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<FormState>({
     productName: "",
     url: "",
@@ -88,6 +90,13 @@ export function NewProjectWizard() {
         throw new Error(body.error ?? `Échec de la requête (${res.status})`);
       }
       const { id } = (await res.json()) as { id: string };
+      // Attach the user's own photos/screenshots BEFORE the pipeline runs, so the
+      // first generation already weaves them in as product scenes.
+      if (images.length > 0) {
+        const body = new FormData();
+        images.forEach((f) => body.append("files", f));
+        await fetch(`/api/projects/${id}/assets`, { method: "POST", body }).catch(() => {});
+      }
       if (form.startNow) {
         await fetch(`/api/projects/${id}/generate`, { method: "POST" }).catch(() => {});
       }
@@ -214,6 +223,46 @@ export function NewProjectWizard() {
                 </span>
               </label>
             )}
+
+            <Field label="Vos visuels (optionnel)" hint="Ajoutez vos propres photos ou captures d'écran. Elles seront intégrées à la vidéo comme scènes du produit — utile si votre app est derrière une connexion.">
+              <input
+                ref={imgInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files ?? []);
+                  if (files.length) setImages((xs) => [...xs, ...files]);
+                  if (imgInputRef.current) imgInputRef.current.value = "";
+                }}
+              />
+              {images.length > 0 && (
+                <div className="mb-3 grid grid-cols-4 gap-2">
+                  {images.map((f, i) => (
+                    <div key={i} className="group relative aspect-video overflow-hidden rounded-lg border border-hairline bg-elevated">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={URL.createObjectURL(f)} alt={f.name} className="h-full w-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setImages((xs) => xs.filter((_, j) => j !== i))}
+                        className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-md bg-black/60 text-white opacity-0 transition-opacity hover:bg-bad group-hover:opacity-100"
+                        aria-label="Retirer"
+                      >
+                        <X size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => imgInputRef.current?.click()}
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-hairline bg-surface px-4 py-3 text-sm font-medium text-muted transition-colors hover:border-accent hover:text-ink"
+              >
+                <ImagePlus size={16} /> Ajouter des images
+              </button>
+            </Field>
 
             <label className="mt-1 flex cursor-pointer items-center gap-3">
               <input type="checkbox" checked={form.startNow} onChange={(e) => set("startNow", e.target.checked)} className="h-4 w-4 accent-accent" />

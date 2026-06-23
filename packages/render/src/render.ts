@@ -80,6 +80,11 @@ export async function renderDemoVideo(opts: RenderOptions): Promise<string> {
     inputProps: props as unknown as Record<string, unknown>,
     concurrency: opts.concurrency ?? null,
     chromiumOptions: { gl: "angle" },
+    // Keep the file streamable and well under typical object-storage per-file
+    // limits (Supabase defaults to 50 MB). CRF 24 is visually clean for screen
+    // captures while roughly halving size vs Remotion's default. The worker also
+    // re-encodes smaller as a fallback if an upload is still rejected.
+    crf: 24,
     onProgress: ({ progress }) => opts.onProgress?.(progress),
   });
 

@@ -16,9 +16,10 @@ ENV PNPM_HOME=/pnpm \
     PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
     PLAYWRIGHT_HEADLESS=true
 
-# Base tooling for fetching pnpm and the browsers.
+# Base tooling: pnpm/browser fetch (curl) + ffmpeg for the render's delivery
+# normalization (faststart, audio loudness) and the oversize-shrink fallback.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && apt-get install -y --no-install-recommends ca-certificates curl ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 RUN corepack enable
 
