@@ -87,13 +87,12 @@ export default async function HomePage() {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {stats.map((s) => (
-              <div key={s.label} className="card p-5">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-accent-deep">
-                    <s.icon size={17} />
-                  </span>
-                </div>
-                <p className="display mt-3 text-3xl font-semibold text-ink">{s.value}</p>
+              <div key={s.label} className="border-gradient card relative overflow-hidden p-5">
+                <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-violet/15 blur-2xl" />
+                <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-aurora text-white shadow-glow">
+                  <s.icon size={18} />
+                </span>
+                <p className="display mt-4 text-3xl font-semibold text-gradient">{s.value}</p>
                 <p className="text-sm text-muted">{s.label}</p>
               </div>
             ))}
