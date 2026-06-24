@@ -1,16 +1,16 @@
-# DemoForge local dev stack: Postgres + Redis + MinIO (S3-compatible).
+# Studio One local dev stack: Postgres + Redis + MinIO (S3-compatible).
 # Usage: docker compose -f infra/docker-compose.yml up -d
-name: demoforge
+name: studio-one
 
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: demoforge-postgres
+    container_name: studio-one-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: demoforge
+      POSTGRES_DB: studio-one
     ports:
       - "5432:5432"
     volumes:
@@ -23,7 +23,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: demoforge-redis
+    container_name: studio-one-redis
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes"]
     ports:
@@ -38,7 +38,7 @@ services:
 
   minio:
     image: minio/minio:latest
-    container_name: demoforge-minio
+    container_name: studio-one-minio
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
@@ -58,15 +58,15 @@ services:
   # One-shot: create the bucket and set it readable for rendered previews.
   minio-init:
     image: minio/mc:latest
-    container_name: demoforge-minio-init
+    container_name: studio-one-minio-init
     depends_on:
       minio:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
       mc alias set local http://minio:9000 minio minio123 &&
-      mc mb --ignore-existing local/demoforge &&
-      mc anonymous set download local/demoforge/public &&
+      mc mb --ignore-existing local/studio-one &&
+      mc anonymous set download local/studio-one/public &&
       echo 'MinIO bucket ready';
       "
 

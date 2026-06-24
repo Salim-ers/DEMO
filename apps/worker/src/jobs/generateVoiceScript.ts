@@ -1,6 +1,6 @@
-import { prisma, AssetKind } from "@demoforge/db";
-import { buildVoiceScript } from "@demoforge/voice";
-import { getTTS, GoogleTTSProvider, getStorage } from "@demoforge/integrations";
+import { prisma, AssetKind } from "@studio-one/db";
+import { buildVoiceScript } from "@studio-one/voice";
+import { getTTS, GoogleTTSProvider, getStorage } from "@studio-one/integrations";
 import { dbStoryboardToDomain, projectToContext, voiceModeToDb, voiceModeToDomain } from "../db-map.js";
 import type { PipelineCtx } from "../pipeline.js";
 

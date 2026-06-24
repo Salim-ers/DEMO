@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma, VoiceMode } from "@demoforge/db";
-import { createProjectSchema } from "@demoforge/shared";
-import { getVault, maskEmail } from "@demoforge/integrations";
+import { prisma, VoiceMode } from "@studio-one/db";
+import { createProjectSchema } from "@studio-one/shared";
+import { getVault, maskEmail } from "@studio-one/integrations";
 import { getActiveWorkspaceId } from "../../../lib/workspace.js";
 
 export const runtime = "nodejs";

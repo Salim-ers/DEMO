@@ -1,7 +1,7 @@
 import {
   type Storyboard, type ProjectContext, type RenderProps, type RenderScene,
   renderPropsSchema, FORMAT_DIMENSIONS, RENDER_DEFAULTS, msToFrames, STATEMENT_SCENE_TYPES,
-} from "@demoforge/shared";
+} from "@studio-one/shared";
 
 export interface MapOptions {
   fps?: number;

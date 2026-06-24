@@ -2,8 +2,8 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import dotenv from "dotenv";
 dotenv.config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../.env") });
-import { prisma, JobStatus } from "@demoforge/db";
-import { getVault } from "@demoforge/integrations";
+import { prisma, JobStatus } from "@studio-one/db";
+import { getVault } from "@studio-one/integrations";
 import { runPipeline } from "./pipeline.js";
 
 const projectId = process.argv[2];

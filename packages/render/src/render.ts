@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { mkdir } from "node:fs/promises";
-import { renderPropsSchema, type RenderProps, type VideoFormat } from "@demoforge/shared";
+import { renderPropsSchema, type RenderProps, type VideoFormat } from "@studio-one/shared";
 import { getRenderQuality } from "./quality.js";
 
 export type CompositionId = "Demo16x9" | "Demo9x16" | "DemoSquare";

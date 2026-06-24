@@ -1,8 +1,8 @@
-import { type RenderProps, FORMAT_DIMENSIONS, RENDER_DEFAULTS, msToFrames, type VideoFormat } from "@demoforge/shared";
+import { type RenderProps, FORMAT_DIMENSIONS, RENDER_DEFAULTS, msToFrames, type VideoFormat } from "@studio-one/shared";
 
 /**
  * Hand-built sample props for Remotion Studio previews and as a safe default.
- * Intentionally depends only on @demoforge/shared so the browser bundle stays
+ * Intentionally depends only on @studio-one/shared so the browser bundle stays
  * lean (no Node-only provider code). Screenshots are null here, so capture
  * scenes render the graceful placeholder — the real pipeline supplies URLs.
  */

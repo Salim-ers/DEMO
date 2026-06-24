@@ -14,7 +14,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: demoforge_test
+          POSTGRES_DB: studio-one_test
         ports: ["5432:5432"]
         options: >-
           --health-cmd "pg_isready -U postgres"
@@ -26,7 +26,7 @@ jobs:
           --health-cmd "redis-cli ping"
           --health-interval 5s --health-timeout 3s --health-retries 10
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/demoforge_test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/studio-one_test
       REDIS_URL: redis://localhost:6379
       LLM_PROVIDER: none
       TTS_PROVIDER: none

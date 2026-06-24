@@ -7,7 +7,7 @@ export const BrowserFrame: React.FC<{
   url?: string;
   scale?: number;
   children: React.ReactNode;
-}> = ({ theme, url = "app.demoforge.dev", scale = 1, children }) => {
+}> = ({ theme, url = "app.studio-one.dev", scale = 1, children }) => {
   return (
     <div
       style={{

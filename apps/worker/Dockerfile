@@ -1,4 +1,4 @@
-# DemoForge pipeline worker — runs capture (Playwright) + render (Remotion).
+# Studio One pipeline worker — runs capture (Playwright) + render (Remotion).
 #
 # IMPORTANT: the build context MUST be the repository root, because the worker
 # depends on the workspace packages (packages/*). On Railway, set the service's
@@ -6,8 +6,8 @@
 # railway.json (build.dockerfilePath = "apps/worker/Dockerfile").
 #
 # Local build/run:
-#   docker build -f apps/worker/Dockerfile -t demoforge-worker .
-#   docker run --env-file .env demoforge-worker
+#   docker build -f apps/worker/Dockerfile -t studio-one-worker .
+#   docker run --env-file .env studio-one-worker
 FROM node:22-bookworm-slim
 
 # Stable, root-owned path for the Playwright browser so build + runtime agree.
@@ -35,15 +35,15 @@ COPY . .
 RUN pnpm install --frozen-lockfile --prod=false
 
 # Generate the Prisma client against the committed schema.
-RUN pnpm --filter @demoforge/db exec prisma generate
+RUN pnpm --filter @studio-one/db exec prisma generate
 
 # Chromium + every system library that BOTH Playwright (capture) and Remotion
 # (render) need at runtime.
-RUN pnpm --filter @demoforge/capture exec playwright install --with-deps chromium
+RUN pnpm --filter @studio-one/capture exec playwright install --with-deps chromium
 
 # Pre-fetch Remotion's headless Chrome shell so the first render doesn't stall.
 # Best-effort: the renderer also fetches it on demand if this is skipped.
-RUN pnpm --filter @demoforge/render exec remotion browser ensure || true
+RUN pnpm --filter @studio-one/render exec remotion browser ensure || true
 
 # JSON logs + production behaviour at runtime (set AFTER install so dev deps
 # were installed above).
@@ -52,4 +52,4 @@ ENV NODE_ENV=production
 # /health binds to $PORT (Railway injects it); 8080 is the local default.
 EXPOSE 8080
 
-CMD ["pnpm", "--filter", "@demoforge/worker", "start"]
+CMD ["pnpm", "--filter", "@studio-one/worker", "start"]

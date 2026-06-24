@@ -18,7 +18,7 @@ export default function PricingPage() {
           Un seul plan. Tout est inclus.
         </h1>
         <p className="mt-4 text-lg text-muted">
-          DemoForge, c'est une offre simple et transparente. Choisissez la facturation qui vous convient.
+          Studio One, c'est une offre simple et transparente. Choisissez la facturation qui vous convient.
         </p>
       </div>
 

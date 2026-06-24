@@ -48,7 +48,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-hairline">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-5 text-xs text-faint sm:flex-row sm:px-8">
-          <span>© 2026 DemoForge. All rights reserved.</span>
+          <span>© 2026 Studio One. All rights reserved.</span>
           <span className="font-mono">Real capture · never fake UI</span>
         </div>
       </div>

@@ -1,5 +1,5 @@
 {
-  "name": "@demoforge/integrations",
+  "name": "@studio-one/integrations",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
   "exports": { ".": "./src/index.ts" },
   "scripts": { "typecheck": "tsc --noEmit", "test": "vitest run", "clean": "rm -rf dist .turbo" },
   "dependencies": {
-    "@demoforge/shared": "workspace:*",
+    "@studio-one/shared": "workspace:*",
     "@aws-sdk/client-s3": "^3.658.0",
     "@aws-sdk/s3-request-presigner": "^3.658.0",
     "pino": "^9.4.0",

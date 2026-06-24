@@ -1,5 +1,5 @@
 import type { Page } from "playwright";
-import { redactPII } from "@demoforge/shared";
+import { redactPII } from "@studio-one/shared";
 
 /**
  * Visually mask sensitive data on the page BEFORE screenshots, when enabled.

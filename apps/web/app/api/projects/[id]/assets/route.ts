@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
-import { prisma, AssetKind } from "@demoforge/db";
-import { getStorage } from "@demoforge/integrations";
+import { prisma, AssetKind } from "@studio-one/db";
+import { getStorage } from "@studio-one/integrations";
 import { signed } from "../../../../../lib/storage.js";
 
 export const runtime = "nodejs";

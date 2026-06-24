@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Img, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
-import type { CameraMotion, Callout as CalloutType } from "@demoforge/shared";
+import type { CameraMotion, Callout as CalloutType } from "@studio-one/shared";
 import type { Theme } from "../theme.js";
 import { PremiumStage } from "./PremiumStage.js";
 import { BrowserMockup } from "./BrowserMockup.js";

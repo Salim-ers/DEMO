@@ -1,9 +1,9 @@
 /**
- * Manual enqueue helper: `pnpm --filter @demoforge/worker enqueue <projectId>`.
+ * Manual enqueue helper: `pnpm --filter @studio-one/worker enqueue <projectId>`.
  * Creates a RenderJob for the project and pushes a pipeline job. Handy for
  * kicking the pipeline without the web app during development.
  */
-import { prisma, JobStatus } from "@demoforge/db";
+import { prisma, JobStatus } from "@studio-one/db";
 import { enqueuePipeline } from "./queue.js";
 import { logger } from "./logger.js";
 

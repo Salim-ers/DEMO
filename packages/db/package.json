@@ -1,5 +1,5 @@
 {
-  "name": "@demoforge/db",
+  "name": "@studio-one/db",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -19,7 +19,7 @@
   "prisma": { "seed": "tsx prisma/seed.ts" },
   "dependencies": {
     "@prisma/client": "^5.20.0",
-    "@demoforge/shared": "workspace:*"
+    "@studio-one/shared": "workspace:*"
   },
   "devDependencies": {
     "prisma": "^5.20.0",

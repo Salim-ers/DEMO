@@ -1,5 +1,5 @@
 {
-  "name": "@demoforge/web",
+  "name": "@studio-one/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,10 +12,10 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
-    "@demoforge/db": "workspace:*",
-    "@demoforge/integrations": "workspace:*",
-    "@demoforge/shared": "workspace:*",
-    "@demoforge/worker": "workspace:*",
+    "@studio-one/db": "workspace:*",
+    "@studio-one/integrations": "workspace:*",
+    "@studio-one/shared": "workspace:*",
+    "@studio-one/worker": "workspace:*",
     "framer-motion": "^11.11.0",
     "lucide-react": "^0.445.0",
     "next": "^15.0.0",

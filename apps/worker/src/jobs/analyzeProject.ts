@@ -1,6 +1,6 @@
-import { prisma } from "@demoforge/db";
-import { parseScenario } from "@demoforge/capture";
-import type { ScenarioStep } from "@demoforge/shared";
+import { prisma } from "@studio-one/db";
+import { parseScenario } from "@studio-one/capture";
+import type { ScenarioStep } from "@studio-one/shared";
 import type { PipelineCtx } from "../pipeline.js";
 
 /**

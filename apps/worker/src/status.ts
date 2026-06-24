@@ -1,6 +1,6 @@
-import { prisma, JobStatus } from "@demoforge/db";
-import type { JobName, JobState } from "@demoforge/shared";
-import { JOBS } from "@demoforge/shared";
+import { prisma, JobStatus } from "@studio-one/db";
+import type { JobName, JobState } from "@studio-one/shared";
+import { JOBS } from "@studio-one/shared";
 
 /** Ordered pipeline stages, used to seed the stepper and compute progress. */
 export const STAGE_ORDER: JobName[] = [

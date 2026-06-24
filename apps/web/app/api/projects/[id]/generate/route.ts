@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma, JobStatus } from "@demoforge/db";
+import { prisma, JobStatus } from "@studio-one/db";
 import { enqueuePipeline } from "../../../../../lib/queue.js";
 
 export const runtime = "nodejs";

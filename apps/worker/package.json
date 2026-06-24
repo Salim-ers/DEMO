@@ -1,5 +1,5 @@
 {
-  "name": "@demoforge/worker",
+  "name": "@studio-one/worker",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,13 +17,13 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "@demoforge/shared": "workspace:*",
-    "@demoforge/db": "workspace:*",
-    "@demoforge/capture": "workspace:*",
-    "@demoforge/storyboard": "workspace:*",
-    "@demoforge/voice": "workspace:*",
-    "@demoforge/render": "workspace:*",
-    "@demoforge/integrations": "workspace:*",
+    "@studio-one/shared": "workspace:*",
+    "@studio-one/db": "workspace:*",
+    "@studio-one/capture": "workspace:*",
+    "@studio-one/storyboard": "workspace:*",
+    "@studio-one/voice": "workspace:*",
+    "@studio-one/render": "workspace:*",
+    "@studio-one/integrations": "workspace:*",
     "archiver": "^7.0.1",
     "bullmq": "^5.13.2",
     "ioredis": "^5.4.1",

@@ -3,10 +3,10 @@ import path from "node:path";
 import { createWriteStream } from "node:fs";
 import { readFile, mkdir } from "node:fs/promises";
 import archiver from "archiver";
-import { prisma, AssetKind } from "@demoforge/db";
-import { getStorage } from "@demoforge/integrations";
-import { voiceScriptToMarkdown } from "@demoforge/voice";
-import type { VoiceScript, VoiceLine } from "@demoforge/shared";
+import { prisma, AssetKind } from "@studio-one/db";
+import { getStorage } from "@studio-one/integrations";
+import { voiceScriptToMarkdown } from "@studio-one/voice";
+import type { VoiceScript, VoiceLine } from "@studio-one/shared";
 import { dbStoryboardToDomain, projectToContext, voiceModeToDomain } from "../db-map.js";
 import type { CaptionKeys } from "./generateCaptions.js";
 import type { PipelineCtx } from "../pipeline.js";
@@ -61,7 +61,7 @@ export async function exportAssets(ctx: PipelineCtx, captions: CaptionKeys): Pro
   let assetsZipKeyOrNull: string | null = null;
   let screenshotCount = 0;
   try {
-    const tmpDir = path.join(os.tmpdir(), `demoforge-export-${project.id}`);
+    const tmpDir = path.join(os.tmpdir(), `studio-one-export-${project.id}`);
     await mkdir(tmpDir, { recursive: true });
     const zipPath = path.join(tmpDir, "assets.zip");
 

@@ -1,5 +1,5 @@
 import "server-only";
-import { getStorage } from "@demoforge/integrations";
+import { getStorage } from "@studio-one/integrations";
 
 /** Best-effort signed URL; returns null if storage is unreachable. */
 export async function signed(key?: string | null, ttl = 3600): Promise<string | null> {

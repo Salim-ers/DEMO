@@ -1,7 +1,7 @@
 import { Worker, type Job } from "bullmq";
 import { Redis } from "ioredis";
-import { QUEUE_NAME, pipelineJobDataSchema } from "@demoforge/shared";
-import { prisma } from "@demoforge/db";
+import { QUEUE_NAME, pipelineJobDataSchema } from "@studio-one/shared";
+import { prisma } from "@studio-one/db";
 import { createRedis, redisUrl } from "./redis.js";
 import { runPipeline } from "./pipeline.js";
 import { logger } from "./logger.js";
@@ -9,7 +9,7 @@ import { startHealthServer } from "./health.js";
 import { startHeartbeat } from "./heartbeat.js";
 
 /**
- * DemoForge pipeline worker. Consumes jobs from the shared queue and runs the
+ * Studio One pipeline worker. Consumes jobs from the shared queue and runs the
  * full capture -> storyboard -> voice -> captions -> render -> export pipeline.
  *
  * Concurrency is intentionally low: each job spins up a headless browser and a
@@ -116,7 +116,7 @@ async function main(): Promise<void> {
 
   logger.info(
     { queue: QUEUE_NAME, concurrency, workerId: heartbeat.workerId },
-    "🟢 DemoForge worker online — waiting for jobs",
+    "🟢 Studio One worker online — waiting for jobs",
   );
 
   let shuttingDown = false;

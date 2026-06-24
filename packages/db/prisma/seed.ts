@@ -8,15 +8,15 @@ const prisma = new PrismaClient();
 
 async function main() {
   const user = await prisma.user.upsert({
-    where: { email: "founder@demoforge.dev" },
+    where: { email: "founder@studio-one.dev" },
     update: {},
-    create: { email: "founder@demoforge.dev", name: "Demo Founder" },
+    create: { email: "founder@studio-one.dev", name: "Demo Founder" },
   });
 
   const workspace = await prisma.workspace.upsert({
     where: { id: "seed_workspace" },
     update: {},
-    create: { id: "seed_workspace", name: "DemoForge HQ" },
+    create: { id: "seed_workspace", name: "Studio One HQ" },
   });
 
   await prisma.membership.upsert({

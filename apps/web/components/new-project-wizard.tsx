@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, ImagePlus, Loader2, Sparkles, X } from "lucide-react";
 import {
   DEMO_DURATIONS, VIDEO_FORMATS, DEMO_TONES, VOICE_MODES, VIDEO_STYLES, VIDEO_STYLE_LABEL,
-} from "@demoforge/shared";
+} from "@studio-one/shared";
 import { Button } from "./ui/button.js";
 import { Input, Textarea, Select } from "./ui/input.js";
 import { cn } from "../lib/cn.js";
@@ -60,7 +60,7 @@ export function NewProjectWizard() {
     format: "16:9",
     language: "fr",
     tone: "premium",
-    videoStyle: "premium_motion",
+    videoStyle: "studio_one_cinematic",
     referenceUrl: "",
     // Premium commercial demos default to a written script for studio / human
     // recording — never a robotic auto-voice. AI voice stays opt-in.

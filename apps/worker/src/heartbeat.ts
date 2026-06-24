@@ -1,6 +1,6 @@
 import os from "node:os";
-import { prisma } from "@demoforge/db";
-import { QUEUE_NAME } from "@demoforge/shared";
+import { prisma } from "@studio-one/db";
+import { QUEUE_NAME } from "@studio-one/shared";
 import { logger } from "./logger.js";
 
 /**

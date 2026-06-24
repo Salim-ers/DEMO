@@ -1,6 +1,6 @@
 # TODO — wiring real external provider endpoints
 
-Everything in DemoForge works **without** these. They unlock optional capabilities.
+Everything in Studio One works **without** these. They unlock optional capabilities.
 Each provider sits behind an interface so you only touch one file.
 
 ## 1. Higgsfield (optional b-roll / transitions)

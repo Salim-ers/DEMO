@@ -11,7 +11,7 @@
  * colour, real depth, restrained motion. Never gadget-bright, never flat.
  */
 
-import { type VideoStyle, VIDEO_STYLES, VIDEO_STYLE_LABEL } from "@demoforge/shared";
+import { type VideoStyle, VIDEO_STYLES, VIDEO_STYLE_LABEL } from "@studio-one/shared";
 
 export { VIDEO_STYLES, VIDEO_STYLE_LABEL };
 export type { VideoStyle };
@@ -131,32 +131,32 @@ function luxuryEquestrian(accentOverride?: string): Brand {
   };
 }
 
-/** Creative AI Studio — the DemoForge house style: near-black space, electric
- *  violet → cyan with a pink kicker. Vibrant, modern, cinematic. */
-function creativeAiStudio(accentOverride?: string): Brand {
-  const a = accentOverride && isVivid(accentOverride) ? accentOverride : "#8B5CF6";
-  const a2 = "#22D3EE";
+/** Studio One Cinematic — the house style: deep black, brown → caramel → soft
+ *  gold, cream highlights. Warm, calm, premium — a video-studio signature. */
+function studioOneCinematic(accentOverride?: string): Brand {
+  const a = accentOverride && isVivid(accentOverride) ? accentOverride : "#B9824A";
+  const a2 = "#D6A15F";
   return {
-    style: "creative_ai_studio",
-    bg: "#05050A",
-    bgGrad: ["#0B0A18", "#04040A"],
-    bgElevated: "#0C0C18",
-    panel: "rgba(255, 255, 255, 0.05)",
-    panelBorder: "rgba(255, 255, 255, 0.12)",
-    border: "rgba(255, 255, 255, 0.10)",
-    text: "#F7F7FB",
-    textMuted: "rgba(247, 247, 251, 0.66)",
+    style: "studio_one_cinematic",
+    bg: "#050403",
+    bgGrad: ["#0E0A07", "#050403"],
+    bgElevated: "#100B07",
+    panel: "rgba(255, 248, 238, 0.055)",
+    panelBorder: "rgba(255, 248, 238, 0.14)",
+    border: "rgba(255, 248, 238, 0.10)",
+    text: "#FFF8EE",
+    textMuted: "rgba(255, 248, 238, 0.66)",
     accent: a,
     accentSoft: rgba(a, 0.18),
-    accentGlow: rgba(a, 0.36),
+    accentGlow: rgba(a, 0.34),
     accent2: a2,
     accent2Soft: rgba(a2, 0.16),
     accent2Glow: rgba(a2, 0.3),
-    accentWarm: "#EC4899",
-    glow: rgba(a, 0.3),
+    accentWarm: "#9B6A3C",
+    glow: rgba(a, 0.28),
     glow2: rgba(a2, 0.2),
     grain: 0.05,
-    gridOpacity: 0.04,
+    gridOpacity: 0.035,
     fontFamily: FONT_SANS,
     fontDisplay: FONT_SANS,
     fontMono: FONT_MONO,
@@ -224,6 +224,6 @@ export function resolveBrand(opts: ResolveBrandOptions = {}): Brand {
   if (opts.style === "luxury_product" || isEquestrian) {
     return luxuryEquestrian(accent ?? undefined);
   }
-  if (opts.style === "creative_ai_studio") return creativeAiStudio(accent ?? undefined);
+  if (opts.style === "studio_one_cinematic") return studioOneCinematic(accent ?? undefined);
   return premiumDark(accent ?? "#6E8BFF", opts.style ?? "premium_motion");
 }

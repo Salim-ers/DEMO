@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildVoiceScript, voiceScriptToMarkdown } from "../index.js";
-import type { ProjectContext, Storyboard } from "@demoforge/shared";
+import type { ProjectContext, Storyboard } from "@studio-one/shared";
 
 const ctx: ProjectContext = {
   projectId: "p1", productName: "Northwind CRM", url: "https://app.northwind.example",

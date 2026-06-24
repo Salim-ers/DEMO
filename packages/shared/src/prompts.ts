@@ -4,7 +4,7 @@ import type { CaptureStepResult, Scenario } from "./schemas.js";
 /**
  * Prompt templates for the LLM provider. All instruct the model to return
  * STRICT JSON so the output can be parsed and validated by zod. The deterministic
- * fallbacks in @demoforge/storyboard and @demoforge/voice produce the same shapes
+ * fallbacks in @studio-one/storyboard and @studio-one/voice produce the same shapes
  * when no LLM key is configured.
  */
 

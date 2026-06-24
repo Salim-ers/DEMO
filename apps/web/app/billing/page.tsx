@@ -9,7 +9,7 @@ export default function BillingPage() {
       <header className="mb-8">
         <p className="eyebrow mb-2">Compte</p>
         <h1 className="display text-3xl font-semibold text-ink">Facturation</h1>
-        <p className="mt-2 text-muted">Votre abonnement DemoForge et son historique, au même endroit.</p>
+        <p className="mt-2 text-muted">Votre abonnement Studio One et son historique, au même endroit.</p>
       </header>
 
       <div className="space-y-6">

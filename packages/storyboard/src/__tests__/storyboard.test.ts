@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildStoryboardFallback } from "../fallback.js";
-import { storyboardSchema, type ProjectContext, type Scenario, type CaptureStepResult } from "@demoforge/shared";
+import { storyboardSchema, type ProjectContext, type Scenario, type CaptureStepResult } from "@studio-one/shared";
 
 const ctx: ProjectContext = {
   projectId: "p1", productName: "Northwind CRM", url: "https://app.northwind.example",

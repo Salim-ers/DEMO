@@ -5,7 +5,7 @@
     "dockerfilePath": "apps/worker/Dockerfile"
   },
   "deploy": {
-    "startCommand": "pnpm --filter @demoforge/worker start",
+    "startCommand": "pnpm --filter @studio-one/worker start",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",

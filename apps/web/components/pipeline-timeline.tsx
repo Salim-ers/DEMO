@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Check, X, Loader2, Circle, Minus, AlertTriangle } from "lucide-react";
-import type { JobState, JobName } from "@demoforge/shared";
+import type { JobState, JobName } from "@studio-one/shared";
 import { cn } from "../lib/cn.js";
 
 const STAGE_LABEL: Record<JobName, string> = {

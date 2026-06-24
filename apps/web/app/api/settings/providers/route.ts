@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma, ProviderKind } from "@demoforge/db";
-import { getVault } from "@demoforge/integrations";
+import { prisma, ProviderKind } from "@studio-one/db";
+import { getVault } from "@studio-one/integrations";
 import { getActiveWorkspaceId } from "../../../../lib/workspace.js";
 
 export const runtime = "nodejs";

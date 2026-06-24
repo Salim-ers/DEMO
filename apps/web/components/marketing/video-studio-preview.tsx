@@ -68,9 +68,7 @@ export function VideoStudioPreview() {
       <div className="border-gradient relative overflow-hidden rounded-3xl border border-hairline bg-panel/70 p-3 shadow-soft backdrop-blur-xl">
         <div className="flex items-center gap-2 px-2 py-2">
           <LogoMark size={20} />
-          <span className="display text-sm font-semibold text-ink">
-            Demo<span className="text-gradient">Forge</span>
-          </span>
+          <span className="display text-sm font-semibold text-ink">Studio One</span>
           <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-ok/30 bg-ok/10 px-2.5 py-0.5 text-[11px] font-medium text-ok">
             <span className="h-1.5 w-1.5 rounded-full bg-ok" /> Rendering
           </span>

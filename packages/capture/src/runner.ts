@@ -1,7 +1,7 @@
 import type { Page } from "playwright";
 import {
   type ScenarioStep, type CaptureStepResult, captureStepResultSchema,
-} from "@demoforge/shared";
+} from "@studio-one/shared";
 import { captureScreenshot, captureMobileScreenshot, extractPageMetadata } from "./capture.js";
 import { detectBrokenState } from "./health.js";
 import { maskSensitiveData } from "./mask.js";

@@ -1,10 +1,10 @@
 import type { Config } from "tailwindcss";
 
 /**
- * DemoForge — a deep-space, cinematic system. Near-black canvas, glass surfaces,
- * and an electric spectrum (violet → blue → cyan, with pink + gold) carry all
- * energy. Semantic token names are preserved so the whole app re-skins from here;
- * warm aliases from the previous identity are remapped to their dark equivalents.
+ * Studio One — a calm, cinematic, warm system. Deep near-black canvas, cream ink,
+ * and a brown → caramel → soft-gold spectrum carry all warmth. Glass surfaces tinted
+ * cream. Semantic token names are preserved so the whole app re-skins from here;
+ * the previous vibrant aliases are remapped to their warm equivalents.
  */
 const config: Config = {
   darkMode: "class",
@@ -12,40 +12,43 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Surfaces — near-black canvas, glass panels.
-        canvas: "#05050A",
-        surface: "rgba(255,255,255,0.045)",
-        panel: "rgba(255,255,255,0.045)",
-        elevated: "rgba(255,255,255,0.08)",
-        hairline: "rgba(255,255,255,0.12)",
+        // Surfaces — deep black, cream-tinted glass.
+        canvas: "#050403",
+        surface: "rgba(255,248,238,0.055)",
+        panel: "rgba(255,248,238,0.055)",
+        elevated: "rgba(255,248,238,0.095)",
+        hairline: "rgba(255,248,238,0.14)",
         // Ink.
-        ink: "#F7F7FB",
-        muted: "rgba(247,247,251,0.68)",
-        faint: "rgba(247,247,251,0.42)",
-        // Primary accent — electric violet. `deep` reads on dark surfaces.
+        ink: "#FFF8EE",
+        muted: "rgba(255,248,238,0.72)",
+        faint: "rgba(255,248,238,0.45)",
+        // Primary accent — caramel. `deep` (soft gold) reads on dark surfaces.
         accent: {
-          DEFAULT: "#8B5CF6",
-          deep: "#A78BFA",
-          soft: "rgba(139,92,246,0.16)",
-          ring: "rgba(139,92,246,0.5)",
+          DEFAULT: "#B9824A",
+          deep: "#D6A15F",
+          soft: "rgba(185,130,74,0.16)",
+          ring: "rgba(185,130,74,0.5)",
         },
-        // Spectrum.
-        violet: "#8B5CF6",
-        blue: "#3B82F6",
-        cyan: "#22D3EE",
-        pink: "#EC4899",
-        gold: "#F5C76B",
-        // Warm aliases (previous identity) → dark equivalents, so old markup holds.
-        ivory: "#F7F7FB",
-        espresso: "#05050A",
-        champagne: "rgba(255,255,255,0.08)",
-        bronze: "#8B5CF6",
-        cognac: "#3B82F6",
-        caramel: "#22D3EE",
-        // Status.
-        ok: "#34D399",
-        warn: "#FBBF24",
-        bad: "#FB7185",
+        // Studio One spectrum.
+        brown: "#9B6A3C",
+        caramel: "#B9824A",
+        gold: "#D6A15F",
+        cream: "#FFF3DF",
+        studio: "#050403",
+        // Previous vibrant aliases → warm equivalents, so old markup holds.
+        violet: "#B9824A",
+        blue: "#9B6A3C",
+        cyan: "#D6A15F",
+        pink: "#C98A4E",
+        ivory: "#FFF8EE",
+        espresso: "#050403",
+        champagne: "rgba(255,248,238,0.095)",
+        bronze: "#9B6A3C",
+        cognac: "#B9824A",
+        // Status — tuned for the warm dark theme.
+        ok: "#5BA17E",
+        warn: "#D6A15F",
+        bad: "#D9694B",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
@@ -57,25 +60,21 @@ const config: Config = {
         tighter: "-0.035em",
         tight: "-0.02em",
       },
-      borderRadius: {
-        xl: "14px",
-        "2xl": "20px",
-        "3xl": "28px",
-      },
+      borderRadius: { xl: "14px", "2xl": "20px", "3xl": "28px" },
       boxShadow: {
-        panel: "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -20px rgba(0,0,0,0.7)",
+        panel: "0 1px 0 rgba(255,248,238,0.05) inset, 0 24px 60px -20px rgba(0,0,0,0.7)",
         soft: "0 30px 90px -40px rgba(0,0,0,0.85)",
-        glow: "0 0 0 1px rgba(139,92,246,0.3), 0 18px 50px -12px rgba(139,92,246,0.5)",
-        "glow-cyan": "0 0 0 1px rgba(34,211,238,0.3), 0 18px 50px -12px rgba(34,211,238,0.45)",
-        ring: "0 0 0 4px rgba(139,92,246,0.16)",
+        glow: "0 0 0 1px rgba(185,130,74,0.32), 0 18px 50px -12px rgba(185,130,74,0.45)",
+        "glow-cyan": "0 0 0 1px rgba(214,161,95,0.3), 0 18px 50px -12px rgba(214,161,95,0.4)",
+        ring: "0 0 0 4px rgba(185,130,74,0.16)",
       },
       backgroundImage: {
-        "bronze-sheen": "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 50%, #22D3EE 100%)",
-        aurora: "linear-gradient(120deg, #8B5CF6 0%, #6366F1 35%, #3B82F6 65%, #22D3EE 100%)",
-        "aurora-soft": "linear-gradient(120deg, rgba(139,92,246,0.18), rgba(59,130,246,0.14), rgba(34,211,238,0.12))",
-        "pink-violet": "linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%)",
+        "bronze-sheen": "linear-gradient(135deg, #9B6A3C 0%, #B9824A 50%, #D6A15F 100%)",
+        aurora: "linear-gradient(120deg, #8A5A2E 0%, #9B6A3C 35%, #B9824A 65%, #D6A15F 100%)",
+        "aurora-soft": "linear-gradient(120deg, rgba(155,106,60,0.20), rgba(185,130,74,0.16), rgba(214,161,95,0.14))",
+        "pink-violet": "linear-gradient(135deg, #D6A15F 0%, #9B6A3C 100%)",
         "grid-faint":
-          "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)",
+          "linear-gradient(rgba(255,248,238,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,248,238,0.04) 1px, transparent 1px)",
       },
       keyframes: {
         "pulse-ring": { "0%": { transform: "scale(0.8)", opacity: "0.6" }, "100%": { transform: "scale(1.8)", opacity: "0" } },

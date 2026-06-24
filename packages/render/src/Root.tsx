@@ -1,6 +1,6 @@
 import React from "react";
 import { Composition } from "remotion";
-import { type RenderProps, renderPropsSchema, FORMAT_DIMENSIONS } from "@demoforge/shared";
+import { type RenderProps, renderPropsSchema, FORMAT_DIMENSIONS } from "@studio-one/shared";
 import { DemoVideo, totalDurationInFrames } from "./DemoVideo.js";
 import { buildSampleRenderProps } from "./sample.js";
 

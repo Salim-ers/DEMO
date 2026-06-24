@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma, AssetKind } from "@demoforge/db";
-import { getStorage } from "@demoforge/integrations";
+import { prisma, AssetKind } from "@studio-one/db";
+import { getStorage } from "@studio-one/integrations";
 
 export const runtime = "nodejs";
 

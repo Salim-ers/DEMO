@@ -1,9 +1,9 @@
 /**
- * DemoForge ships a single, everything-included plan. Prices are placeholders
+ * Studio One ships a single, everything-included plan. Prices are placeholders
  * until real billing is wired — change them here and every surface updates.
  */
 export const PLAN = {
-  name: "DemoForge",
+  name: "Studio One",
   summary: "Tout est inclus. Un seul plan, pensé pour livrer.",
   currency: "€",
   monthly: 29,

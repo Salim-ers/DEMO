@@ -1,13 +1,13 @@
 import os from "node:os";
 import path from "node:path";
 import { readFile, mkdir } from "node:fs/promises";
-import { prisma, AssetKind } from "@demoforge/db";
-import { getStorage } from "@demoforge/integrations";
-import { storyboardToRenderProps, renderDemoVideo, normalizeMp4, shrinkMp4, probeVideo, buildQualityReport } from "@demoforge/render";
-import { RENDER_DEFAULTS, STATEMENT_SCENE_TYPES } from "@demoforge/shared";
+import { prisma, AssetKind } from "@studio-one/db";
+import { getStorage } from "@studio-one/integrations";
+import { storyboardToRenderProps, renderDemoVideo, normalizeMp4, shrinkMp4, probeVideo, buildQualityReport } from "@studio-one/render";
+import { RENDER_DEFAULTS, STATEMENT_SCENE_TYPES } from "@studio-one/shared";
 import { dbStoryboardToDomain, projectToContext } from "../db-map.js";
 import { setStage } from "../status.js";
-import { JOBS } from "@demoforge/shared";
+import { JOBS } from "@studio-one/shared";
 import type { PipelineCtx } from "../pipeline.js";
 
 /**
@@ -85,8 +85,8 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
     resolveImageUrl: (assetId) => urlMap.get(assetId) ?? null,
   });
 
-  const tmpDir = await mkdir(path.join(os.tmpdir(), `demoforge-${ctx.projectId}`), { recursive: true })
-    .then(() => path.join(os.tmpdir(), `demoforge-${ctx.projectId}`));
+  const tmpDir = await mkdir(path.join(os.tmpdir(), `studio-one-${ctx.projectId}`), { recursive: true })
+    .then(() => path.join(os.tmpdir(), `studio-one-${ctx.projectId}`));
   const rawPath = path.join(tmpDir, "raw.mp4");
   const finalPath = path.join(tmpDir, "demo.mp4");
 

@@ -1,15 +1,15 @@
 import os from "node:os";
 import path from "node:path";
 import { writeFile, readFile, mkdtemp } from "node:fs/promises";
-import { prisma, JobStatus, AssetKind } from "@demoforge/db";
+import { prisma, JobStatus, AssetKind } from "@studio-one/db";
 import {
   createBrowserSession, loginWithCredentials, runScenarioSteps, persistAuthState,
   discoverInternalRoutes, captureAppTour, extractLogoUrl, extractThemeColor, screenshotLogo,
-} from "@demoforge/capture";
-import { flattenImageOnColor } from "@demoforge/render";
-import { getVault, getStorage } from "@demoforge/integrations";
-import type { ScenarioStep, CaptureStepResult } from "@demoforge/shared";
-import { MAX_BROWSER_SESSION_MS } from "@demoforge/shared";
+} from "@studio-one/capture";
+import { flattenImageOnColor } from "@studio-one/render";
+import { getVault, getStorage } from "@studio-one/integrations";
+import type { ScenarioStep, CaptureStepResult } from "@studio-one/shared";
+import { MAX_BROWSER_SESSION_MS } from "@studio-one/shared";
 import type { PipelineCtx } from "../pipeline.js";
 
 /**

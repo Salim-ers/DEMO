@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Audio, Series } from "remotion";
-import { type RenderProps, STATEMENT_SCENE_TYPES } from "@demoforge/shared";
+import { type RenderProps, STATEMENT_SCENE_TYPES } from "@studio-one/shared";
 import { makeTheme, fitScale } from "./theme.js";
 import type { VideoStyle } from "./styles/videoBrand.js";
 import { SceneRenderer } from "./components/SceneRenderer.js";

@@ -24,6 +24,7 @@ import { MetricCard } from "../ui/metric-card.js";
 import { ProductShowcaseCard } from "../ui/product-showcase-card.js";
 import { AnimatedGradient } from "../ui/animated-gradient.js";
 import { VideoStudioPreview } from "../marketing/video-studio-preview.js";
+import { LogoEmblem } from "../brand/logo.js";
 import { cn } from "../../lib/cn.js";
 
 const METRICS = [
@@ -34,19 +35,19 @@ const METRICS = [
 ];
 
 const SHOWCASE = [
-  { step: "01", icon: Camera, title: "Capture real screens", text: "Connect your app and DemoForge films the actual product flow — login included.", accent: "cyan" as const },
+  { step: "01", icon: Camera, title: "Capture real screens", text: "Connect your app and Studio One films the actual product flow — login included.", accent: "cyan" as const },
   { step: "02", icon: LayoutPanelTop, title: "Generate the story", text: "Scenes are arranged into a clear, premium storyboard, ready to narrate.", accent: "violet" as const },
   { step: "03", icon: Mic, title: "Add voice & captions", text: "Voice-ready scripts in your tone, with SRT/VTT captions burned in.", accent: "pink" as const },
   { step: "04", icon: Clapperboard, title: "Render premium video", text: "Motion design, transitions and typography — exported sales-ready.", accent: "blue" as const },
 ];
 
 const GALLERY = [
-  { name: "Nimbus CRM", tag: "SaaS", duration: "0:90", style: "Clean SaaS Demo", grad: "from-violet/50 to-blue/40" },
-  { name: "Ledgerly", tag: "Fintech", duration: "1:20", style: "Premium Motion", grad: "from-blue/50 to-cyan/40" },
-  { name: "Synth AI", tag: "AI product", duration: "0:60", style: "Startup Launch", grad: "from-violet/50 to-pink/40" },
-  { name: "Marketplace X", tag: "Marketplace", duration: "1:00", style: "Product Tour", grad: "from-cyan/50 to-violet/40" },
-  { name: "Horse Ledger", tag: "Equestrian", duration: "1:30", style: "Luxury Product Demo", grad: "from-amber-500/40 to-emerald-700/40" },
-  { name: "Pulse Ops", tag: "Internal tool", duration: "0:75", style: "Investor Demo", grad: "from-pink/40 to-violet/40" },
+  { name: "Horse Ledger", tag: "Equestrian", duration: "1:30", style: "Luxury Product Demo", grad: "from-amber-600/45 to-emerald-800/40" },
+  { name: "CRM Launch", tag: "SaaS", duration: "0:90", style: "Studio One Cinematic", grad: "from-brown/55 to-caramel/40" },
+  { name: "Fintech Dashboard", tag: "Fintech", duration: "1:20", style: "Premium Motion", grad: "from-caramel/55 to-gold/40" },
+  { name: "AI Assistant", tag: "AI product", duration: "0:60", style: "Startup Launch", grad: "from-gold/50 to-brown/40" },
+  { name: "Marketplace", tag: "Marketplace", duration: "1:00", style: "Product Tour", grad: "from-brown/50 to-gold/40" },
+  { name: "Analytics Platform", tag: "Analytics", duration: "0:75", style: "Clean SaaS Demo", grad: "from-caramel/50 to-brown/45" },
 ];
 
 const WORKFLOW = [
@@ -85,11 +86,11 @@ export function Landing() {
                 variants={blurIn}
                 className="display mt-6 text-[clamp(3rem,8vw,7rem)] font-semibold leading-[0.95] tracking-tighter text-ink"
               >
-                Turn any SaaS into a <span className="text-gradient">cinematic</span> demo video.
+                Turn any SaaS into a <span className="text-gradient">cinematic</span> product demo.
               </motion.h1>
               <motion.p variants={fadeUp} className="mt-7 max-w-xl text-lg leading-relaxed text-muted">
-                DemoForge captures real product flows, writes the story, adds voice-ready scripts and renders premium
-                videos your sales team can actually use.
+                Studio One captures real product flows, writes the story, adds voice-ready scripts, and renders premium
+                demo videos your sales team can use.
               </motion.p>
               <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-3">
                 <GlowButton href="/projects/new">
@@ -267,7 +268,21 @@ export function Landing() {
           </div>
         </section>
 
-        {/* ───────── G. Final CTA ───────── */}
+        {/* ───────── Philosophy ───────── */}
+        <section className="mx-auto max-w-4xl px-5 py-28 text-center sm:px-8">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={viewportOnce}>
+            <h2 className="display text-[clamp(2rem,5vw,3.6rem)] font-semibold leading-[1.04] tracking-tighter text-ink">
+              Your product already has the story.{" "}
+              <span className="text-gradient">Studio One makes it cinematic.</span>
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+              Studio One does not invent fake interfaces. It captures real product flows, structures the narrative, and
+              turns your SaaS into a polished demo video ready for sales, onboarding and launch campaigns.
+            </p>
+          </motion.div>
+        </section>
+
+        {/* ───────── Final CTA ───────── */}
         <section className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
           <motion.div
             variants={fadeUp}
@@ -278,12 +293,13 @@ export function Landing() {
           >
             <AnimatedGradient />
             <div className="relative flex flex-col items-center">
-              <h2 className="display mx-auto max-w-3xl text-[clamp(2.2rem,6vw,4.5rem)] font-semibold leading-[0.98] tracking-tighter text-ink">
-                Your product already has the story. <span className="text-gradient">DemoForge makes it cinematic.</span>
+              <LogoEmblem size={84} className="mb-8" />
+              <h2 className="display mx-auto max-w-3xl text-[clamp(2.4rem,6vw,5rem)] font-semibold leading-[0.98] tracking-tighter text-ink">
+                Make your product demo <span className="text-gradient">unforgettable.</span>
               </h2>
               <div className="mt-10">
                 <GlowButton href="/projects/new">
-                  Generate a demo <ArrowRight size={18} />
+                  Create a demo with Studio One <ArrowRight size={18} />
                 </GlowButton>
               </div>
             </div>

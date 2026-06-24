@@ -1,2 +1,2 @@
 import "server-only";
-export { prisma } from "@demoforge/db";
+export { prisma } from "@studio-one/db";

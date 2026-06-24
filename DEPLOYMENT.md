@@ -1,6 +1,6 @@
-# Déploiement DemoForge (production)
+# Déploiement Studio One (production)
 
-DemoForge se déploie en **deux morceaux** :
+Studio One se déploie en **deux morceaux** :
 
 | Composant | Où | Rôle |
 |---|---|---|
@@ -20,12 +20,12 @@ DemoForge se déploie en **deux morceaux** :
 | **Stockage S3** (vidéos/assets) | **Supabase Storage** (S3-compatible) | `S3_*` |
 
 ### Stockage S3 via Supabase (le plus simple, tu as déjà Supabase)
-1. Supabase → **Storage** → crée un bucket `demoforge`.
+1. Supabase → **Storage** → crée un bucket `studio-one`.
 2. Supabase → **Project Settings → Storage → S3 Connection** → active-le, note l'**endpoint** + la **région** et génère une **Access key** (id + secret).
 3. Renseigne :
    - `S3_ENDPOINT` = `https://<ref>.supabase.co/storage/v1/s3`
    - `S3_REGION` = la région affichée (ex. `eu-west-1`)
-   - `S3_BUCKET` = `demoforge`
+   - `S3_BUCKET` = `studio-one`
    - `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` = la clé S3 générée
    - `S3_FORCE_PATH_STYLE` = `true`
 
@@ -90,7 +90,7 @@ Si ces valeurs diffèrent entre les deux, ça ne marchera pas (file différente,
    ```
    ✅ Redis connected
    ✅ DB connected
-   🟢 DemoForge worker online — waiting for jobs
+   🟢 Studio One worker online — waiting for jobs
    💓 heartbeat started
    ```
 7. Le worker expose **`/health`** (utilisé par le healthcheck Railway) qui renvoie `200` tant que Redis + DB répondent.

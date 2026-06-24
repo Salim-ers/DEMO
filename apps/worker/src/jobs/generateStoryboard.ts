@@ -1,6 +1,6 @@
-import { prisma, JobStatus, AssetKind } from "@demoforge/db";
-import { generateStoryboard as buildStoryboard } from "@demoforge/storyboard";
-import type { CaptureStepResult, Scenario, ScenarioStep, PageMetadata } from "@demoforge/shared";
+import { prisma, JobStatus, AssetKind } from "@studio-one/db";
+import { generateStoryboard as buildStoryboard } from "@studio-one/storyboard";
+import type { CaptureStepResult, Scenario, ScenarioStep, PageMetadata } from "@studio-one/shared";
 import { projectToContext, sceneTypeToDb } from "../db-map.js";
 import type { PipelineCtx } from "../pipeline.js";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@demoforge/render",
+  "name": "@studio-one/render",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,8 +13,8 @@
     "clean": "rm -rf dist .turbo out"
   },
   "dependencies": {
-    "@demoforge/shared": "workspace:*",
-    "@demoforge/integrations": "workspace:*",
+    "@studio-one/shared": "workspace:*",
+    "@studio-one/integrations": "workspace:*",
     "@remotion/bundler": "^4.0.230",
     "@remotion/cli": "^4.0.230",
     "@remotion/renderer": "^4.0.230",

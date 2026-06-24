@@ -1,5 +1,5 @@
 import type { Page } from "playwright";
-import { type PageMetadata, pageMetadataSchema, CAPTURE_VIEWPORTS } from "@demoforge/shared";
+import { type PageMetadata, pageMetadataSchema, CAPTURE_VIEWPORTS } from "@studio-one/shared";
 import { redactMetadataText } from "./mask.js";
 
 /**

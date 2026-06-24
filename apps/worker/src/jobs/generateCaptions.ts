@@ -1,6 +1,6 @@
-import { prisma } from "@demoforge/db";
-import { getStorage } from "@demoforge/integrations";
-import { buildSRT, buildVTT, type VoiceLine } from "@demoforge/shared";
+import { prisma } from "@studio-one/db";
+import { getStorage } from "@studio-one/integrations";
+import { buildSRT, buildVTT, type VoiceLine } from "@studio-one/shared";
 import type { PipelineCtx } from "../pipeline.js";
 
 export interface CaptionKeys {

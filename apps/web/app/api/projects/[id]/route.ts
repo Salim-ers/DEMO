@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@demoforge/db";
+import { prisma } from "@studio-one/db";
 
 export const runtime = "nodejs";
 

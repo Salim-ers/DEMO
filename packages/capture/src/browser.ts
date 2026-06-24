@@ -1,5 +1,5 @@
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
-import { CAPTURE_VIEWPORTS, MAX_BROWSER_SESSION_MS } from "@demoforge/shared";
+import { CAPTURE_VIEWPORTS, MAX_BROWSER_SESSION_MS } from "@studio-one/shared";
 import { pino } from "pino";
 
 const log = pino({ name: "capture:browser" });

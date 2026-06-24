@@ -1,8 +1,8 @@
 import {
   storyboardSchema, type Storyboard, type CaptureStepResult, type Scenario,
   type ProjectContext, STORYBOARD_SYSTEM, storyboardUserPrompt, slugId,
-} from "@demoforge/shared";
-import { resolveLLM, extractJSON } from "@demoforge/integrations";
+} from "@studio-one/shared";
+import { resolveLLM, extractJSON } from "@studio-one/integrations";
 import { buildStoryboardFallback } from "./fallback.js";
 
 export { buildStoryboardFallback };

@@ -1,8 +1,8 @@
 import {
   type Storyboard, type VoiceScript, type VoiceLine, type VoiceMode, type ProjectContext,
   voiceScriptSchema, VOICE_SYSTEM, voiceUserPrompt, wordsIn, WORDS_PER_MINUTE,
-} from "@demoforge/shared";
-import { resolveLLM, extractJSON } from "@demoforge/integrations";
+} from "@studio-one/shared";
+import { resolveLLM, extractJSON } from "@studio-one/integrations";
 
 export interface VoiceScriptInput {
   ctx: ProjectContext;

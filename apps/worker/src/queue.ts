@@ -1,5 +1,5 @@
 import { Queue } from "bullmq";
-import { QUEUE_NAME, type PipelineJobData } from "@demoforge/shared";
+import { QUEUE_NAME, type PipelineJobData } from "@studio-one/shared";
 import { createRedis } from "./redis.js";
 
 /** Singleton producer-side queue. The web app imports this to enqueue work. */

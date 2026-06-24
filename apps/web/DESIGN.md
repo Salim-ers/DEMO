@@ -1,4 +1,4 @@
-# DemoForge — Art Direction
+# Studio One — Art Direction
 
 **Positioning:** _AI demo video studio for SaaS teams._ The interface should feel
 like a high-end creative studio, not an internal admin tool — immersive, cinematic,
@@ -6,8 +6,8 @@ confident.
 
 ## Foundations
 
-- **Background:** deep space `#05050A` with violet/cyan/pink radial halos + fine film grain.
-- **Spectrum:** electric violet `#8B5CF6` → blue `#3B82F6` → cyan `#22D3EE`, pink `#EC4899` kicker, gold `#F5C76B` for warmth.
+- **Background:** deep space `#05050A` with caramel/gold radial halos + fine film grain.
+- **Spectrum:** brown `#9B6A3C` → caramel `#B9824A` → soft gold `#D6A15F`, cream `#FFF3DF` highlights for warmth.
 - **Surfaces:** glass — `rgba(255,255,255,0.045)` fills, `rgba(255,255,255,0.12)` hairlines, `backdrop-blur`.
 - **Type:** Inter, tight tracking; hero headlines `clamp(3rem, 8vw, 7rem)`; gradient ink for emphasis words (`.text-gradient`).
 - **Depth:** soft deep shadows, gradient hairline borders (`.border-gradient`), glow on primary actions.
@@ -21,7 +21,7 @@ All values live as CSS variables in `app/globals.css` and as Tailwind tokens in
 - `lib/motion.ts` — Framer Motion variants (`fadeUp`, `staggerContainer`, `blurIn`, `heroTextReveal`, `cardHover`, `slowFloat`).
 - `components/ui/` — `glow-button` (magnetic), `premium-card`, `product-showcase-card` (bento), `metric-card` (count-up), `motion-tabs` (layoutId indicator), `section-label`, `animated-gradient`, `noise-layer`.
 - `components/marketing/video-studio-preview` — the animated fake editor used as the hero visual.
-- `components/brand/logo` — DemoForge gradient mark + wordmark + emblem.
+- `components/brand/logo` — Studio One gradient mark + wordmark + emblem.
 
 ## Motion principles
 
@@ -32,7 +32,7 @@ nothing heavy runs for users who opt out.
 
 ## Render presets (`packages/render/src/styles/videoBrand.ts`)
 
-- **Creative AI Studio** (`creative_ai_studio`) — the house style: near-black, violet→cyan, pink kicker. Vibrant, cinematic.
+- **Studio One Cinematic** (`studio_one_cinematic`) — the house style: near-black, brown→caramel, pink kicker. Vibrant, cinematic.
 - **Luxury Product Demo** (`luxury_product`) — cream / saddle brown / soft gold / deep green / premium black. Calm, confident. Auto-selected for Horse Ledger.
 
 ## Bar

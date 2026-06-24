@@ -1,4 +1,4 @@
-import { prisma, ProviderKind } from "@demoforge/db";
+import { prisma, ProviderKind } from "@studio-one/db";
 import { getActiveWorkspaceId } from "../../lib/workspace.js";
 import { ProviderSettings, type ProviderRow } from "../../components/provider-settings.js";
 

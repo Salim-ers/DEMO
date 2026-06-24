@@ -1,4 +1,4 @@
-// DemoForge data model. PostgreSQL + Prisma.
+// Studio One data model. PostgreSQL + Prisma.
 // Security note: no plaintext secret is ever stored here. Credentials live in a
 // vault; only an opaque CredentialVaultRef is persisted.
 

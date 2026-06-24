@@ -1,5 +1,5 @@
 {
-  "name": "@demoforge/capture",
+  "name": "@studio-one/capture",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,8 +8,8 @@
   "exports": { ".": "./src/index.ts" },
   "scripts": { "typecheck": "tsc --noEmit", "test": "vitest run", "clean": "rm -rf dist .turbo" },
   "dependencies": {
-    "@demoforge/shared": "workspace:*",
-    "@demoforge/integrations": "workspace:*",
+    "@studio-one/shared": "workspace:*",
+    "@studio-one/integrations": "workspace:*",
     "playwright": "^1.47.2",
     "pino": "^9.4.0",
     "zod": "^3.23.8"

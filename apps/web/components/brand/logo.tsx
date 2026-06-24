@@ -1,49 +1,45 @@
 import { cn } from "../../lib/cn.js";
 
-/** DemoForge mark — a gradient rounded tile with a play glyph. */
+/* eslint-disable @next/next/no-img-element */
+
+const WORDMARK_WHITE = "/brand/studio-one-wordmark-white.png";
+const BADGE_BROWN = "/brand/studio-one-badge-brown.png";
+
+/** Brown circular badge — for the mark, cards, app icon. */
 export function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" width={size} height={size} className={cn("shrink-0", className)} role="img" aria-label="DemoForge">
-      <defs>
-        <linearGradient id="dfGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#8B5CF6" />
-          <stop offset="0.5" stopColor="#3B82F6" />
-          <stop offset="1" stopColor="#22D3EE" />
-        </linearGradient>
-      </defs>
-      <rect x="3" y="3" width="58" height="58" rx="17" fill="url(#dfGrad)" />
-      <path d="M26 22 L44 32 L26 42 Z" fill="#ffffff" />
-    </svg>
+    <img
+      src={BADGE_BROWN}
+      alt="Studio One"
+      width={size}
+      height={size}
+      style={{ width: size, height: size }}
+      className={cn("shrink-0 object-contain", className)}
+    />
   );
 }
 
-/** Horizontal lockup: mark + DemoForge wordmark (two-tone). */
-export function Logo({
-  size = 32,
-  className,
-  wordmarkClassName,
-}: {
-  size?: number;
-  withWordmark?: boolean;
-  className?: string;
-  wordmarkClassName?: string;
-}) {
+/** White wordmark — for the navbar, footer and other dark surfaces. */
+export function Logo({ size = 44, className }: { size?: number; withWordmark?: boolean; className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <LogoMark size={size} />
-      <span className={cn("display font-semibold leading-none text-ink", wordmarkClassName)} style={{ fontSize: size * 0.5 }}>
-        Demo<span className="text-gradient">Forge</span>
-      </span>
-    </span>
+    <img
+      src={WORDMARK_WHITE}
+      alt="Studio One"
+      width={size}
+      height={size}
+      style={{ width: size, height: size }}
+      className={cn("object-contain", className)}
+    />
   );
 }
 
-/** The big emblem for hero / CTA — the mark with an aurora glow behind it. */
-export function LogoEmblem({ size = 120, className }: { size?: number; variant?: string; className?: string }) {
+/** Large logo for hero / CTA, with a warm glow. `white` uses the wordmark, default the badge. */
+export function LogoEmblem({ size = 120, variant = "badge", className }: { size?: number; variant?: "badge" | "white"; className?: string }) {
+  const src = variant === "white" ? WORDMARK_WHITE : BADGE_BROWN;
   return (
     <div className={cn("relative inline-grid place-items-center", className)} style={{ width: size, height: size }}>
-      <div className="absolute inset-0 rounded-[30%] bg-aurora opacity-45 blur-2xl" aria-hidden />
-      <LogoMark size={size} className="relative" />
+      <div aria-hidden className="absolute inset-0 rounded-[30%] bg-aurora opacity-25 blur-2xl" />
+      <img src={src} alt="Studio One" width={size} height={size} style={{ width: size, height: size }} className="relative object-contain" />
     </div>
   );
 }

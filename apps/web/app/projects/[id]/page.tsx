@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Film } from "lucide-react";
-import type { JobState } from "@demoforge/shared";
+import type { JobState } from "@studio-one/shared";
 import { prisma } from "../../../lib/db.js";
 import { signed } from "../../../lib/storage.js";
 import { Badge } from "../../../components/ui/badge.js";
@@ -11,7 +11,7 @@ import { StoryboardPreview, type PreviewScene } from "../../../components/storyb
 import { DownloadCenter, type DownloadItem } from "../../../components/download-center.js";
 import { UserImagesPanel, type UploadedImage } from "../../../components/user-images-panel.js";
 import { prettyStatus } from "../../../lib/format.js";
-import { AssetKind } from "@demoforge/db";
+import { AssetKind } from "@studio-one/db";
 
 export const dynamic = "force-dynamic";
 

@@ -1,5 +1,5 @@
 import type { Logger } from "pino";
-import { JOBS, type JobName, type PipelineJobData } from "@demoforge/shared";
+import { JOBS, type JobName, type PipelineJobData } from "@studio-one/shared";
 import { jobLogger } from "./logger.js";
 import {
   ensureStages, getStage, setStage, markJobRunning, markJobSucceeded, markJobFailed, setProjectStatus,

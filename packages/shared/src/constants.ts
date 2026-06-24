@@ -1,4 +1,4 @@
-export const APP_NAME = "DemoForge";
+export const APP_NAME = "Studio One";
 
 export const VIDEO_FORMATS = ["16:9", "9:16", "1:1"] as const;
 export type VideoFormat = (typeof VIDEO_FORMATS)[number];
@@ -17,12 +17,15 @@ export type DemoTone = (typeof DEMO_TONES)[number];
 
 /** Art-direction presets selectable in the wizard ("Video style"). */
 export const VIDEO_STYLES = [
-  "creative_ai_studio", "clean_saas", "premium_motion", "luxury_product", "startup_launch", "investor_demo", "social_short",
+  "studio_one_cinematic", "clean_saas", "premium_motion", "luxury_product", "startup_launch", "investor_demo", "social_short",
 ] as const;
 export type VideoStyle = (typeof VIDEO_STYLES)[number];
 
+/** Default art-direction preset for new projects. */
+export const DEFAULT_VIDEO_STYLE: VideoStyle = "studio_one_cinematic";
+
 export const VIDEO_STYLE_LABEL: Record<VideoStyle, string> = {
-  creative_ai_studio: "Creative AI Studio",
+  studio_one_cinematic: "Studio One Cinematic",
   clean_saas: "Clean SaaS Demo",
   premium_motion: "Premium Motion Explainer",
   luxury_product: "Luxury Product Demo",
@@ -83,7 +86,7 @@ export type JobName = (typeof JOBS)[keyof typeof JOBS];
 // NOTE: no ":" — BullMQ v5 rejects colons in queue names (it uses ":" as its
 // internal Redis key separator). A colon here crashes both the Worker and the
 // web-side Queue with "Queue name cannot contain :".
-export const QUEUE_NAME = "demoforge-pipeline";
+export const QUEUE_NAME = "studio-one-pipeline";
 
 /** Average speaking rate (words/min) used to budget voiceover against scene time. */
 export const WORDS_PER_MINUTE = 150;

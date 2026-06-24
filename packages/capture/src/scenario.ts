@@ -1,7 +1,7 @@
 import {
   type Scenario, type ScenarioStep, scenarioSchema, SCENARIO_SYSTEM, scenarioUserPrompt,
-} from "@demoforge/shared";
-import { resolveLLM, extractJSON } from "@demoforge/integrations";
+} from "@studio-one/shared";
+import { resolveLLM, extractJSON } from "@studio-one/integrations";
 
 /**
  * Turn a natural-language demo description into structured steps.

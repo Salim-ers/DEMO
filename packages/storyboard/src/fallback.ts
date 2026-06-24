@@ -1,7 +1,7 @@
 import {
   type Storyboard, type StoryboardScene, type CaptureStepResult, type Scenario,
   type ProjectContext, type CameraMotion, type Callout, slugId, clamp,
-} from "@demoforge/shared";
+} from "@studio-one/shared";
 
 /**
  * Deterministic storyboard builder for the Premium SaaS Motion Engine. Runs with

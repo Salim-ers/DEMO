@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import type { JobState } from "@demoforge/shared";
-import { prisma } from "@demoforge/db";
+import type { JobState } from "@studio-one/shared";
+import { prisma } from "@studio-one/db";
 
 export const runtime = "nodejs";
 

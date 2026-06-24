@@ -11,9 +11,9 @@ import { mkdir, writeFile } from "node:fs/promises";
 import {
   type ProjectContext, type Scenario, type CaptureStepResult,
   buildSRT, buildVTT, RENDER_DEFAULTS,
-} from "@demoforge/shared";
-import { generateStoryboard } from "@demoforge/storyboard";
-import { buildVoiceScript, voiceScriptToMarkdown } from "@demoforge/voice";
+} from "@studio-one/shared";
+import { generateStoryboard } from "@studio-one/storyboard";
+import { buildVoiceScript, voiceScriptToMarkdown } from "@studio-one/voice";
 import { storyboardToRenderProps } from "./map.js";
 import { renderDemoVideo } from "./render.js";
 

@@ -1,8 +1,8 @@
-import type { Project, StoryboardScene as DbScene } from "@demoforge/db";
+import type { Project, StoryboardScene as DbScene } from "@studio-one/db";
 import {
   type ProjectContext, type Storyboard, type StoryboardScene, type SceneType,
   type VoiceMode, type CameraMotion, type Callout, type VideoFormat,
-} from "@demoforge/shared";
+} from "@studio-one/shared";
 
 /** DB SceneType enum (UPPER_SNAKE) -> shared scene type (lower_snake). */
 export function sceneTypeToDomain(v: string): SceneType {

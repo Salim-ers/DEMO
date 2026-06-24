@@ -1,6 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@demoforge/db";
+import { prisma } from "@studio-one/db";
 import { getActiveWorkspaceId } from "../workspace.js";
 
 type ActionResult = { ok: true; id?: string } | { ok: false; error: string };

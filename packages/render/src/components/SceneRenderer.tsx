@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
-import type { RenderScene } from "@demoforge/shared";
+import type { RenderScene } from "@studio-one/shared";
 import type { Theme } from "../theme.js";
 import { ScreenCapture } from "./ScreenCapture.js";
 import { TitleCard } from "./TitleCard.js";

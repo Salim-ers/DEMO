@@ -3,10 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   // Workspace packages ship raw TS; let Next transpile them.
   transpilePackages: [
-    "@demoforge/shared",
-    "@demoforge/db",
-    "@demoforge/integrations",
-    "@demoforge/worker",
+    "@studio-one/shared",
+    "@studio-one/db",
+    "@studio-one/integrations",
+    "@studio-one/worker",
   ],
   // bullmq / ioredis / prisma must stay server-side externals.
   serverExternalPackages: ["bullmq", "ioredis", "@prisma/client", "archiver"],

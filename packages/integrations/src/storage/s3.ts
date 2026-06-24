@@ -18,7 +18,7 @@ export class S3Provider implements StorageProvider {
   private bucket: string;
 
   constructor() {
-    this.bucket = process.env.S3_BUCKET ?? "demoforge";
+    this.bucket = process.env.S3_BUCKET ?? "studio-one";
     this.client = new S3Client({
       region: process.env.S3_REGION ?? "us-east-1",
       endpoint: process.env.S3_ENDPOINT || undefined,

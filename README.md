@@ -1,8 +1,8 @@
-# DemoForge
+# Studio One
 
 **Generate premium SaaS demo videos from a real browser capture.**
 
-DemoForge turns a URL, a login, and a sentence into a polished, narrated product
+Studio One turns a URL, a login, and a sentence into a polished, narrated product
 demo — using *real screenshots of the actual app*, not invented UI. It drives a
 headless browser through a scenario you describe in plain English, builds a
 grounded storyboard, writes a timed voiceover, renders an MP4 with Remotion, and
@@ -65,7 +65,7 @@ timeline** and a retried job resumes from where it stopped.
 ## Repository layout
 
 ```
-demoforge/
+studio-one/
 ├─ apps/
 │  ├─ web/                 Next.js app (dashboard, wizard, project view, settings)
 │  └─ worker/              BullMQ worker running the 7‑stage pipeline
@@ -133,7 +133,7 @@ fastest way to confirm Remotion + FFmpeg are working on your machine.
 
 ## Offline by default
 
-DemoForge is designed to run with **zero external API keys**:
+Studio One is designed to run with **zero external API keys**:
 
 - `LLM_PROVIDER=none` → the **deterministic storyboard + script writer** is used.
 - No `ELEVENLABS_API_KEY` → voiceover stays **script‑only** (text for a human to
