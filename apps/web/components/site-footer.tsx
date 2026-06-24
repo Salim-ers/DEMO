@@ -13,8 +13,8 @@ export function SiteFooter() {
     <footer className="border-t border-hairline">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 sm:px-8 md:flex-row md:items-center md:justify-between">
         <div className="max-w-sm">
-          <Logo size={120} />
-          <p className="mt-4 text-sm leading-relaxed text-muted">
+          <Logo size={150} />
+          <p className="mt-5 text-sm leading-relaxed text-muted">
             Studio One — Vidéos de démonstration SaaS professionnelles.
           </p>
         </div>

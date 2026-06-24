@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Plus, Menu, X } from "lucide-react";
-import { Logo } from "./brand/logo.js";
+import { LogoMark } from "./brand/logo.js";
 import { NAV_ITEMS } from "./nav-items.js";
 import { cn } from "../lib/cn.js";
 
@@ -15,8 +15,9 @@ function isActive(pathname: string, href: string) {
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
-      <Link href="/projects" onClick={onNavigate} className="mb-8 inline-block" aria-label="Studio One — accueil">
-        <Logo size={128} />
+      <Link href="/projects" onClick={onNavigate} className="mb-8 flex items-center gap-2.5" aria-label="Studio One — accueil">
+        <LogoMark size={36} />
+        <span className="text-base font-semibold tracking-tight text-ink">Studio One</span>
       </Link>
 
       <Link
@@ -101,8 +102,9 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
           <button type="button" onClick={() => setDrawer(true)} aria-label="Ouvrir le menu" className="text-muted hover:text-ink">
             <Menu size={22} />
           </button>
-          <Link href="/projects" className="flex items-center" aria-label="Studio One">
-            <Logo size={104} />
+          <Link href="/projects" className="flex items-center gap-2" aria-label="Studio One">
+            <LogoMark size={32} />
+            <span className="text-[15px] font-semibold tracking-tight text-ink">Studio One</span>
           </Link>
         </header>
 
