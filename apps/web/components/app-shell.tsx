@@ -4,6 +4,7 @@ import { ToastProvider } from "./ui/toast.js";
 import { SiteHeader } from "./site-header.js";
 import { SiteFooter } from "./site-footer.js";
 import { AppChrome } from "./app-sidebar.js";
+import { SmoothScroll } from "./landing/smooth-scroll.js";
 
 /** Routes that render the public marketing chrome instead of the app shell. */
 const MARKETING_ROUTES = new Set(["/"]);
@@ -21,6 +22,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <ToastProvider>
       {isMarketing ? (
         <div className="flex min-h-screen flex-col">
+          <SmoothScroll />
           <SiteHeader />
           <main className="flex-1">{children}</main>
           <SiteFooter />
