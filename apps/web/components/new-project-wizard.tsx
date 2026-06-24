@@ -1,13 +1,11 @@
 "use client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, ImagePlus, Loader2, Sparkles, X } from "lucide-react";
-import {
-  DEMO_DURATIONS, VIDEO_FORMATS, DEMO_TONES, VOICE_MODES, VIDEO_STYLES, VIDEO_STYLE_LABEL,
-} from "@studio-one/shared";
+import { ArrowLeft, ArrowRight, ImagePlus, Loader2, X } from "lucide-react";
+import { DEMO_DURATIONS, VIDEO_FORMATS, VOICE_MODES } from "@studio-one/shared";
 import { Button } from "./ui/button.js";
 import { Input, Textarea, Select } from "./ui/input.js";
-import { cn } from "../lib/cn.js";
+import { Stepper } from "./ui/stepper.js";
 
 interface FormState {
   productName: string;
@@ -29,19 +27,12 @@ interface FormState {
   startNow: boolean;
 }
 
-const STEPS = ["Produit", "Accès & parcours", "Format & voix"] as const;
+const STEPS = ["Produit", "Accès & scénario", "Format & voix"] as const;
 
-const TONE_LABEL: Record<string, string> = {
-  premium: "Premium",
-  pedagogical: "Pédagogique",
-  sales: "Commercial",
-  investor_demo: "Démo investisseurs",
-  onboarding: "Onboarding",
-};
 const VOICE_LABEL: Record<string, string> = {
-  script_only: "Script seul — enregistrement studio (recommandé premium)",
-  uploaded_human_voice: "Voix humaine (upload) — recommandé",
-  tts_provider: "Voix IA premium (ElevenLabs, si clé configurée)",
+  script_only: "Script seul",
+  uploaded_human_voice: "Voix humaine (upload)",
+  tts_provider: "Voix premium",
 };
 
 export function NewProjectWizard() {
@@ -62,8 +53,7 @@ export function NewProjectWizard() {
     tone: "premium",
     videoStyle: "studio_one_cinematic",
     referenceUrl: "",
-    // Premium commercial demos default to a written script for studio / human
-    // recording — never a robotic auto-voice. AI voice stays opt-in.
+    // Demos default to a written script for studio / human recording — AI voice stays opt-in.
     voiceMode: "script_only",
     loginUrl: "",
     email: "",
@@ -96,8 +86,6 @@ export function NewProjectWizard() {
         throw new Error(body.error ?? `Échec de la requête (${res.status})`);
       }
       const { id } = (await res.json()) as { id: string };
-      // Attach the user's own photos/screenshots BEFORE the pipeline runs, so the
-      // first generation already weaves them in as product scenes.
       if (images.length > 0) {
         const body = new FormData();
         images.forEach((f) => body.append("files", f));
@@ -115,22 +103,22 @@ export function NewProjectWizard() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <Stepper step={step} />
+      <Stepper steps={STEPS} current={step} />
 
       <div className="card mt-6 p-6 sm:p-8">
         {step === 0 && (
-          <Section title="Que démontre-t-on ?" hint="Le produit et la promesse unique que la vidéo doit faire passer.">
+          <Section title="Produit" hint="Le produit et la promesse principale que la vidéo doit faire passer.">
             <Field label="Nom du produit">
               <Input value={form.productName} onChange={(e) => set("productName", e.target.value)} placeholder="Northwind CRM" />
             </Field>
-            <Field label="URL de l'app" hint="L'app en ligne sur laquelle la capture sera effectuée.">
+            <Field label="URL de l’application">
               <Input value={form.url} onChange={(e) => set("url", e.target.value)} placeholder="https://app.exemple.com" />
             </Field>
-            <Field label="Audience">
+            <Field label="Audience cible">
               <Input
                 value={form.targetAudience}
                 onChange={(e) => set("targetAudience", e.target.value)}
-                placeholder="Responsables RevOps dans des entreprises SaaS B2B"
+                placeholder="Responsables commerciaux dans des entreprises B2B"
               />
             </Field>
             <Field label="Promesse principale">
@@ -144,93 +132,69 @@ export function NewProjectWizard() {
         )}
 
         {step === 1 && (
-          <Section title="Accès & parcours à enregistrer" hint="Les identifiants sont chiffrés dans un coffre — jamais stockés en clair, jamais journalisés.">
+          <Section title="Accès & scénario" hint="Ce que la vidéo doit montrer, et comment y accéder.">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label="URL de connexion (optionnel)">
                 <Input value={form.loginUrl} onChange={(e) => set("loginUrl", e.target.value)} placeholder="https://app.exemple.com/login" />
               </Field>
-              <Field label="Email du compte de démo (optionnel)">
+              <Field label="Email du compte démo (optionnel)">
                 <Input value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="demo@exemple.com" />
               </Field>
             </div>
-            <Field label="Mot de passe (optionnel)" hint="La 2FA / le CAPTCHA ne sont jamais contournés ; il vous sera demandé de les compléter à la main.">
+            <Field label="Mot de passe (optionnel)">
               <Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="••••••••" />
             </Field>
-            <Field label="Scénario" hint="En clair. Un parcours, quelques étapes — ex. ouvrir le tableau de bord, créer un client, puis afficher les analyses.">
+            <Field label="Scénario de démonstration">
               <Textarea
                 value={form.scenario}
                 onChange={(e) => set("scenario", e.target.value)}
-                placeholder="Ouvrir le tableau de bord, créer un nouveau client, afficher la page d'analyses, et terminer sur le résumé du ROI."
+                placeholder="Ouvrir le tableau de bord, créer un nouveau client, afficher la page d’analyses, et terminer sur le résumé."
                 rows={4}
               />
             </Field>
+            <p className="rounded-xl border border-hairline bg-surface px-4 py-3 text-sm leading-relaxed text-muted">
+              Les accès servent uniquement à capturer le parcours de démonstration. Ils ne sont jamais affichés dans la
+              vidéo.
+            </p>
           </Section>
         )}
 
         {step === 2 && (
-          <Section title="Format & voix" hint="L'apparence et le son. Vous pourrez relancer le rendu plus tard.">
+          <Section title="Format & voix" hint="L’apparence et le son. Vous pourrez relancer la génération plus tard.">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label="Durée">
                 <Select value={form.durationSeconds} onChange={(e) => set("durationSeconds", Number(e.target.value))}>
                   {DEMO_DURATIONS.map((d) => (
                     <option key={d} value={d}>
-                      {d} secondes
+                      {d >= 180 ? "3 min" : `${d} s`}
                     </option>
                   ))}
                 </Select>
               </Field>
-              <Field label="Format d'image">
+              <Field label="Format">
                 <Select value={form.format} onChange={(e) => set("format", e.target.value)}>
                   {VIDEO_FORMATS.map((f) => (
                     <option key={f} value={f}>
-                      {f === "16:9" ? "16:9 — paysage" : f === "9:16" ? "9:16 — vertical" : "1:1 — carré"}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
-              <Field label="Ton">
-                <Select value={form.tone} onChange={(e) => set("tone", e.target.value)}>
-                  {DEMO_TONES.map((t) => (
-                    <option key={t} value={t}>
-                      {TONE_LABEL[t] ?? t}
+                      {f === "16:9" ? "16:9 — paysage" : f === "9:16" ? "9:16 — vertical" : "Carré (1:1)"}
                     </option>
                   ))}
                 </Select>
               </Field>
               <Field label="Langue">
                 <Select value={form.language} onChange={(e) => set("language", e.target.value)}>
-                  <option value="en">English</option>
                   <option value="fr">Français</option>
-                  <option value="es">Español</option>
-                  <option value="de">Deutsch</option>
                 </Select>
               </Field>
-              <Field label="Style vidéo">
-                <Select value={form.videoStyle} onChange={(e) => set("videoStyle", e.target.value)}>
-                  {VIDEO_STYLES.map((s) => (
-                    <option key={s} value={s}>
-                      {VIDEO_STYLE_LABEL[s] ?? s}
+              <Field label="Voix">
+                <Select value={form.voiceMode} onChange={(e) => set("voiceMode", e.target.value)}>
+                  {VOICE_MODES.map((v) => (
+                    <option key={v} value={v}>
+                      {VOICE_LABEL[v] ?? v}
                     </option>
                   ))}
                 </Select>
               </Field>
             </div>
-            <Field label="Référence de style (URL, optionnel)" hint="Ex. une vidéo YouTube dont vous aimez le rythme et le motion design. Nous nous en inspirons sans jamais la copier.">
-              <Input
-                placeholder="https://www.youtube.com/watch?v=…"
-                value={form.referenceUrl}
-                onChange={(e) => set("referenceUrl", e.target.value)}
-              />
-            </Field>
-            <Field label="Voix off">
-              <Select value={form.voiceMode} onChange={(e) => set("voiceMode", e.target.value)}>
-                {VOICE_MODES.map((v) => (
-                  <option key={v} value={v}>
-                    {VOICE_LABEL[v] ?? v}
-                  </option>
-                ))}
-              </Select>
-            </Field>
 
             {form.voiceMode === "tts_provider" && (
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-surface p-3.5">
@@ -241,12 +205,12 @@ export function NewProjectWizard() {
                   className="mt-0.5 h-4 w-4 accent-accent"
                 />
                 <span className="text-sm text-muted">
-                  Je confirme avoir les droits et le consentement pour synthétiser cette voix off. Aucune voix n'est clonée ou générée sans cela.
+                  Je confirme avoir les droits et le consentement pour synthétiser cette voix off.
                 </span>
               </label>
             )}
 
-            <Field label="Vos visuels (optionnel)" hint="Ajoutez vos propres photos ou captures d'écran. Elles seront intégrées à la vidéo comme scènes du produit — utile si votre app est derrière une connexion.">
+            <Field label="Vos visuels (optionnel)" hint="Ajoutez vos captures d’écran : elles seront intégrées à la vidéo, utile si votre app est derrière une connexion.">
               <input
                 ref={imgInputRef}
                 type="file"
@@ -288,7 +252,7 @@ export function NewProjectWizard() {
 
             <label className="mt-1 flex cursor-pointer items-center gap-3">
               <input type="checkbox" checked={form.startNow} onChange={(e) => set("startNow", e.target.checked)} className="h-4 w-4 accent-accent" />
-              <span className="text-sm text-muted">Lancer la capture & le rendu immédiatement</span>
+              <span className="text-sm text-muted">Lancer la génération immédiatement</span>
             </label>
           </Section>
         )}
@@ -305,8 +269,8 @@ export function NewProjectWizard() {
             </Button>
           ) : (
             <Button onClick={submit} disabled={submitting}>
-              {submitting ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-              {form.startNow ? "Créer & générer" : "Créer le projet"}
+              {submitting && <Loader2 size={16} className="animate-spin" />}
+              {form.startNow ? "Lancer la génération" : "Créer la démo"}
             </Button>
           )}
         </div>
@@ -315,37 +279,10 @@ export function NewProjectWizard() {
   );
 }
 
-function Stepper({ step }: { step: number }) {
-  return (
-    <div className="flex items-center gap-3">
-      {STEPS.map((label, i) => (
-        <div key={label} className="flex flex-1 items-center gap-3">
-          <div className="flex items-center gap-2.5">
-            <span
-              className={cn(
-                "flex h-7 w-7 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
-                i < step
-                  ? "border-accent bg-accent text-ivory"
-                  : i === step
-                    ? "border-accent text-accent"
-                    : "border-hairline text-faint",
-              )}
-            >
-              {i + 1}
-            </span>
-            <span className={cn("text-sm font-medium", i <= step ? "text-ink" : "text-faint")}>{label}</span>
-          </div>
-          {i < STEPS.length - 1 && <span className={cn("h-px flex-1", i < step ? "bg-accent/60" : "bg-hairline")} />}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="animate-fade-up">
-      <h2 className="text-lg font-semibold tracking-tighter text-ink">{title}</h2>
+      <h2 className="text-lg font-semibold tracking-tight text-ink">{title}</h2>
       {hint && <p className="mt-1 text-sm leading-relaxed text-muted">{hint}</p>}
       <div className="mt-6 flex flex-col gap-4">{children}</div>
     </div>

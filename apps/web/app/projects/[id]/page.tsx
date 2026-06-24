@@ -4,25 +4,15 @@ import { ArrowLeft, Film } from "lucide-react";
 import type { JobState } from "@studio-one/shared";
 import { prisma } from "../../../lib/db.js";
 import { signed } from "../../../lib/storage.js";
-import { Badge } from "../../../components/ui/badge.js";
+import { StatusBadge } from "../../../components/ui/status-badge.js";
 import { GenerateButton } from "../../../components/generate-button.js";
 import { PipelineTimeline } from "../../../components/pipeline-timeline.js";
 import { StoryboardPreview, type PreviewScene } from "../../../components/storyboard-preview.js";
 import { DownloadCenter, type DownloadItem } from "../../../components/download-center.js";
 import { UserImagesPanel, type UploadedImage } from "../../../components/user-images-panel.js";
-import { prettyStatus } from "../../../lib/format.js";
 import { AssetKind } from "@studio-one/db";
 
 export const dynamic = "force-dynamic";
-
-const STATUS_TONE: Record<string, "neutral" | "accent" | "ok" | "bad"> = {
-  draft: "neutral",
-  capturing: "accent",
-  storyboarding: "accent",
-  rendering: "accent",
-  ready: "ok",
-  failed: "bad",
-};
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -105,17 +95,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   return (
     <div>
-      <Link href="/dashboard" className="mb-7 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink">
-        <ArrowLeft size={16} /> Retour aux projets
+      <Link href="/projects" className="mb-7 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink">
+        <ArrowLeft size={16} /> Retour à mes démos
       </Link>
 
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="mb-2 flex items-center gap-3">
-            <h1 className="display text-3xl font-semibold text-ink">{project.productName}</h1>
-            <Badge tone={STATUS_TONE[project.status] ?? "neutral"}>{prettyStatus(project.status)}</Badge>
+            <h1 className="text-3xl font-semibold tracking-tight text-ink">{project.productName}</h1>
+            <StatusBadge status={project.status} />
           </div>
-          <p className="font-mono text-sm text-faint">{host}</p>
+          <p className="text-sm text-faint">{host}</p>
         </div>
         <GenerateButton projectId={project.id} hasRun={Boolean(renderJob)} />
       </header>

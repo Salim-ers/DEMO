@@ -17,10 +17,7 @@ async function authorize(id: string) {
 }
 
 function revalidateAll() {
-  revalidatePath("/dashboard");
   revalidatePath("/projects");
-  revalidatePath("/exports");
-  revalidatePath("/quality");
 }
 
 /** Permanently delete a project. Cascades to scenes, captures, renders, assets. */
@@ -47,7 +44,6 @@ export async function renameProject(id: string, name: string): Promise<ActionRes
   if (!auth) return { ok: false, error: "Projet introuvable" };
   await prisma.project.update({ where: { id }, data: { productName: trimmed } });
   revalidatePath("/projects");
-  revalidatePath("/dashboard");
   revalidatePath(`/projects/${id}`);
   return { ok: true };
 }

@@ -2,21 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Studio One — sober, warm, professional.
+ * Deep near-black canvas, cream ink, a single brown → caramel accent.
+ * No neon, no aurora, no film grain. Calm and legible.
+ */
 :root {
   color-scheme: dark;
-  --background: #050403;
-  --background-soft: #0e0a07;
-  --surface: rgba(255, 248, 238, 0.055);
-  --surface-strong: rgba(255, 248, 238, 0.095);
-  --border: rgba(255, 248, 238, 0.14);
-  --text-primary: #fff8ee;
-  --text-secondary: rgba(255, 248, 238, 0.72);
-  --text-muted: rgba(255, 248, 238, 0.45);
-  --studio-brown: #9b6a3c;
-  --studio-caramel: #b9824a;
-  --studio-gold: #d6a15f;
-  --studio-cream: #fff3df;
-  --studio-dark: #050403;
+
+  /* Brand palette (single source of truth). */
+  --background: #060504;
+  --background-soft: #11100e;
+  --cream: #fff7ec;
+  --cream-soft: #f3e7d7;
+  --text-dark: #1a130d;
+  --text-light: #fff7ec;
+  --muted-light: rgba(255, 247, 236, 0.68);
+  --muted-dark: rgba(26, 19, 13, 0.62);
+  --brown: #8b5e34;
+  --caramel: #b9824a;
+  --border-light: rgba(255, 247, 236, 0.14);
+  --border-dark: rgba(26, 19, 13, 0.1);
+
+  /* Semantic aliases used across the app. */
+  --surface: rgba(255, 247, 236, 0.04);
+  --border: var(--border-light);
+  --text-primary: var(--cream);
+  --text-secondary: var(--muted-light);
+  --text-muted: rgba(255, 247, 236, 0.45);
+  --accent: var(--caramel);
 }
 
 html,
@@ -27,97 +41,46 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Ambient cinematic backdrop: caramel/gold/cream halos + a deep black vignette. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(55% 48% at 12% -6%, rgba(185, 130, 74, 0.28) 0%, transparent 58%),
-    radial-gradient(50% 42% at 100% 4%, rgba(216, 164, 96, 0.2) 0%, transparent 55%),
-    radial-gradient(46% 40% at 84% 96%, rgba(122, 76, 42, 0.2) 0%, transparent 55%),
-    radial-gradient(38% 30% at 50% 50%, rgba(255, 244, 228, 0.05) 0%, transparent 60%),
-    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
-}
-
-/* Fine film grain over everything, very low opacity. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 @layer base {
   * {
     border-color: var(--border);
   }
   ::selection {
-    background: rgba(185, 130, 74, 0.34);
-    color: #fff8ee;
+    background: rgba(185, 130, 74, 0.28);
+    color: var(--cream);
   }
   :focus-visible {
-    outline: 2px solid var(--studio-caramel);
+    outline: 2px solid var(--caramel);
     outline-offset: 2px;
     border-radius: 8px;
   }
   h1,
   h2,
   h3 {
-    letter-spacing: theme("letterSpacing.tighter");
+    letter-spacing: -0.02em;
   }
 }
 
 @layer components {
+  /* Small uppercase section label — sober, no monospace. */
   .eyebrow {
-    @apply inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-accent-deep;
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-caramel;
   }
+  /* The one card style: soft border, faint surface, restrained shadow. */
   .card {
-    @apply rounded-2xl border border-hairline bg-panel shadow-panel backdrop-blur-xl;
+    @apply rounded-2xl border border-hairline bg-panel shadow-panel;
   }
   .field-label {
     @apply mb-1.5 block text-sm font-medium text-muted;
   }
-  .display {
-    @apply font-display font-semibold tracking-tighter;
-  }
-  .text-gradient {
-    @apply bg-aurora bg-clip-text text-transparent;
-    background-size: 200% 200%;
-  }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors duration-200;
   }
   .btn-primary {
-    @apply btn bg-accent px-5 py-2.5 text-studio shadow-glow hover:-translate-y-0.5;
+    @apply btn bg-accent px-5 py-2.5 font-semibold text-studio hover:bg-accent-deep;
   }
   .btn-secondary {
-    @apply btn border border-hairline bg-surface px-5 py-2.5 text-ink backdrop-blur-md hover:border-accent/40 hover:bg-elevated;
-  }
-  .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-0.5 text-xs font-medium text-muted backdrop-blur-md;
-  }
-  .border-gradient {
-    position: relative;
-  }
-  .border-gradient::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(185, 130, 74, 0.6), rgba(214, 161, 95, 0.32), transparent 70%);
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+    @apply btn border border-hairline bg-surface px-5 py-2.5 text-ink hover:border-accent/40 hover:bg-elevated;
   }
 }
 
@@ -136,12 +99,12 @@ body::after {
   height: 11px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 248, 238, 0.14);
+  background: rgba(255, 247, 236, 0.12);
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 248, 238, 0.24);
+  background: rgba(255, 247, 236, 0.2);
   background-clip: content-box;
 }

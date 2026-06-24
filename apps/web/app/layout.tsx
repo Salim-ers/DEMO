@@ -7,31 +7,33 @@ import "./globals.css";
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
+const DESCRIPTION =
+  "Studio One transforme vos écrans, vos accès démo et votre scénario en une vidéo de démonstration claire, propre et prête à envoyer à vos prospects.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://demo-navy-phi.vercel.app"),
   title: {
-    default: `${APP_NAME} — Cinematic SaaS demo videos`,
+    default: `${APP_NAME} — Vidéos de démonstration pour vos SaaS`,
     template: `%s · ${APP_NAME}`,
   },
-  description: "Capture real SaaS product flows and turn them into premium demo videos.",
+  description: DESCRIPTION,
   applicationName: APP_NAME,
   icons: { icon: "/brand/studio-one-favicon.png" },
   openGraph: {
-    title: `${APP_NAME} — Cinematic SaaS demo videos`,
-    description: "Capture real SaaS product flows and turn them into premium demo videos.",
+    title: `${APP_NAME} — Vidéos de démonstration pour vos SaaS`,
+    description: DESCRIPTION,
     siteName: APP_NAME,
     images: ["/brand/studio-one-badge-brown.png"],
     type: "website",
+    locale: "fr_FR",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable} dark`}>
+    <html lang="fr" className={`${sans.variable} ${mono.variable} dark`}>
       <body className="font-sans antialiased">
-        <div className="relative z-10">
-          <AppShell>{children}</AppShell>
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

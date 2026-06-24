@@ -10,7 +10,6 @@ import {
   ArchiveRestore,
   Trash2,
   Gauge,
-  Download,
 } from "lucide-react";
 import { DropdownMenu, DropdownItem, DropdownSeparator } from "./ui/dropdown-menu.js";
 import { Dialog } from "./ui/dialog.js";
@@ -115,9 +114,6 @@ export function ProjectActionsMenu({
         <DropdownSeparator />
         <DropdownItem icon={Gauge} onSelect={() => router.push(`/projects/${id}#quality`)}>
           Voir le rapport qualité
-        </DropdownItem>
-        <DropdownItem icon={Download} onSelect={() => router.push("/exports")}>
-          Historique d'export
         </DropdownItem>
         <DropdownSeparator />
         <DropdownItem icon={Trash2} danger onSelect={() => setConfirmDelete(true)}>

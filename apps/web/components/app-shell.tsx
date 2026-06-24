@@ -6,7 +6,7 @@ import { SiteFooter } from "./site-footer.js";
 import { AppChrome } from "./app-sidebar.js";
 
 /** Routes that render the public marketing chrome instead of the app shell. */
-const MARKETING_ROUTES = new Set(["/", "/pricing"]);
+const MARKETING_ROUTES = new Set(["/"]);
 
 /**
  * One frame, two faces. Public pages (landing, pricing) get a marketing header +

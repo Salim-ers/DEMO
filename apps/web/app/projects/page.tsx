@@ -31,12 +31,11 @@ export default async function ProjectsPage() {
     <div className="animate-fade-up">
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow mb-2">Espace de travail</p>
-          <h1 className="display text-3xl font-semibold text-ink">Vos projets</h1>
-          <p className="mt-2 text-muted">Recherchez, filtrez et gérez tous vos projets de démo.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-ink">Mes démos</h1>
+          <p className="mt-2 text-muted">Retrouvez et gérez toutes vos vidéos de démonstration.</p>
         </div>
-        <Link href="/projects/new" className="btn-primary">
-          <Plus size={16} /> Nouveau projet
+        <Link href="/new" className="btn-primary">
+          <Plus size={16} /> Nouvelle démo
         </Link>
       </header>
 

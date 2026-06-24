@@ -1,46 +1,43 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { Logo } from "./brand/logo.js";
-import { GlowButton } from "./ui/glow-button.js";
 
 const NAV = [
-  { href: "/#studio", label: "Studio" },
-  { href: "/#gallery", label: "Demos" },
-  { href: "/#workflow", label: "Workflow" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/#presentation", label: "Présentation" },
+  { href: "/#fonctionnement", label: "Fonctionnement" },
+  { href: "/#exemples", label: "Exemples" },
 ];
 
-/** Public marketing header — tall, glass, with a clearly visible wordmark. */
+/** Public navbar — sober, low, dark, with a clearly visible wordmark. */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-hairline/70 bg-canvas/60 backdrop-blur-2xl">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 sm:px-10">
-        <Link href="/" aria-label="Studio One — home" className="-my-2 shrink-0">
-          <Logo size={58} />
+    <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/85 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+        <Link href="/" aria-label="Studio One — accueil" className="shrink-0">
+          <Logo size={118} />
         </Link>
 
-        <nav className="hidden items-center gap-9 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {NAV.map((n) => (
             <Link
               key={n.href}
               href={n.href}
-              className="text-[15px] font-medium text-muted transition-colors hover:text-ink"
+              className="text-sm font-medium text-muted transition-colors hover:text-ink"
             >
               {n.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link
-            href="/dashboard"
-            className="hidden text-[15px] font-medium text-muted transition-colors hover:text-ink sm:inline-flex"
+            href="/projects"
+            className="hidden text-sm font-medium text-muted transition-colors hover:text-ink sm:inline-flex"
           >
-            Log in
+            Connexion
           </Link>
-          <GlowButton href="/projects/new" className="px-6 py-3 text-[15px]">
-            Create a demo <ArrowRight size={16} />
-          </GlowButton>
+          <Link href="/new" className="btn-primary px-4 py-2 text-sm">
+            Créer une démo
+          </Link>
         </div>
       </div>
     </header>

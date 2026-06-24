@@ -47,7 +47,7 @@ export function Dialog({
           className,
         )}
       >
-        {title && <h2 className="display text-xl font-semibold text-ink">{title}</h2>}
+        {title && <h2 className="text-xl font-semibold tracking-tight text-ink">{title}</h2>}
         {description && <p className="mt-2 text-sm leading-relaxed text-muted">{description}</p>}
         {children}
         {footer && <div className="mt-6 flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end">{footer}</div>}

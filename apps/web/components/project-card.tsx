@@ -1,17 +1,8 @@
 import Link from "next/link";
-import { Badge } from "./ui/badge.js";
+import { ArrowRight } from "lucide-react";
+import { StatusBadge } from "./ui/status-badge.js";
 import { ProjectActionsMenu } from "./project-actions.js";
-import { timeAgo, prettyStatus } from "../lib/format.js";
-
-type Tone = "neutral" | "accent" | "ok" | "warn" | "bad";
-const STATUS_TONE: Record<string, Tone> = {
-  draft: "neutral",
-  capturing: "accent",
-  storyboarding: "accent",
-  rendering: "accent",
-  ready: "ok",
-  failed: "bad",
-};
+import { timeAgo } from "../lib/format.js";
 
 export interface ProjectCardData {
   id: string;
@@ -31,41 +22,39 @@ export function ProjectCard({ p, index = 0 }: { p: ProjectCardData; index?: numb
   } catch {
     /* keep raw */
   }
-  const inFlight = p.status !== "draft" && p.status !== "ready" && p.status !== "failed";
 
   return (
     <div
-      style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
-      className="group card animate-fade-up p-5 transition-all duration-200 hover:-translate-y-1 hover:border-accent/30 hover:shadow-soft"
+      style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+      className="group card animate-fade-up flex flex-col p-5 transition-colors duration-200 hover:border-accent/30"
     >
       <div className="mb-4 flex items-start justify-between gap-2">
         <Link href={`/projects/${p.id}`} className="min-w-0 flex-1">
-          <h3 className="truncate text-[15px] font-semibold tracking-tighter text-ink transition-colors group-hover:text-accent-deep">
+          <h3 className="truncate text-[15px] font-semibold tracking-tight text-ink transition-colors group-hover:text-accent-deep">
             {p.productName}
           </h3>
-          <p className="mt-0.5 truncate font-mono text-xs text-faint">{host}</p>
+          <p className="mt-0.5 truncate text-xs text-faint">{host}</p>
         </Link>
         <ProjectActionsMenu id={p.id} name={p.productName} archived={p.archived} />
       </div>
 
-      <Link href={`/projects/${p.id}`} className="block">
+      <Link href={`/projects/${p.id}`} className="block flex-1">
         <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-muted">{p.mainPromise}</p>
       </Link>
 
-      <div className="flex items-center justify-between">
-        <Badge tone={STATUS_TONE[p.status] ?? "neutral"}>
-          {inFlight && (
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-            </span>
-          )}
-          {prettyStatus(p.status)}
-        </Badge>
-        <span className="font-mono text-[11px] text-faint">
+      <div className="mb-4 flex items-center justify-between">
+        <StatusBadge status={p.status} />
+        <span className="text-[11px] text-faint">
           {p.format} · {timeAgo(p.updatedAt)}
         </span>
       </div>
+
+      <Link
+        href={`/projects/${p.id}`}
+        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-hairline bg-surface px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-accent/40 hover:bg-elevated"
+      >
+        Ouvrir <ArrowRight size={15} />
+      </Link>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Plus, Archive, FolderOpen } from "lucide-react";
 import { ProjectCard, type ProjectCardData } from "./project-card.js";
+import { EmptyState } from "./ui/empty-state.js";
 import { cn } from "../lib/cn.js";
 
 type Filter = "all" | "draft" | "in_progress" | "ready" | "failed";
@@ -78,26 +79,30 @@ export function ProjectsBrowser({ projects }: { projects: ProjectCardData[] }) {
       </div>
 
       {visible.length === 0 ? (
-        <div className="card flex flex-col items-center justify-center px-6 py-16 text-center">
-          <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-elevated text-faint">
-            {showArchived ? <Archive size={20} /> : <FolderOpen size={20} />}
-          </span>
-          <h3 className="text-base font-semibold text-ink">
-            {showArchived ? "Aucun projet archivé" : query || filter !== "all" ? "Aucun projet ne correspond" : "Aucun projet pour l'instant"}
-          </h3>
-          <p className="mt-1.5 max-w-sm text-sm text-muted">
-            {showArchived
-              ? "Les projets que vous archivez apparaîtront ici."
+        <EmptyState
+          icon={showArchived ? Archive : FolderOpen}
+          title={
+            showArchived
+              ? "Aucune démo archivée"
+              : query || filter !== "all"
+                ? "Aucune démo ne correspond"
+                : "Aucune démo pour le moment."
+          }
+          description={
+            showArchived
+              ? "Les démos que vous archivez apparaîtront ici."
               : query || filter !== "all"
                 ? "Essayez un autre terme ou retirez les filtres."
-                : "Lancez votre premier projet pour commencer."}
-          </p>
-          {!showArchived && !query && filter === "all" && (
-            <Link href="/projects/new" className="btn-primary mt-5">
-              <Plus size={16} /> Créer une démo
-            </Link>
-          )}
-        </div>
+                : "Créez votre première vidéo de démonstration avec Studio One."
+          }
+          action={
+            !showArchived && !query && filter === "all" ? (
+              <Link href="/new" className="btn-primary">
+                <Plus size={16} /> Nouvelle démo
+              </Link>
+            ) : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((p, i) => (

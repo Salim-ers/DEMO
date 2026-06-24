@@ -1,7 +1,7 @@
 import { Landing } from "../components/landing/landing.js";
 
 export const metadata = {
-  title: { absolute: "Studio One — AI demo video studio for SaaS teams" },
+  title: { absolute: "Studio One — Vidéos de démonstration pour vos SaaS" },
 };
 
 export default function LandingPage() {
