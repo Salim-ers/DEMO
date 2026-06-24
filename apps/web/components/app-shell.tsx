@@ -1,10 +1,10 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { ToastProvider } from "./ui/toast.js";
-import { SiteHeader } from "./site-header.js";
 import { SiteFooter } from "./site-footer.js";
 import { AppChrome } from "./app-sidebar.js";
 import { SmoothScroll } from "./landing/smooth-scroll.js";
+import { LandingSidebar } from "./landing/landing-sidebar.js";
 
 /** Routes that render the public marketing chrome instead of the app shell. */
 const MARKETING_ROUTES = new Set(["/"]);
@@ -21,11 +21,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
       {isMarketing ? (
-        <div className="flex min-h-screen flex-col">
+        <div className="min-h-screen">
           <SmoothScroll />
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
+          <LandingSidebar />
+          <div className="pt-14 lg:pl-[264px] lg:pt-0">
+            <main>{children}</main>
+            <SiteFooter />
+          </div>
         </div>
       ) : (
         <AppChrome>{children}</AppChrome>
