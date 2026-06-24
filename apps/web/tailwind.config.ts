@@ -1,10 +1,9 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Studio One — a calm, cinematic, warm system. Deep near-black canvas, cream ink,
- * and a brown → caramel → soft-gold spectrum carry all warmth. Glass surfaces tinted
- * cream. Semantic token names are preserved so the whole app re-skins from here;
- * the previous vibrant aliases are remapped to their warm equivalents.
+ * Studio One — cinematic, warm, editorial. Deep near-black canvas, cream ink, and
+ * a brown → caramel → gold spectrum. Glass tinted cream, deep shadows, warm halos.
+ * Semantic token names are preserved so the whole app re-skins from here.
  */
 const config: Config = {
   darkMode: "class",
@@ -12,42 +11,41 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Surfaces — deep black, cream-tinted glass.
-        canvas: "#050403",
-        surface: "rgba(255,248,238,0.055)",
-        panel: "rgba(255,248,238,0.055)",
-        elevated: "rgba(255,248,238,0.095)",
-        hairline: "rgba(255,248,238,0.14)",
-        // Ink.
-        ink: "#FFF8EE",
-        muted: "rgba(255,248,238,0.72)",
-        faint: "rgba(255,248,238,0.45)",
-        // Primary accent — caramel. `deep` (soft gold) reads on dark surfaces.
+        canvas: "#040302",
+        "canvas-soft": "#0D0906",
+        surface: "rgba(255,244,228,0.05)",
+        panel: "rgba(255,244,228,0.05)",
+        elevated: "rgba(255,244,228,0.09)",
+        hairline: "rgba(255,244,228,0.13)",
+        ink: "#FFF4E4",
+        muted: "rgba(255,244,228,0.68)",
+        faint: "rgba(255,244,228,0.40)",
         accent: {
           DEFAULT: "#B9824A",
-          deep: "#D6A15F",
+          deep: "#D8A460",
           soft: "rgba(185,130,74,0.16)",
           ring: "rgba(185,130,74,0.5)",
         },
         // Studio One spectrum.
-        brown: "#9B6A3C",
+        brown: "#7A4C2A",
         caramel: "#B9824A",
-        gold: "#D6A15F",
-        cream: "#FFF3DF",
-        studio: "#050403",
-        // Previous vibrant aliases → warm equivalents, so old markup holds.
+        gold: "#D8A460",
+        cream: "#FFF4E4",
+        "deep-brown": "#1A1009",
+        studio: "#040302",
+        // Previous aliases → warm equivalents, so existing markup holds.
         violet: "#B9824A",
-        blue: "#9B6A3C",
-        cyan: "#D6A15F",
-        pink: "#C98A4E",
-        ivory: "#FFF8EE",
-        espresso: "#050403",
-        champagne: "rgba(255,248,238,0.095)",
-        bronze: "#9B6A3C",
+        blue: "#7A4C2A",
+        cyan: "#D8A460",
+        pink: "#C08A4E",
+        ivory: "#FFF4E4",
+        espresso: "#040302",
+        champagne: "rgba(255,244,228,0.09)",
+        bronze: "#7A4C2A",
         cognac: "#B9824A",
-        // Status — tuned for the warm dark theme.
-        ok: "#5BA17E",
-        warn: "#D6A15F",
+        // Status.
+        ok: "#6BA579",
+        warn: "#D8A460",
         bad: "#D9694B",
       },
       fontFamily: {
@@ -56,49 +54,47 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "JetBrains Mono", "monospace"],
       },
       letterSpacing: {
-        tightest: "-0.05em",
-        tighter: "-0.035em",
+        tightest: "-0.055em",
+        tighter: "-0.04em",
         tight: "-0.02em",
       },
-      borderRadius: { xl: "14px", "2xl": "20px", "3xl": "28px" },
+      borderRadius: { xl: "14px", "2xl": "20px", "3xl": "30px" },
       boxShadow: {
-        panel: "0 1px 0 rgba(255,248,238,0.05) inset, 0 24px 60px -20px rgba(0,0,0,0.7)",
-        soft: "0 30px 90px -40px rgba(0,0,0,0.85)",
-        glow: "0 0 0 1px rgba(185,130,74,0.32), 0 18px 50px -12px rgba(185,130,74,0.45)",
-        "glow-cyan": "0 0 0 1px rgba(214,161,95,0.3), 0 18px 50px -12px rgba(214,161,95,0.4)",
+        panel: "0 1px 0 rgba(255,244,228,0.05) inset, 0 30px 70px -24px rgba(0,0,0,0.8)",
+        soft: "0 40px 120px -50px rgba(0,0,0,0.9)",
+        glow: "0 0 0 1px rgba(185,130,74,0.32), 0 22px 60px -14px rgba(185,130,74,0.45)",
+        "glow-lg": "0 30px 120px -30px rgba(185,130,74,0.5)",
         ring: "0 0 0 4px rgba(185,130,74,0.16)",
       },
       backgroundImage: {
-        "bronze-sheen": "linear-gradient(135deg, #9B6A3C 0%, #B9824A 50%, #D6A15F 100%)",
-        aurora: "linear-gradient(120deg, #8A5A2E 0%, #9B6A3C 35%, #B9824A 65%, #D6A15F 100%)",
-        "aurora-soft": "linear-gradient(120deg, rgba(155,106,60,0.20), rgba(185,130,74,0.16), rgba(214,161,95,0.14))",
-        "pink-violet": "linear-gradient(135deg, #D6A15F 0%, #9B6A3C 100%)",
+        "bronze-sheen": "linear-gradient(135deg, #7A4C2A 0%, #B9824A 50%, #D8A460 100%)",
+        aurora: "linear-gradient(120deg, #6B3F22 0%, #7A4C2A 30%, #B9824A 65%, #D8A460 100%)",
+        "aurora-soft": "linear-gradient(120deg, rgba(122,76,42,0.22), rgba(185,130,74,0.16), rgba(216,164,96,0.14))",
+        "pink-violet": "linear-gradient(135deg, #D8A460 0%, #7A4C2A 100%)",
         "grid-faint":
-          "linear-gradient(rgba(255,248,238,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,248,238,0.04) 1px, transparent 1px)",
+          "linear-gradient(rgba(255,244,228,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,244,228,0.04) 1px, transparent 1px)",
       },
       keyframes: {
         "pulse-ring": { "0%": { transform: "scale(0.8)", opacity: "0.6" }, "100%": { transform: "scale(1.8)", opacity: "0" } },
         shimmer: { "100%": { transform: "translateX(100%)" } },
         "fade-up": { "0%": { opacity: "0", transform: "translateY(8px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
         "scale-in": { "0%": { opacity: "0", transform: "scale(0.96)" }, "100%": { opacity: "1", transform: "scale(1)" } },
-        float: { "0%,100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-9px)" } },
+        float: { "0%,100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-11px)" } },
         marquee: { "0%": { transform: "translateX(0)" }, "100%": { transform: "translateX(-50%)" } },
         "spin-slow": { "0%": { transform: "rotate(0deg)" }, "100%": { transform: "rotate(360deg)" } },
         "gradient-pan": { "0%,100%": { backgroundPosition: "0% 50%" }, "50%": { backgroundPosition: "100% 50%" } },
-        "soft-pulse": { "0%,100%": { opacity: "0.5" }, "50%": { opacity: "1" } },
-        "border-glow": { "0%,100%": { opacity: "0.4" }, "50%": { opacity: "1" } },
+        "soft-pulse": { "0%,100%": { opacity: "0.45" }, "50%": { opacity: "1" } },
       },
       animation: {
         "pulse-ring": "pulse-ring 1.6s ease-out infinite",
-        shimmer: "shimmer 2s infinite",
+        shimmer: "shimmer 2.4s infinite",
         "fade-up": "fade-up 0.45s cubic-bezier(0.22,1,0.36,1) both",
         "scale-in": "scale-in 0.5s cubic-bezier(0.22,1,0.36,1) both",
-        float: "float 7s ease-in-out infinite",
-        marquee: "marquee 34s linear infinite",
-        "spin-slow": "spin-slow 28s linear infinite",
-        "gradient-pan": "gradient-pan 8s ease infinite",
-        "soft-pulse": "soft-pulse 3s ease-in-out infinite",
-        "border-glow": "border-glow 4s ease-in-out infinite",
+        float: "float 8s ease-in-out infinite",
+        marquee: "marquee 38s linear infinite",
+        "spin-slow": "spin-slow 30s linear infinite",
+        "gradient-pan": "gradient-pan 9s ease infinite",
+        "soft-pulse": "soft-pulse 3.4s ease-in-out infinite",
       },
     },
   },

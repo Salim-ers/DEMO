@@ -36,10 +36,10 @@ export function MetricCard({ value, label, className }: { value: string; label: 
 
   return (
     <motion.div ref={ref} variants={fadeUp} className={cn("text-center sm:text-left", className)}>
-      <div className="display text-[clamp(2.6rem,5vw,4rem)] font-semibold leading-none tracking-tighter text-gradient">
+      <div className="display text-[clamp(3.2rem,7vw,5.5rem)] font-semibold leading-[0.9] tracking-tightest text-gradient">
         {display}
       </div>
-      <p className="mx-auto mt-3 max-w-[15rem] text-sm leading-relaxed text-muted sm:mx-0">{label}</p>
+      <p className="mx-auto mt-4 max-w-[15rem] text-sm leading-relaxed text-muted sm:mx-0">{label}</p>
     </motion.div>
   );
 }
