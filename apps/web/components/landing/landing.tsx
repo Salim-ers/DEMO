@@ -1,285 +1,295 @@
 "use client";
-import { useRef } from "react";
 import Link from "next/link";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-import { Pricing } from "../pricing.js";
-import { LogoEmblem } from "../brand/logo.js";
+import { motion, MotionConfig } from "framer-motion";
+import {
+  ArrowRight,
+  Play,
+  Camera,
+  LayoutPanelTop,
+  Mic,
+  Clapperboard,
+  Download,
+  Link2,
+  Sparkles,
+  Captions,
+  Gauge,
+  Palette,
+  AudioLines,
+  Film,
+} from "lucide-react";
+import { fadeUp, staggerContainer, blurIn, viewportOnce } from "../../lib/motion.js";
+import { SectionLabel } from "../ui/section-label.js";
+import { GlowButton } from "../ui/glow-button.js";
+import { MetricCard } from "../ui/metric-card.js";
+import { ProductShowcaseCard } from "../ui/product-showcase-card.js";
+import { AnimatedGradient } from "../ui/animated-gradient.js";
+import { VideoStudioPreview } from "../marketing/video-studio-preview.js";
+import { cn } from "../../lib/cn.js";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
-
-const MARQUEE = [
-  "Démos SaaS",
-  "Walkthroughs mobiles",
-  "Lancements produit",
-  "Démos investisseurs",
-  "Onboarding",
-  "Annonces de feature",
-  "Tours marketplace",
-  "Outils internes",
+const METRICS = [
+  { value: "4K", label: "Export resolution, cinematic-ready" },
+  { value: "90s", label: "Average length of a premium demo" },
+  { value: "100%", label: "Real browser capture — never fake UI" },
+  { value: "5", label: "Steps from a URL to a finished video" },
 ];
 
-const CAPABILITIES = [
-  { tag: "Captures réelles", title: "Vos vrais écrans, filmés", text: "StudioOne se connecte à votre application et filme l'interface réelle — login compris. Jamais d'UI inventée." },
-  { tag: "Rendu premium", title: "Un montage digne d'un studio", text: "Motion design, transitions et typographie au niveau des meilleures démos SaaS du marché." },
-  { tag: "Voix & langue", title: "Une narration qui sonne juste", text: "Voix off gratuite par défaut, IA premium en option, dans votre langue et votre ton." },
-  { tag: "Diffusion", title: "Prêt pour chaque canal", text: "16:9, 9:16 ou carré. MP4, sous-titres et archive — exportés, prêts à publier." },
+const SHOWCASE = [
+  { step: "01", icon: Camera, title: "Capture real screens", text: "Connect your app and DemoForge films the actual product flow — login included.", accent: "cyan" as const },
+  { step: "02", icon: LayoutPanelTop, title: "Generate the story", text: "Scenes are arranged into a clear, premium storyboard, ready to narrate.", accent: "violet" as const },
+  { step: "03", icon: Mic, title: "Add voice & captions", text: "Voice-ready scripts in your tone, with SRT/VTT captions burned in.", accent: "pink" as const },
+  { step: "04", icon: Clapperboard, title: "Render premium video", text: "Motion design, transitions and typography — exported sales-ready.", accent: "blue" as const },
 ];
 
-const PROCESS = [
-  { n: "01", name: "Capture", text: "On filme le parcours réel de votre produit, connecté à votre app." },
-  { n: "02", name: "Storyboard", text: "Les scènes sont ordonnées en un plan clair, prêt à narrer." },
-  { n: "03", name: "Script", text: "Une voix off précise est écrite, dans votre langue et votre ton." },
-  { n: "04", name: "Rendu", text: "Le montage premium est produit automatiquement, scène par scène." },
-  { n: "05", name: "Export", text: "MP4, sous-titres et archive — livrés, prêts à diffuser partout." },
+const GALLERY = [
+  { name: "Nimbus CRM", tag: "SaaS", duration: "0:90", style: "Clean SaaS Demo", grad: "from-violet/50 to-blue/40" },
+  { name: "Ledgerly", tag: "Fintech", duration: "1:20", style: "Premium Motion", grad: "from-blue/50 to-cyan/40" },
+  { name: "Synth AI", tag: "AI product", duration: "0:60", style: "Startup Launch", grad: "from-violet/50 to-pink/40" },
+  { name: "Marketplace X", tag: "Marketplace", duration: "1:00", style: "Product Tour", grad: "from-cyan/50 to-violet/40" },
+  { name: "Horse Ledger", tag: "Equestrian", duration: "1:30", style: "Luxury Product Demo", grad: "from-amber-500/40 to-emerald-700/40" },
+  { name: "Pulse Ops", tag: "Internal tool", duration: "0:75", style: "Investor Demo", grad: "from-pink/40 to-violet/40" },
 ];
 
-const STATS = [
-  { value: "1080p", label: "Rendu premium, qualité broadcast" },
-  { value: "5", label: "Étapes claires, du brief à l'export" },
-  { value: "0", label: "Interface inventée — que du réel" },
-  { value: "100", label: "Score qualité contrôlé sur chaque rendu" },
+const WORKFLOW = [
+  { icon: Link2, label: "URL" },
+  { icon: Camera, label: "Capture" },
+  { icon: LayoutPanelTop, label: "Storyboard" },
+  { icon: Mic, label: "Voice" },
+  { icon: Clapperboard, label: "Render" },
+  { icon: Download, label: "Export" },
 ];
 
-const FAQ = [
-  { q: "Comment StudioOne crée-t-il la vidéo ?", a: "Vous donnez l'URL de votre app et décrivez le parcours en une phrase. StudioOne capture les vrais écrans, construit un storyboard, écrit la voix off, puis rend une vidéo premium — automatiquement." },
-  { q: "Mes écrans sont-ils réellement capturés ?", a: "Oui. StudioOne se connecte à votre application et filme l'interface réelle. Aucune capture n'est inventée ou simulée." },
-  { q: "Puis-je utiliser ma propre voix ou une IA ?", a: "Les deux. Une voix de synthèse gratuite est disponible par défaut ; une voix IA premium est possible en option, uniquement avec votre consentement explicite." },
-  { q: "Dans quels formats puis-je exporter ?", a: "MP4 en 1080p, sous-titres SRT et VTT, plus une archive ZIP de tous les fichiers. Les formats 16:9, 9:16 et carré sont pris en charge." },
-  { q: "Y a-t-il plusieurs offres ?", a: "Non. Un seul plan, tout inclus, avec facturation mensuelle ou annuelle. Simple et transparent." },
+const QUALITY = [
+  { icon: Film, title: "1080p / 4K", text: "Crisp, broadcast-grade output for every channel." },
+  { icon: Gauge, title: "High bitrate", text: "Rich, artifact-free encoding that looks expensive." },
+  { icon: Sparkles, title: "Premium motion", text: "Cinematic transitions and kinetic typography." },
+  { icon: Captions, title: "Captions", text: "SRT & VTT generated and embedded automatically." },
+  { icon: AudioLines, title: "Human voice workflow", text: "Free TTS by default, premium AI voice on consent." },
+  { icon: Palette, title: "Brand style presets", text: "Your colors, type and logo on every render." },
 ];
 
 export function Landing() {
-  const root = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from(".hero-emblem", { scale: 0.5, rotate: -12, opacity: 0, duration: 1.05, ease: "back.out(1.5)" })
-        .from(".hero-status", { y: 16, opacity: 0, duration: 0.5 }, "-=0.55")
-        .from(".hero-line", { yPercent: 115, opacity: 0, duration: 0.9, stagger: 0.1 }, "-=0.4")
-        .from(".hero-sub", { y: 18, opacity: 0, duration: 0.6 }, "-=0.45")
-        .from(".hero-cta", { y: 16, opacity: 0, duration: 0.5, stagger: 0.1 }, "-=0.35")
-        .from(".hero-foot", { opacity: 0, duration: 0.6 }, "-=0.2");
-
-      gsap.to(".hero-emblem-wrap", {
-        yPercent: 22,
-        ease: "none",
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 1 },
-      });
-
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
-        gsap.from(el, { y: 34, opacity: 0, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 90%", once: true } });
-      });
-      gsap.utils.toArray<HTMLElement>("[data-stagger]").forEach((group) => {
-        gsap.from(group.children, { y: 28, opacity: 0, duration: 0.7, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: group, start: "top 88%", once: true } });
-      });
-
-      // Recompute after fonts/logo load so no section stays hidden.
-      ScrollTrigger.refresh();
-      if (typeof document !== "undefined" && document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
-      gsap.delayedCall(0.5, () => ScrollTrigger.refresh());
-    },
-    { scope: root },
-  );
-
   return (
-    <div ref={root} className="overflow-x-clip">
-      {/* ───────── Hero ───────── */}
-      <section className="hero relative flex min-h-[94vh] flex-col items-center justify-center px-5 py-24 text-center">
-        <div className="hero-emblem-wrap mb-10">
-          <div className="hero-emblem">
-            <div className="origin-center scale-[0.6] sm:scale-[0.8] lg:scale-100">
-              <LogoEmblem size={300} className="animate-float drop-shadow-[0_28px_70px_rgba(60,42,28,0.24)]" />
-            </div>
+    <MotionConfig reducedMotion="user">
+      <div className="overflow-x-clip">
+        {/* ───────── A. Hero ───────── */}
+        <section className="relative overflow-hidden">
+          <AnimatedGradient />
+          <div className="absolute inset-0 -z-10 bg-grid-faint bg-[size:64px_64px] opacity-60 [mask-image:radial-gradient(70%_60%_at_50%_0%,#000,transparent)]" />
+
+          <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-24 pt-20 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:pt-28">
+            <motion.div initial="hidden" animate="show" variants={staggerContainer}>
+              <motion.div variants={fadeUp}>
+                <SectionLabel>AI demo video studio for SaaS teams</SectionLabel>
+              </motion.div>
+              <motion.h1
+                variants={blurIn}
+                className="display mt-6 text-[clamp(3rem,8vw,7rem)] font-semibold leading-[0.95] tracking-tighter text-ink"
+              >
+                Turn any SaaS into a <span className="text-gradient">cinematic</span> demo video.
+              </motion.h1>
+              <motion.p variants={fadeUp} className="mt-7 max-w-xl text-lg leading-relaxed text-muted">
+                DemoForge captures real product flows, writes the story, adds voice-ready scripts and renders premium
+                videos your sales team can actually use.
+              </motion.p>
+              <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-3">
+                <GlowButton href="/projects/new">
+                  Create your first demo <ArrowRight size={17} />
+                </GlowButton>
+                <GlowButton href="/dashboard" variant="secondary">
+                  <Play size={15} /> Watch example
+                </GlowButton>
+              </motion.div>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }}>
+              <VideoStudioPreview />
+            </motion.div>
           </div>
-        </div>
+        </section>
 
-        <span className="hero-status mb-7 inline-flex items-center gap-2 rounded-full border border-hairline bg-panel px-3.5 py-1.5 text-xs font-medium text-muted">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ok opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-ok" />
-          </span>
-          Disponible — première démo en quelques minutes
-        </span>
-
-        <h1 className="display max-w-5xl text-[clamp(2.8rem,9vw,7rem)] font-semibold leading-[0.98] tracking-tight text-ink">
-          <span className="block overflow-hidden pb-1">
-            <span className="hero-line block">Vos écrans réels,</span>
-          </span>
-          <span className="block overflow-hidden pb-1">
-            <span className="hero-line block italic text-accent-deep">en histoires produit.</span>
-          </span>
-        </h1>
-
-        <p className="hero-sub mt-7 max-w-xl text-lg leading-relaxed text-muted">
-          StudioOne transforme de vrais écrans en démos soignées, structurées et haut de gamme — sans jamais vous
-          faire perdre le contrôle du processus créatif.
-        </p>
-
-        <div className="hero-cta mt-9 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/projects/new" className="btn-primary px-7 py-3.5 text-base">
-            Démarrer un projet <ArrowRight size={17} />
-          </Link>
-          <Link href="/templates" className="btn-secondary px-7 py-3.5 text-base">
-            Voir les modèles
-          </Link>
-        </div>
-
-        <div className="hero-foot absolute inset-x-5 bottom-7 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-faint">
-          <span>© 2026 StudioOne</span>
-          <span className="hidden sm:inline">Défilez pour découvrir</span>
-          <span>Capture réelle</span>
-        </div>
-      </section>
-
-      {/* ───────── Marquee ───────── */}
-      <div className="border-y border-hairline bg-surface/60 py-6">
-        <div className="relative flex overflow-hidden">
-          <div className="flex shrink-0 animate-marquee items-center gap-10 pr-10">
-            {[...MARQUEE, ...MARQUEE].map((m, i) => (
-              <span key={i} className="flex items-center gap-10 whitespace-nowrap font-display text-2xl font-medium text-muted">
-                {m}
-                <span className="h-1.5 w-1.5 rounded-full bg-accent/60" />
-              </span>
+        {/* ───────── B. Metrics ───────── */}
+        <section className="border-y border-hairline bg-surface/40">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            className="mx-auto grid max-w-6xl grid-cols-2 gap-y-12 px-5 py-16 sm:px-8 lg:grid-cols-4"
+          >
+            {METRICS.map((m) => (
+              <MetricCard key={m.label} value={m.value} label={m.label} />
             ))}
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </section>
 
-      {/* ───────── Capabilities (showcase) ───────── */}
-      <section id="features" className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
-        <div data-reveal className="mb-16 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <div>
-            <p className="eyebrow">Le studio</p>
-            <h2 className="display mt-3 max-w-2xl text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[1.02] text-ink">
-              Ce que StudioOne produit pour vous
+        {/* ───────── C. Product showcase (bento) ───────── */}
+        <section id="features" className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="max-w-2xl">
+            <SectionLabel>How it works</SectionLabel>
+            <h2 className="display mt-4 text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.02] text-ink">
+              A studio pipeline, from real screen to final cut
             </h2>
-          </div>
-          <p className="max-w-xs text-muted">
-            Un seul flux, du vrai écran à la vidéo prête à diffuser. Soigné dans chaque détail.
-          </p>
-        </div>
+          </motion.div>
 
-        <div data-stagger className="grid gap-px overflow-hidden rounded-3xl border border-hairline bg-hairline sm:grid-cols-2">
-          {CAPABILITIES.map((c) => (
-            <div key={c.title} className="group bg-panel p-8 transition-colors duration-300 hover:bg-surface sm:p-10">
-              <p className="eyebrow">{c.tag}</p>
-              <h3 className="display mt-4 text-2xl font-semibold text-ink">{c.title}</h3>
-              <p className="mt-3 max-w-md leading-relaxed text-muted">{c.text}</p>
-              <ArrowUpRight size={22} className="mt-6 text-faint transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent-deep" />
-            </div>
-          ))}
-        </div>
-      </section>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            className="mt-14 grid gap-5 md:grid-cols-2"
+          >
+            {SHOWCASE.map((s) => (
+              <ProductShowcaseCard key={s.title} {...s} />
+            ))}
+          </motion.div>
+        </section>
 
-      {/* ───────── Process (numbered) ───────── */}
-      <section id="workflow" className="border-t border-hairline bg-surface/60">
-        <div className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
-          <div data-reveal className="mb-14 max-w-2xl">
-            <p className="eyebrow">La méthode</p>
-            <h2 className="display mt-3 text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[1.02] text-ink">
-              Cinq étapes, un résultat soigné
-            </h2>
-          </div>
-
-          <div data-stagger className="border-t border-hairline">
-            {PROCESS.map((p) => (
-              <div key={p.n} className="group flex flex-col gap-3 border-b border-hairline py-7 sm:flex-row sm:items-baseline sm:gap-10">
-                <span className="display text-2xl font-semibold text-accent-deep sm:w-20">{p.n}</span>
-                <h3 className="display text-3xl font-semibold text-ink transition-transform duration-300 group-hover:translate-x-2 sm:w-72 sm:text-4xl">
-                  {p.name}
-                </h3>
-                <p className="max-w-md flex-1 leading-relaxed text-muted">{p.text}</p>
+        {/* ───────── D. Gallery ───────── */}
+        <section id="gallery" className="border-t border-hairline bg-surface/40">
+          <div className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end"
+            >
+              <div>
+                <SectionLabel>Gallery</SectionLabel>
+                <h2 className="display mt-4 text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.02] text-ink">
+                  Demos that look expensive
+                </h2>
               </div>
-            ))}
+              <p className="max-w-xs text-muted">A glimpse of the range — every style, every format, one studio.</p>
+            </motion.div>
+
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {GALLERY.map((g) => (
+                <motion.div
+                  key={g.name}
+                  variants={fadeUp}
+                  whileHover={{ y: -8 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                  className="group overflow-hidden rounded-3xl border border-hairline bg-panel shadow-panel backdrop-blur-xl"
+                >
+                  <div className={cn("relative aspect-video overflow-hidden bg-gradient-to-br", g.grad)}>
+                    <div className="absolute inset-0 [background:radial-gradient(60%_80%_at_50%_40%,rgba(255,255,255,0.16),transparent_60%)]" />
+                    <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/30 px-2.5 py-0.5 text-[11px] font-medium text-white backdrop-blur">
+                      {g.tag}
+                    </span>
+                    <span className="absolute right-3 top-3 rounded-md bg-black/40 px-2 py-0.5 font-mono text-[11px] text-white backdrop-blur">
+                      {g.duration}
+                    </span>
+                    <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-canvas opacity-0 shadow-glow transition-opacity duration-300 group-hover:opacity-100">
+                      <Play size={20} className="ml-0.5 fill-current" />
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="font-semibold text-ink">{g.name}</span>
+                    <span className="text-xs text-faint">{g.style}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ───────── Statement ───────── */}
-      <section className="mx-auto max-w-5xl px-5 py-32 text-center sm:px-8">
-        <p data-reveal className="display text-[clamp(2rem,5.5vw,4rem)] font-semibold leading-[1.06] tracking-tight text-ink">
-          On transforme de vrais écrans en récits produit{" "}
-          <span className="text-faint">qui donnent envie d'agir.</span>
-        </p>
-      </section>
+        {/* ───────── E. Workflow ───────── */}
+        <section id="workflow" className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="mb-16 text-center">
+            <SectionLabel className="justify-center">The pipeline</SectionLabel>
+            <h2 className="display mx-auto mt-4 max-w-2xl text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.02] text-ink">
+              From URL to export, automatically
+            </h2>
+          </motion.div>
 
-      {/* ───────── Stats ───────── */}
-      <section className="border-y border-hairline bg-bronze-sheen text-ivory">
-        <div data-stagger className="mx-auto grid max-w-6xl grid-cols-2 gap-y-12 px-5 py-20 sm:px-8 lg:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label} className="px-2 text-center">
-              <p className="display text-[clamp(2.8rem,6vw,4.5rem)] font-semibold leading-none">{s.value}</p>
-              <p className="mx-auto mt-3 max-w-[14rem] text-sm leading-relaxed text-ivory/75">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ───────── Pricing ───────── */}
-      <section id="pricing" className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
-        <div data-reveal className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">Tarifs</p>
-          <h2 className="display mt-3 text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-[1.02] text-ink">
-            Un seul plan. Tout est inclus.
-          </h2>
-          <p className="mt-4 text-muted">Pas de paliers, pas de fonctionnalités verrouillées. Mensuel ou annuel.</p>
-        </div>
-        <div data-reveal className="mt-14">
-          <Pricing />
-        </div>
-      </section>
-
-      {/* ───────── FAQ ───────── */}
-      <section id="faq" className="border-t border-hairline bg-surface/60">
-        <div className="mx-auto max-w-4xl px-5 py-28 sm:px-8">
-          <div data-reveal className="mb-12">
-            <p className="eyebrow">FAQ</p>
-            <h2 className="display mt-3 text-[clamp(2.2rem,5vw,3.4rem)] font-semibold text-ink">Questions fréquentes</h2>
-          </div>
-          <div data-stagger className="border-t border-hairline">
-            {FAQ.map((item) => (
-              <details key={item.q} className="group border-b border-hairline [&_summary]:list-none">
-                <summary className="flex cursor-pointer items-center justify-between gap-6 py-6 text-lg font-medium text-ink">
-                  {item.q}
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-hairline text-faint transition-transform duration-300 group-open:rotate-45">
-                    <ArrowUpRight size={15} />
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
+          >
+            {WORKFLOW.map((w, i) => (
+              <motion.div key={w.label} variants={fadeUp} className="flex flex-1 items-center gap-3">
+                <div className="flex w-full flex-col items-center gap-3 rounded-2xl border border-hairline bg-panel px-3 py-6 text-center shadow-panel backdrop-blur-xl">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-aurora-soft text-ink">
+                    <w.icon size={22} />
                   </span>
-                </summary>
-                <p className="max-w-2xl pb-6 leading-relaxed text-muted">{item.a}</p>
-              </details>
+                  <span className="text-sm font-semibold text-ink">{w.label}</span>
+                </div>
+                {i < WORKFLOW.length - 1 && (
+                  <ArrowRight size={18} className="hidden shrink-0 text-accent-deep sm:block" />
+                )}
+              </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
+          </motion.div>
+        </section>
 
-      {/* ───────── CTA ───────── */}
-      <section className="mx-auto max-w-6xl px-5 py-32 text-center sm:px-8">
-        <div data-reveal className="flex flex-col items-center">
-          <LogoEmblem size={88} className="mb-9" />
-          <h2 className="display max-w-4xl text-[clamp(2.5rem,7vw,5.5rem)] font-semibold leading-[0.98] tracking-tight text-ink">
-            Un projet en tête ?<br />
-            <span className="italic text-accent-deep">On le met en image.</span>
-          </h2>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/projects/new" className="btn-primary px-8 py-4 text-base">
-              Démarrer un projet <ArrowRight size={18} />
-            </Link>
-            <Link href="/templates" className="btn-secondary px-8 py-4 text-base">
-              Explorer les modèles
-            </Link>
+        {/* ───────── F. Quality ───────── */}
+        <section className="border-t border-hairline bg-surface/40">
+          <div className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={viewportOnce} className="max-w-2xl">
+              <SectionLabel>Quality</SectionLabel>
+              <h2 className="display mt-4 text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.02] text-ink">
+                Built to look broadcast-grade
+              </h2>
+            </motion.div>
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {QUALITY.map((q) => (
+                <motion.div
+                  key={q.title}
+                  variants={fadeUp}
+                  whileHover={{ y: -6 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                  className="border-gradient rounded-3xl border border-hairline bg-panel p-7 shadow-panel backdrop-blur-xl"
+                >
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-aurora text-white shadow-glow">
+                    <q.icon size={20} />
+                  </span>
+                  <h3 className="mt-5 text-base font-semibold text-ink">{q.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{q.text}</p>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-faint">
-            <span className="flex items-center gap-1.5"><Check size={14} className="text-accent-deep" /> Sans carte pour commencer</span>
-            <span className="flex items-center gap-1.5"><Check size={14} className="text-accent-deep" /> Annulable à tout moment</span>
-          </div>
-        </div>
-      </section>
-    </div>
+        </section>
+
+        {/* ───────── G. Final CTA ───────── */}
+        <section className="mx-auto max-w-6xl px-5 py-28 sm:px-8">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            className="border-gradient relative overflow-hidden rounded-[2.5rem] border border-hairline bg-panel px-6 py-24 text-center shadow-soft backdrop-blur-xl sm:px-16"
+          >
+            <AnimatedGradient />
+            <div className="relative flex flex-col items-center">
+              <h2 className="display mx-auto max-w-3xl text-[clamp(2.2rem,6vw,4.5rem)] font-semibold leading-[0.98] tracking-tighter text-ink">
+                Your product already has the story. <span className="text-gradient">DemoForge makes it cinematic.</span>
+              </h2>
+              <div className="mt-10">
+                <GlowButton href="/projects/new">
+                  Generate a demo <ArrowRight size={18} />
+                </GlowButton>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+      </div>
+    </MotionConfig>
   );
 }

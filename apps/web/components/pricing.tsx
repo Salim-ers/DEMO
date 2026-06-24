@@ -38,7 +38,7 @@ function BillingToggle({ value, onChange }: { value: Billing; onChange: (b: Bill
   );
 }
 
-/** The single StudioOne plan card + billing toggle. Reused on landing & /pricing. */
+/** The single DemoForge plan card + billing toggle. Reused on landing & /pricing. */
 export function Pricing({ defaultBilling = "yearly" }: { defaultBilling?: Billing }) {
   const [billing, setBilling] = useState<Billing>(defaultBilling);
   const { perMonth } = yearlyBreakdown();

@@ -4,7 +4,7 @@ import { Camera, LayoutPanelTop, PenLine, Palette, Clapperboard, Eye, Download, 
 export const metadata = { title: "Aide & guide" };
 
 const STEPS = [
-  { icon: Camera, name: "Capture", text: "StudioOne se connecte à votre app et filme les vrais écrans du parcours décrit." },
+  { icon: Camera, name: "Capture", text: "DemoForge se connecte à votre app et filme les vrais écrans du parcours décrit." },
   { icon: LayoutPanelTop, name: "Arrange", text: "Les scènes sont ordonnées en un storyboard clair, prêt à narrer." },
   { icon: PenLine, name: "Script", text: "Une voix off juste est écrite dans votre langue et votre ton." },
   { icon: Palette, name: "Style", text: "Votre identité de marque s'applique : couleurs, typographies, motion." },
@@ -14,7 +14,7 @@ const STEPS = [
 ];
 
 const FAQ = [
-  { q: "Par où commencer ?", a: "Créez un projet, indiquez l'URL de votre app et décrivez le parcours en une phrase. StudioOne s'occupe du reste." },
+  { q: "Par où commencer ?", a: "Créez un projet, indiquez l'URL de votre app et décrivez le parcours en une phrase. DemoForge s'occupe du reste." },
   { q: "Comment supprimer un projet ?", a: "Sur une carte projet, ouvrez le menu (•••) puis Supprimer. Une confirmation est demandée — la suppression est définitive. Pour le garder sans l'afficher, utilisez Archiver." },
   { q: "Où retrouver mes rendus ?", a: "Dans Exports, ou directement sur la page d'un projet une fois le rendu terminé." },
   { q: "La voix off est-elle payante ?", a: "Une voix gratuite est disponible par défaut. Une voix IA premium est possible en option, avec votre consentement." },
@@ -25,7 +25,7 @@ export default function HelpPage() {
     <div className="animate-fade-up mx-auto max-w-3xl">
       <header className="mb-8">
         <p className="eyebrow mb-2">Guide</p>
-        <h1 className="display text-3xl font-semibold text-ink">Comment fonctionne StudioOne</h1>
+        <h1 className="display text-3xl font-semibold text-ink">Comment fonctionne DemoForge</h1>
         <p className="mt-2 text-muted">Capturez, façonnez, affinez, exportez. Voici le parcours, étape par étape.</p>
       </header>
 

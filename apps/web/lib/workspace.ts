@@ -9,6 +9,6 @@ import { prisma } from "@demoforge/db";
 export async function getActiveWorkspaceId(): Promise<string> {
   const existing = await prisma.workspace.findFirst({ orderBy: { createdAt: "asc" } });
   if (existing) return existing.id;
-  const created = await prisma.workspace.create({ data: { name: "StudioOne HQ" } });
+  const created = await prisma.workspace.create({ data: { name: "DemoForge HQ" } });
   return created.id;
 }

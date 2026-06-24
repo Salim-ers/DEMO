@@ -20,7 +20,7 @@ function openCommand() {
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
-      <Link href="/dashboard" onClick={onNavigate} className="mb-5 px-1" aria-label="StudioOne — accueil">
+      <Link href="/dashboard" onClick={onNavigate} className="mb-5 px-1" aria-label="DemoForge — accueil">
         <Logo size={46} />
       </Link>
 
@@ -76,7 +76,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
 
       <div className="mt-4 rounded-2xl border border-hairline bg-surface/70 px-4 py-3.5">
         <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-accent-deep">
-          <Sparkles size={13} /> Plan StudioOne
+          <Sparkles size={13} /> Plan DemoForge
         </p>
         <p className="text-xs leading-relaxed text-faint">
           Tout est inclus.{" "}
@@ -137,7 +137,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
           <button type="button" onClick={() => setDrawer(true)} aria-label="Ouvrir le menu" className="text-muted hover:text-ink">
             <Menu size={22} />
           </button>
-          <Link href="/dashboard" className="flex items-center" aria-label="StudioOne">
+          <Link href="/dashboard" className="flex items-center" aria-label="DemoForge">
             <LogoEmblem size={40} />
           </Link>
           <button type="button" onClick={openCommand} aria-label="Rechercher" className="ml-auto text-muted hover:text-ink">

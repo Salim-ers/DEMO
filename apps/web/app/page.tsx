@@ -1,7 +1,7 @@
 import { Landing } from "../components/landing/landing.js";
 
 export const metadata = {
-  title: "Des démos produit soignées, façon studio",
+  title: { absolute: "DemoForge — AI demo video studio for SaaS teams" },
 };
 
 export default function LandingPage() {

@@ -197,9 +197,9 @@ function EmptyState() {
       <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-bronze-sheen shadow-glow">
         <Sparkles size={26} className="text-ivory" />
       </div>
-      <h2 className="display mb-2 text-2xl font-semibold text-ink">Votre premier projet StudioOne commence ici</h2>
+      <h2 className="display mb-2 text-2xl font-semibold text-ink">Votre premier projet DemoForge commence ici</h2>
       <p className="mb-7 max-w-md text-sm leading-relaxed text-muted">
-        Donnez une app en ligne à StudioOne, décrivez le parcours en une phrase, et il capture les vrais écrans pour
+        Donnez une app en ligne à DemoForge, décrivez le parcours en une phrase, et il capture les vrais écrans pour
         en faire une démo prête à montrer.
       </p>
       <div className="flex flex-wrap justify-center gap-3">
