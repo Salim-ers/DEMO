@@ -10,12 +10,16 @@ import { cn } from "../../lib/cn.js";
  */
 const WORDMARK_WHITE = "/brand/studio-one-wordmark-white.png";
 const BADGE_BROWN = "/brand/studio-one-badge-brown.png";
+const BADGE_CREAM = "/brand/studio-one-badge-cream.png";
 
-/** Brown circular badge — for the favicon-style mark on cream/light surfaces. */
-export function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
+/**
+ * Circular badge. `brown` (default) = brown disc + cream script; `cream` = beige
+ * disc + brown script (premium mark on dark surfaces).
+ */
+export function LogoMark({ size = 32, tone = "brown", className }: { size?: number; tone?: "brown" | "cream"; className?: string }) {
   return (
     <img
-      src={BADGE_BROWN}
+      src={tone === "cream" ? BADGE_CREAM : BADGE_BROWN}
       alt="Studio One"
       width={size}
       height={size}

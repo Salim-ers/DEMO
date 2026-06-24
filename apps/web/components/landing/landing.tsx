@@ -89,31 +89,31 @@ export function Landing() {
           }}
         />
 
-        <HeroStagger className="relative z-10 px-5 text-center">
-          <div className="relative inline-block">
-            <HeroItem>
-              <span className="block text-center text-sm font-semibold uppercase tracking-[0.22em] text-muted sm:absolute sm:left-1 sm:top-0 sm:-translate-y-[150%] sm:text-left">
-                Bienvenue chez
-              </span>
-            </HeroItem>
-            <HeroItem blur>
-              <h1 className="font-display text-[clamp(3.2rem,15vw,12rem)] font-extrabold leading-[0.9] tracking-tight text-ink">
-                Studio One
-              </h1>
-            </HeroItem>
-            <HeroItem>
-              <p className="mx-auto mt-4 max-w-xs text-center text-base font-medium leading-snug text-muted sm:absolute sm:bottom-0 sm:right-1 sm:mt-0 sm:max-w-[19rem] sm:translate-y-[150%] sm:text-right sm:text-lg">
-                Créez des vidéos de démonstration professionnelles.
-              </p>
-            </HeroItem>
-          </div>
-
+        <HeroStagger className="relative z-10 flex flex-col items-center px-5 text-center">
           <HeroItem>
-            <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:mt-36 sm:flex-row">
-              <Link href="/new" className="btn-primary px-7 py-3.5 text-base">
+            <LogoMark tone="cream" size={168} className="mb-9 max-w-[58vw] drop-shadow-[0_18px_50px_rgba(0,0,0,0.55)]" />
+          </HeroItem>
+          <HeroItem>
+            <span className="block text-sm font-semibold uppercase tracking-[0.32em] text-accent-deep sm:text-base">
+              Bienvenue chez
+            </span>
+          </HeroItem>
+          <HeroItem blur>
+            <h1 className="font-display mt-4 text-[clamp(3.6rem,16vw,13.5rem)] font-extrabold leading-[0.88] tracking-tight text-ink">
+              Studio One
+            </h1>
+          </HeroItem>
+          <HeroItem>
+            <p className="mx-auto mt-8 max-w-2xl text-balance text-xl font-medium leading-snug text-muted sm:text-2xl">
+              Créez des vidéos de démonstration professionnelles.
+            </p>
+          </HeroItem>
+          <HeroItem>
+            <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href="/new" className="btn-primary px-8 py-4 text-base">
                 Créer une démo <ArrowRight size={18} />
               </Link>
-              <Link href="#fonctionnement" className="btn-secondary px-7 py-3.5 text-base">
+              <Link href="#fonctionnement" className="btn-secondary px-8 py-4 text-base">
                 Voir comment ça marche
               </Link>
             </div>

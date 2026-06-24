@@ -1,12 +1,9 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { LogoMark } from "../brand/logo.js";
 import { cn } from "../../lib/cn.js";
-
-const WORDMARK = "/brand/studio-one-wordmark-white.png";
 
 const NAV = [
   { href: "#presentation", label: "Présentation" },
@@ -15,12 +12,7 @@ const NAV = [
   { href: "#temoignages", label: "Témoignages" },
 ];
 
-/**
- * Atypical top bar: an oversized cream wordmark that floats at the top-left,
- * with the navigation living inside a detached glass "pill" on the right.
- * Transparent over the hero, frosted on scroll so the beige mark stays legible
- * over the cream sections too.
- */
+/** High-end top bar: large beige round badge + clean spaced links, frosted on scroll. */
 export function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
   const [drawer, setDrawer] = useState(false);
@@ -45,55 +37,49 @@ export function LandingNav() {
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-300",
           scrolled
-            ? "border-b border-hairline bg-canvas/80 py-3 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent py-5",
+            ? "border-b border-hairline bg-canvas/80 py-2.5 backdrop-blur-xl"
+            : "border-b border-transparent bg-transparent py-4",
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
-          {/* Oversized cream wordmark */}
-          <Link href="/" aria-label="Studio One — accueil" className="flex shrink-0 items-center">
-            <img
-              src={WORDMARK}
-              alt="Studio One"
-              className={cn("w-auto object-contain transition-all duration-300", scrolled ? "h-14" : "h-20")}
-            />
+          {/* Large beige round badge + wordmark */}
+          <Link href="/" aria-label="Studio One — accueil" className="flex shrink-0 items-center gap-3.5">
+            <LogoMark tone="cream" size={scrolled ? 46 : 58} className="transition-all duration-300" />
+            <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.7rem]">Studio One</span>
           </Link>
 
-          {/* Right: floating glass pill nav + CTA */}
-          <div className="flex items-center gap-3">
-            <nav className="hidden items-center gap-1 rounded-full border border-hairline bg-canvas/40 p-1.5 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-xl lg:flex">
-              {NAV.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className="rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:bg-elevated hover:text-ink"
-                >
-                  {n.label}
-                </Link>
-              ))}
-              <span className="mx-1 h-5 w-px bg-hairline" />
+          <nav className="hidden items-center gap-9 lg:flex">
+            {NAV.map((n) => (
               <Link
-                href="/projects"
-                className="rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:bg-elevated hover:text-ink"
+                key={n.href}
+                href={n.href}
+                className="text-[15px] font-medium text-muted transition-colors hover:text-ink"
               >
-                Connexion
+                {n.label}
               </Link>
-            </nav>
+            ))}
+          </nav>
 
+          <div className="flex items-center gap-5">
+            <Link
+              href="/projects"
+              className="hidden text-[15px] font-medium text-muted transition-colors hover:text-ink sm:inline-flex"
+            >
+              Connexion
+            </Link>
             <Link
               href="/new"
-              className="hidden items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-studio shadow-[0_10px_30px_-10px_rgba(185,130,74,0.6)] transition-colors hover:bg-accent-deep sm:inline-flex"
+              className="hidden items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-[15px] font-semibold text-studio transition-colors hover:bg-accent-deep sm:inline-flex"
             >
               Créer une démo <ArrowRight size={16} />
             </Link>
-
             <button
               type="button"
               onClick={() => setDrawer(true)}
               aria-label="Ouvrir le menu"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-hairline bg-canvas/40 text-ink backdrop-blur-xl lg:hidden"
+              className="text-muted hover:text-ink lg:hidden"
             >
-              <Menu size={20} />
+              <Menu size={26} />
             </button>
           </div>
         </div>
@@ -122,9 +108,9 @@ export function LandingNav() {
           >
             <X size={20} />
           </button>
-          <Link href="/" onClick={() => setDrawer(false)} className="flex items-center gap-2.5" aria-label="Studio One">
-            <LogoMark size={34} />
-            <span className="text-base font-semibold tracking-tight text-ink">Studio One</span>
+          <Link href="/" onClick={() => setDrawer(false)} className="flex items-center gap-3" aria-label="Studio One">
+            <LogoMark tone="cream" size={42} />
+            <span className="font-display text-xl font-bold tracking-tight text-ink">Studio One</span>
           </Link>
           <nav className="mt-8 flex flex-col gap-1">
             {NAV.map((n) => (
@@ -142,14 +128,14 @@ export function LandingNav() {
             <Link
               href="/new"
               onClick={() => setDrawer(false)}
-              className="flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-studio transition-colors hover:bg-accent-deep"
+              className="flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-studio transition-colors hover:bg-accent-deep"
             >
               Créer une démo <ArrowRight size={16} />
             </Link>
             <Link
               href="/projects"
               onClick={() => setDrawer(false)}
-              className="flex items-center justify-center rounded-full border border-hairline bg-surface px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-accent/40 hover:bg-elevated"
+              className="flex items-center justify-center rounded-xl border border-hairline bg-surface px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-accent/40 hover:bg-elevated"
             >
               Connexion
             </Link>
