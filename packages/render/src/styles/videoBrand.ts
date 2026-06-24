@@ -131,6 +131,38 @@ function luxuryEquestrian(accentOverride?: string): Brand {
   };
 }
 
+/** Creative AI Studio — the DemoForge house style: near-black space, electric
+ *  violet → cyan with a pink kicker. Vibrant, modern, cinematic. */
+function creativeAiStudio(accentOverride?: string): Brand {
+  const a = accentOverride && isVivid(accentOverride) ? accentOverride : "#8B5CF6";
+  const a2 = "#22D3EE";
+  return {
+    style: "creative_ai_studio",
+    bg: "#05050A",
+    bgGrad: ["#0B0A18", "#04040A"],
+    bgElevated: "#0C0C18",
+    panel: "rgba(255, 255, 255, 0.05)",
+    panelBorder: "rgba(255, 255, 255, 0.12)",
+    border: "rgba(255, 255, 255, 0.10)",
+    text: "#F7F7FB",
+    textMuted: "rgba(247, 247, 251, 0.66)",
+    accent: a,
+    accentSoft: rgba(a, 0.18),
+    accentGlow: rgba(a, 0.36),
+    accent2: a2,
+    accent2Soft: rgba(a2, 0.16),
+    accent2Glow: rgba(a2, 0.3),
+    accentWarm: "#EC4899",
+    glow: rgba(a, 0.3),
+    glow2: rgba(a2, 0.2),
+    grain: 0.05,
+    gridOpacity: 0.04,
+    fontFamily: FONT_SANS,
+    fontDisplay: FONT_SANS,
+    fontMono: FONT_MONO,
+  };
+}
+
 function isVivid(hex: string): boolean {
   if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return false;
   const [r, g, b] = hexToRgb(hex);
@@ -192,5 +224,6 @@ export function resolveBrand(opts: ResolveBrandOptions = {}): Brand {
   if (opts.style === "luxury_product" || isEquestrian) {
     return luxuryEquestrian(accent ?? undefined);
   }
+  if (opts.style === "creative_ai_studio") return creativeAiStudio(accent ?? undefined);
   return premiumDark(accent ?? "#6E8BFF", opts.style ?? "premium_motion");
 }

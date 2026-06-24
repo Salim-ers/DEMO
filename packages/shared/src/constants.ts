@@ -17,11 +17,12 @@ export type DemoTone = (typeof DEMO_TONES)[number];
 
 /** Art-direction presets selectable in the wizard ("Video style"). */
 export const VIDEO_STYLES = [
-  "clean_saas", "premium_motion", "luxury_product", "startup_launch", "investor_demo", "social_short",
+  "creative_ai_studio", "clean_saas", "premium_motion", "luxury_product", "startup_launch", "investor_demo", "social_short",
 ] as const;
 export type VideoStyle = (typeof VIDEO_STYLES)[number];
 
 export const VIDEO_STYLE_LABEL: Record<VideoStyle, string> = {
+  creative_ai_studio: "Creative AI Studio",
   clean_saas: "Clean SaaS Demo",
   premium_motion: "Premium Motion Explainer",
   luxury_product: "Luxury Product Demo",

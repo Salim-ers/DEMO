@@ -27,8 +27,9 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       <Link
         href="/projects/new"
         onClick={onNavigate}
-        className="mb-4 flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-ivory shadow-glow transition-all hover:-translate-y-0.5 hover:shadow-soft"
+        className="relative mb-4 flex items-center justify-center gap-2 overflow-hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-glow transition-all hover:-translate-y-0.5 hover:shadow-soft"
       >
+        <span className="absolute inset-0 -z-10 bg-aurora bg-[length:200%_200%] animate-gradient-pan" />
         <Plus size={16} /> Nouveau projet
       </Link>
 
@@ -98,8 +99,11 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-[1500px]">
-      <aside className="sticky top-0 hidden h-screen w-[264px] shrink-0 flex-col border-r border-hairline px-4 py-6 md:flex">
-        <SidebarContent pathname={pathname} />
+      <aside className="sticky top-0 hidden h-screen w-[264px] shrink-0 flex-col border-r border-hairline bg-surface/20 px-4 py-6 backdrop-blur-xl md:flex">
+        <div aria-hidden className="pointer-events-none absolute -left-10 top-0 h-72 w-72 rounded-full bg-violet/10 blur-3xl" />
+        <div className="relative flex h-full flex-col">
+          <SidebarContent pathname={pathname} />
+        </div>
       </aside>
 
       {/* Mobile drawer */}
