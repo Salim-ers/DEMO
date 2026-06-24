@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Globe, PenLine, Clapperboard, Download, Play } from "lucide-react";
 import { LogoMark } from "../brand/logo.js";
 import { AnimatedDots } from "../ui/animated-dots.js";
+import { EditorTimeline } from "./editor-timeline.js";
 import { Reveal, RevealGroup, RevealItem, HeroStagger, HeroItem } from "./motion.js";
 
 const STATS = [
@@ -41,26 +42,50 @@ export function Landing() {
     <>
       {/* 1 — Hero — plein écran, fond animé */}
       <section id="presentation" className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas">
-        {/* halo chaud */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(62% 55% at 50% 30%, rgba(185,130,74,0.20) 0%, rgba(139,94,52,0.08) 42%, transparent 72%)",
-          }}
-        />
-        {/* points animés */}
-        <div className="absolute inset-0 z-0">
+        {/* gauche : points animés, fondus vers le centre */}
+        <div className="absolute inset-y-0 left-0 z-0 w-[52%]">
           <AnimatedDots fullScreen={false} className="h-full w-full" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{ background: "linear-gradient(90deg, transparent 55%, #060504 100%)" }}
+          />
         </div>
-        {/* voile radial pour garder le texte lisible */}
+
+        {/* droite : timeline de montage (photo /hero/editing.jpg si présente, sinon rendu) */}
+        <div className="absolute inset-y-0 right-0 z-0 w-[60%]">
+          <EditorTimeline />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('/hero/editing.jpg')" }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, #060504 0%, rgba(6,5,4,0.78) 22%, rgba(6,5,4,0.30) 52%, rgba(6,5,4,0.45) 100%)",
+            }}
+          />
+        </div>
+
+        {/* halo chaud */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 z-0"
           style={{
             background:
-              "radial-gradient(46% 42% at 50% 46%, rgba(6,5,4,0.66) 0%, rgba(6,5,4,0.30) 52%, transparent 78%)",
+              "radial-gradient(60% 52% at 50% 30%, rgba(185,130,74,0.18) 0%, rgba(139,94,52,0.07) 42%, transparent 72%)",
+          }}
+        />
+        {/* voile radial central pour la lisibilité du texte */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              "radial-gradient(44% 46% at 50% 48%, rgba(6,5,4,0.72) 0%, rgba(6,5,4,0.40) 50%, transparent 80%)",
           }}
         />
 
