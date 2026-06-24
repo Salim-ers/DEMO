@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Globe, PenLine, Clapperboard, Download, Play } from "lucide-react";
-import { Logo, LogoMark } from "../brand/logo.js";
+import { LogoMark } from "../brand/logo.js";
+import { AnimatedDots } from "../ui/animated-dots.js";
 import { Reveal, RevealGroup, RevealItem, HeroStagger, HeroItem } from "./motion.js";
 
 const STATS = [
@@ -38,44 +39,61 @@ const QUOTES = [
 export function Landing() {
   return (
     <>
-      {/* 1 — Hero */}
-      <section id="presentation" className="relative overflow-hidden">
+      {/* 1 — Hero — plein écran, fond animé */}
+      <section id="presentation" className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas">
+        {/* halo chaud */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-[680px] opacity-70"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 50% at 50% 0%, rgba(185,130,74,0.22) 0%, rgba(139,94,52,0.10) 38%, transparent 72%)",
+              "radial-gradient(62% 55% at 50% 30%, rgba(185,130,74,0.20) 0%, rgba(139,94,52,0.08) 42%, transparent 72%)",
           }}
         />
-        <div className="relative mx-auto max-w-5xl px-5 pb-24 pt-36 text-center sm:px-8 sm:pb-32 sm:pt-44">
-          <HeroStagger>
-            <HeroItem className="flex justify-center">
-              <Logo size={260} className="mx-auto max-w-[72vw]" />
+        {/* points animés */}
+        <div className="absolute inset-0 z-0">
+          <AnimatedDots fullScreen={false} className="h-full w-full" />
+        </div>
+        {/* voile radial pour garder le texte lisible */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              "radial-gradient(46% 42% at 50% 46%, rgba(6,5,4,0.66) 0%, rgba(6,5,4,0.30) 52%, transparent 78%)",
+          }}
+        />
+
+        <HeroStagger className="relative z-10 px-5 text-center">
+          <div className="relative inline-block">
+            <HeroItem>
+              <span className="block text-center text-sm font-semibold uppercase tracking-[0.22em] text-muted sm:absolute sm:left-1 sm:top-0 sm:-translate-y-[150%] sm:text-left">
+                Bienvenue chez
+              </span>
             </HeroItem>
             <HeroItem blur>
-              <h1 className="text-display mx-auto mt-12 max-w-4xl text-balance text-[clamp(2.6rem,7vw,5.25rem)] text-ink">
-                Créez des vidéos de démonstration professionnelles pour vos SaaS.
+              <h1 className="font-display text-[clamp(3.2rem,15vw,12rem)] font-extrabold leading-[0.9] tracking-tight text-ink">
+                Studio One
               </h1>
             </HeroItem>
             <HeroItem>
-              <p className="mx-auto mt-7 max-w-2xl text-balance text-lg leading-relaxed text-muted sm:text-xl">
-                Studio One transforme vos écrans, vos accès démo et votre scénario en une vidéo claire, propre et prête à
-                être envoyée à vos prospects.
+              <p className="mx-auto mt-4 max-w-xs text-center text-base font-medium leading-snug text-muted sm:absolute sm:bottom-0 sm:right-1 sm:mt-0 sm:max-w-[19rem] sm:translate-y-[150%] sm:text-right sm:text-lg">
+                Créez des vidéos de démonstration professionnelles.
               </p>
             </HeroItem>
-            <HeroItem>
-              <div className="mt-11 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link href="/new" className="btn-primary px-7 py-3.5 text-base">
-                  Créer une démo <ArrowRight size={18} />
-                </Link>
-                <Link href="#fonctionnement" className="btn-secondary px-7 py-3.5 text-base">
-                  Voir comment ça marche
-                </Link>
-              </div>
-            </HeroItem>
-          </HeroStagger>
-        </div>
+          </div>
+
+          <HeroItem>
+            <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:mt-36 sm:flex-row">
+              <Link href="/new" className="btn-primary px-7 py-3.5 text-base">
+                Créer une démo <ArrowRight size={18} />
+              </Link>
+              <Link href="#fonctionnement" className="btn-secondary px-7 py-3.5 text-base">
+                Voir comment ça marche
+              </Link>
+            </div>
+          </HeroItem>
+        </HeroStagger>
       </section>
 
       {/* 2 — Stats band */}
