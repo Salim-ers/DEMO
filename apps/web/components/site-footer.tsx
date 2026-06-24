@@ -10,8 +10,8 @@ const LINKS: Array<{ href: string; label: string }> = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-hairline">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 sm:px-8 md:flex-row md:items-center md:justify-between">
+    <footer className="bg-canvas">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 pb-8 pt-16 sm:px-8 md:flex-row md:items-center md:justify-between">
         <div className="max-w-sm">
           <Logo size={150} />
           <p className="mt-5 text-sm leading-relaxed text-muted">
@@ -26,10 +26,8 @@ export function SiteFooter() {
           ))}
         </nav>
       </div>
-      <div className="border-t border-hairline">
-        <div className="mx-auto max-w-6xl px-5 py-5 text-xs text-faint sm:px-8">
-          © 2026 Studio One. Tous droits réservés.
-        </div>
+      <div className="mx-auto max-w-6xl px-5 pb-8 text-xs text-faint sm:px-8">
+        © 2026 Studio One. Tous droits réservés.
       </div>
     </footer>
   );
