@@ -9,7 +9,6 @@ const NAV = [
   { href: "#presentation", label: "Présentation" },
   { href: "#fonctionnement", label: "Fonctionnement" },
   { href: "#exemples", label: "Exemples" },
-  { href: "#temoignages", label: "Témoignages" },
 ];
 
 /** High-end top bar: large beige round badge + clean spaced links, frosted on scroll. */

@@ -116,6 +116,41 @@ html.lenis body {
   line-height: 0.98;
 }
 
+/* Animated rainbow gradient text (accent words). */
+.text-rainbow {
+  background: linear-gradient(90deg, #ff453a, #ff9f0a, #ffd60a, #34c759, #0a84ff, #5e5ce6, #bf5af2, #ff375f, #ff453a);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 7s linear infinite;
+}
+
+/* Rainbow card: dark glass that lights up in its own colour (set via --c). */
+.rcard {
+  position: relative;
+  border: 1px solid rgba(255, 247, 236, 0.1);
+  background: rgba(255, 247, 236, 0.03);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s, background 0.35s, box-shadow 0.35s;
+}
+.rcard:hover {
+  transform: translateY(-7px);
+  border-color: rgba(var(--c), 0.6);
+  background: rgba(var(--c), 0.07);
+  box-shadow: 0 28px 80px -24px rgba(var(--c), 0.5);
+}
+.rcard .glow {
+  background: rgba(var(--c), 0.55);
+  opacity: 0.45;
+  transition: opacity 0.35s;
+}
+.rcard:hover .glow {
+  opacity: 0.95;
+}
+.rcard .rbar {
+  background: rgb(var(--c));
+}
+
 ::-webkit-scrollbar {
   width: 11px;
   height: 11px;
