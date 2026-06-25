@@ -111,41 +111,46 @@ export function Landing() {
         </RevealGroup>
       </section>
 
-      {/* 3 — Comment ça marche */}
-      <section id="fonctionnement" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-        <Reveal className="mb-12 text-center">
-          <p className="eyebrow justify-center">Comment ça marche</p>
-          <h2 className="text-display mt-4 text-[clamp(2rem,4.5vw,3.25rem)] text-ink">Quatre étapes simples</h2>
-        </Reveal>
-        <RevealGroup className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s, i) => {
-            const c = rb(i);
-            return (
-              <RevealItem key={s.title}>
-                <RainbowCard color={c} className="h-full">
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ background: `rgba(${c},0.14)`, color: `rgb(${c})` }}>
-                      <s.icon size={22} />
-                    </span>
-                    <span className="text-2xl font-bold text-white/10">0{i + 1}</span>
-                  </div>
-                  <h3 className="mt-6 text-lg font-semibold text-ink">{s.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">{s.text}</p>
-                </RainbowCard>
-              </RevealItem>
-            );
-          })}
-        </RevealGroup>
+      {/* 3 — Comment ça marche (plein écran, cartes qui remplissent) */}
+      <section id="fonctionnement" className="flex flex-col px-5 py-20 sm:px-8 lg:min-h-screen lg:justify-center">
+        <div className="mx-auto w-full max-w-6xl">
+          <Reveal className="mb-12 text-center">
+            <p className="eyebrow justify-center">Comment ça marche</p>
+            <h2 className="text-display mt-4 text-[clamp(2rem,4.5vw,3.25rem)] text-ink">Quatre étapes simples</h2>
+          </Reveal>
+          <RevealGroup className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:min-h-[58vh] lg:auto-rows-fr lg:grid-cols-4">
+            {STEPS.map((s, i) => {
+              const c = rb(i);
+              return (
+                <RevealItem key={s.title}>
+                  <RainbowCard color={c} className="h-full">
+                    <div className="flex items-start justify-between">
+                      <span className="flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: `rgba(${c},0.14)`, color: `rgb(${c})` }}>
+                        <s.icon size={26} />
+                      </span>
+                      <span className="text-3xl font-bold text-white/10">0{i + 1}</span>
+                    </div>
+                    <div className="mt-auto pt-10">
+                      <h3 className="text-xl font-semibold text-ink">{s.title}</h3>
+                      <p className="mt-2 text-[15px] leading-relaxed text-muted">{s.text}</p>
+                    </div>
+                  </RainbowCard>
+                </RevealItem>
+              );
+            })}
+          </RevealGroup>
+        </div>
       </section>
 
-      {/* 4 — Bento : showcase + bénéfices (riche, dense) */}
-      <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+      {/* 4 — Bento : showcase + bénéfices (plein écran, dense) */}
+      <section className="flex flex-col px-5 py-20 sm:px-8 lg:min-h-screen lg:justify-center">
+        <div className="mx-auto w-full max-w-6xl">
         <Reveal className="mb-12 max-w-2xl">
           <p className="eyebrow">Pourquoi Studio One</p>
           <h2 className="text-display mt-4 text-[clamp(2rem,4.5vw,3.25rem)] text-ink">Pensé pour convaincre vos prospects</h2>
         </Reveal>
 
-        <RevealGroup className="grid grid-cols-1 gap-5 md:grid-cols-3 md:auto-rows-[210px]">
+        <RevealGroup className="grid grid-cols-1 gap-5 md:grid-cols-3 md:auto-rows-[210px] lg:auto-rows-fr lg:[min-height:64vh]">
           {/* Grande carte showcase (2x2) */}
           <RevealItem className="md:col-span-2 md:row-span-2">
             <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-7">
@@ -207,40 +212,43 @@ export function Landing() {
             </Link>
           </RevealItem>
         </RevealGroup>
+        </div>
       </section>
 
-      {/* 5 — Exemples */}
-      <section id="exemples" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-        <Reveal className="mb-12 max-w-2xl">
-          <p className="eyebrow">Exemples</p>
-          <h2 className="text-display mt-4 text-[clamp(2rem,4.5vw,3.25rem)] text-ink">Des démos pour chaque usage</h2>
-        </Reveal>
-        <RevealGroup className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          {EXAMPLES.map((e, i) => {
-            const c = rb(i * 3 + 5);
-            return (
-              <RevealItem key={e.title}>
-                <RainbowCard color={c} className="h-full !p-0">
-                  <div className="relative flex aspect-video items-center justify-center overflow-hidden">
-                    <div aria-hidden className="absolute inset-0" style={{ background: `radial-gradient(70% 90% at 30% 0%, rgba(${c},0.28), transparent 70%)` }} />
-                    <LogoMark tone="cream" size={56} className="relative opacity-95 transition-transform duration-500 group-hover:scale-110" />
-                    <span className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full text-studio" style={{ background: `rgb(${c})` }}>
-                      <Play size={16} className="ml-0.5" fill="currentColor" />
-                    </span>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-ink">{e.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-muted">{e.text}</p>
-                  </div>
-                </RainbowCard>
-              </RevealItem>
-            );
-          })}
-        </RevealGroup>
+      {/* 5 — Exemples (plein écran, cartes qui remplissent) */}
+      <section id="exemples" className="flex flex-col px-5 py-20 sm:px-8 lg:min-h-screen lg:justify-center">
+        <div className="mx-auto w-full max-w-6xl">
+          <Reveal className="mb-12 max-w-2xl">
+            <p className="eyebrow">Exemples</p>
+            <h2 className="text-display mt-4 text-[clamp(2rem,4.5vw,3.25rem)] text-ink">Des démos pour chaque usage</h2>
+          </Reveal>
+          <RevealGroup className="grid grid-cols-1 gap-5 md:grid-cols-3 lg:min-h-[60vh] lg:auto-rows-fr">
+            {EXAMPLES.map((e, i) => {
+              const c = rb(i * 3 + 5);
+              return (
+                <RevealItem key={e.title}>
+                  <RainbowCard color={c} className="h-full !p-0">
+                    <div className="relative flex min-h-[200px] flex-1 items-center justify-center overflow-hidden">
+                      <div aria-hidden className="absolute inset-0" style={{ background: `radial-gradient(70% 90% at 30% 0%, rgba(${c},0.28), transparent 70%)` }} />
+                      <LogoMark tone="cream" size={64} className="relative opacity-95 transition-transform duration-500 group-hover:scale-110" />
+                      <span className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full text-studio" style={{ background: `rgb(${c})` }}>
+                        <Play size={17} className="ml-0.5" fill="currentColor" />
+                      </span>
+                    </div>
+                    <div className="p-7">
+                      <h3 className="text-lg font-semibold text-ink">{e.title}</h3>
+                      <p className="mt-1.5 text-sm leading-relaxed text-muted">{e.text}</p>
+                    </div>
+                  </RainbowCard>
+                </RevealItem>
+              );
+            })}
+          </RevealGroup>
+        </div>
       </section>
 
-      {/* 6 — CTA final (immersif) */}
-      <section className="relative overflow-hidden px-5 py-28 sm:px-8 sm:py-36">
+      {/* 6 — CTA final (immersif, plein écran) */}
+      <section className="relative flex items-center justify-center overflow-hidden px-5 py-28 sm:px-8 lg:min-h-screen">
         <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 60% at 50% 50%, rgba(185,130,74,0.16) 0%, transparent 70%)" }} />
         <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-0 h-[360px] w-[760px] max-w-[92vw] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-[120px]"
           style={{ background: "conic-gradient(from 0deg, #ff453a, #ff9f0a, #ffd60a, #34c759, #0a84ff, #5e5ce6, #bf5af2, #ff453a)" }} />
