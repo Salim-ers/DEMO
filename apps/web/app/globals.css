@@ -168,6 +168,57 @@ html.lenis body {
   animation-delay: -1s;
 }
 
+/*
+ * Thème « papier » : surface blanc cassé chaude (comme le logo) pour le corps
+ * marketing. On re-mappe les tokens sombres en valeurs claires UNIQUEMENT dans
+ * .paper — les composants restent inchangés.
+ */
+.paper {
+  background-color: #f7f1e6;
+  color: #1a130d;
+}
+.paper .text-ink {
+  color: #1a130d;
+}
+.paper .text-muted {
+  color: rgba(26, 19, 13, 0.66);
+}
+.paper .text-faint {
+  color: rgba(26, 19, 13, 0.46);
+}
+.paper .text-accent-deep {
+  color: #8b5e34;
+}
+.paper .eyebrow {
+  color: #8b5e34;
+}
+.paper .border-hairline {
+  border-color: rgba(26, 19, 13, 0.12);
+}
+.paper .bg-panel {
+  background-color: #ffffff;
+}
+.paper .bg-surface {
+  background-color: rgba(26, 19, 13, 0.04);
+}
+.paper .bg-canvas-soft {
+  background-color: #efe4d3;
+}
+.paper .card {
+  background-color: #ffffff;
+  border-color: rgba(26, 19, 13, 0.1);
+  box-shadow: 0 20px 45px -30px rgba(26, 19, 13, 0.35);
+}
+.paper .btn-secondary {
+  color: #1a130d;
+  border-color: rgba(26, 19, 13, 0.14);
+  background-color: rgba(26, 19, 13, 0.03);
+}
+.paper .btn-secondary:hover {
+  background-color: rgba(26, 19, 13, 0.07);
+  border-color: rgba(139, 94, 52, 0.45);
+}
+
 ::-webkit-scrollbar {
   width: 11px;
   height: 11px;
