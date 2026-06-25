@@ -5,6 +5,7 @@ import { SiteFooter } from "./site-footer.js";
 import { AppChrome } from "./app-sidebar.js";
 import { SmoothScroll } from "./landing/smooth-scroll.js";
 import { LandingNav } from "./landing/landing-nav.js";
+import { IntroLoader } from "./landing/intro-loader.js";
 
 /** Routes that render the public marketing chrome instead of the app shell. */
 const MARKETING_ROUTES = new Set(["/"]);
@@ -22,6 +23,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <ToastProvider>
       {isMarketing ? (
         <div className="min-h-screen">
+          <IntroLoader />
           <SmoothScroll />
           <LandingNav />
           <main>{children}</main>
