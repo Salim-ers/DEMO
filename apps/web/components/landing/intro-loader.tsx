@@ -63,15 +63,6 @@ export function IntroLoader() {
               <Clapperboard />
             </motion.div>
           </div>
-
-          {/* Flash au moment du clap */}
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-white"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.55, 0] }}
-            transition={{ delay: 2.0, duration: 0.4, times: [0, 0.3, 1] }}
-          />
         </motion.div>
       )}
     </AnimatePresence>
