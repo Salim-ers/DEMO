@@ -151,6 +151,23 @@ html.lenis body {
   background: rgb(var(--c));
 }
 
+/* Floating blobs for the skew gradient cards. */
+@keyframes blob {
+  0%,
+  100% {
+    transform: translateY(10px);
+  }
+  50% {
+    transform: translateX(-10px);
+  }
+}
+.animate-blob {
+  animation: blob 2s ease-in-out infinite;
+}
+.animation-delay-1000 {
+  animation-delay: -1s;
+}
+
 ::-webkit-scrollbar {
   width: 11px;
   height: 11px;
