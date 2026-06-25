@@ -6,9 +6,10 @@ import { LogoMark } from "../brand/logo.js";
 import { cn } from "../../lib/cn.js";
 
 const NAV = [
-  { href: "#presentation", label: "Présentation" },
   { href: "#fonctionnement", label: "Fonctionnement" },
-  { href: "#exemples", label: "Exemples" },
+  { href: "#modeles", label: "Modèles" },
+  { href: "#offres", label: "Tarifs" },
+  { href: "#faq", label: "FAQ" },
 ];
 
 /** High-end top bar: large beige round badge + clean spaced links, frosted on scroll. */

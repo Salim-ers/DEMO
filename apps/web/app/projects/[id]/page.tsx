@@ -110,6 +110,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <GenerateButton projectId={project.id} hasRun={Boolean(renderJob)} />
       </header>
 
+      {project.status === "failed" && (
+        <div className="mb-6 rounded-xl border border-bad/30 bg-bad/10 px-4 py-3 text-sm text-bad">
+          La génération n’a pas pu aller au bout. Vérifiez l’URL, les accès et relancez la démo.
+        </div>
+      )}
+
       {loginMeta && <LoginBanner status={loginMeta.status} reason={loginMeta.reason} />}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr_1fr]">
@@ -117,6 +123,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <VideoPanel url={videoUrl} format={project.format} />
           <PipelineTimeline projectId={project.id} renderJobId={renderJob?.id ?? null} initial={initialStatus} />
           <StoryboardPreview scenes={scenes} source={project.storyboard?.source} />
+          <VoiceScriptPanel text={project.voiceScript?.fullText ?? null} />
         </div>
 
         <div className="flex flex-col gap-6">
@@ -162,6 +169,24 @@ function LoginBanner({ status, reason }: { status?: string; reason?: string }) {
       ⚠️ Connexion à votre application impossible{reason ? ` (${reason})` : ""}. La démo montre donc le site public.
       Vérifiez que <span className="font-mono text-xs">LOCAL_SECRET_ENCRYPTION_KEY</span> est <strong>identique</strong> sur
       Vercel et Railway, puis relancez le pipeline.
+    </div>
+  );
+}
+
+/** Voice-over script ready to record. */
+function VoiceScriptPanel({ text }: { text: string | null }) {
+  return (
+    <div className="card overflow-hidden">
+      <div className="border-b border-hairline px-6 py-4">
+        <span className="eyebrow">Script voix off</span>
+      </div>
+      <div className="px-6 py-4">
+        {text && text.trim().length > 0 ? (
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted">{text}</p>
+        ) : (
+          <p className="text-sm text-faint">Le script voix off sera disponible après la génération.</p>
+        )}
+      </div>
     </div>
   );
 }

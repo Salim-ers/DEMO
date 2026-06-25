@@ -32,7 +32,9 @@ export default async function ProjectsPage() {
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-ink">Mes démos</h1>
-          <p className="mt-2 text-muted">Retrouvez et gérez toutes vos vidéos de démonstration.</p>
+          <p className="mt-2 max-w-xl text-muted">
+            Retrouvez ici toutes vos vidéos de démonstration, leur statut de génération et les fichiers disponibles.
+          </p>
         </div>
         <Link href="/new" className="btn-primary">
           <Plus size={16} /> Nouvelle démo

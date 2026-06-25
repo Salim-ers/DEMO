@@ -10,20 +10,20 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", displ
 const display = Poppins({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-display", display: "swap" });
 
 const DESCRIPTION =
-  "Studio One transforme vos écrans, vos accès démo et votre scénario en une vidéo de démonstration claire, propre et prête à envoyer à vos prospects.";
+  "Créez des vidéos de démonstration professionnelles à partir de vos écrans, accès démo et scénarios. Idéal pour SaaS, équipes commerciales et produits métier.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://demo-navy-phi.vercel.app"),
   title: {
-    default: `${APP_NAME} — Vidéos de démonstration pour vos SaaS`,
+    default: `${APP_NAME} — Vidéos de démonstration SaaS professionnelles`,
     template: `%s · ${APP_NAME}`,
   },
   description: DESCRIPTION,
   applicationName: APP_NAME,
   icons: { icon: "/brand/studio-one-favicon.png" },
   openGraph: {
-    title: `${APP_NAME} — Vidéos de démonstration pour vos SaaS`,
-    description: DESCRIPTION,
+    title: `${APP_NAME} — Vidéos de démo professionnelles`,
+    description: "Transformez votre application en vidéo claire, structurée et prête à partager avec vos prospects.",
     siteName: APP_NAME,
     images: ["/brand/studio-one-badge-brown.png"],
     type: "website",

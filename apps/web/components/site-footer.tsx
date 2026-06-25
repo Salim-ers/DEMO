@@ -1,33 +1,62 @@
 import Link from "next/link";
 import { Logo } from "./brand/logo.js";
 
-const LINKS: Array<{ href: string; label: string }> = [
-  { href: "/#fonctionnement", label: "Fonctionnement" },
-  { href: "/#exemples", label: "Exemples" },
-  { href: "/new", label: "Créer une démo" },
-  { href: "/projects", label: "Connexion" },
+const COLUMNS: Array<{ title: string; links: Array<{ href: string; label: string }> }> = [
+  {
+    title: "Produit",
+    links: [
+      { href: "/#presentation", label: "Présentation" },
+      { href: "/#fonctionnement", label: "Fonctionnement" },
+      { href: "/#modeles", label: "Modèles" },
+      { href: "/#scenarios", label: "Exemples" },
+    ],
+  },
+  {
+    title: "Ressources",
+    links: [
+      { href: "/#scenarios", label: "Scénarios" },
+      { href: "/#faq", label: "FAQ" },
+      { href: "/#securite", label: "Sécurité" },
+      { href: "/#offres", label: "Offres" },
+    ],
+  },
+  {
+    title: "Compte",
+    links: [
+      { href: "/projects", label: "Connexion" },
+      { href: "/projects", label: "Projets" },
+      { href: "/settings", label: "Paramètres" },
+    ],
+  },
 ];
 
 export function SiteFooter() {
   return (
     <footer className="bg-canvas">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 pb-8 pt-16 sm:px-8 md:flex-row md:items-center md:justify-between">
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 pb-10 pt-16 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="max-w-sm">
-          <Logo size={150} />
+          <Logo size={140} />
           <p className="mt-5 text-sm leading-relaxed text-muted">
-            Studio One — Vidéos de démonstration SaaS professionnelles.
+            Vidéos de démonstration professionnelles pour SaaS, outils métiers et produits digitaux.
           </p>
         </div>
-        <nav className="flex flex-wrap gap-x-8 gap-y-2">
-          {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="text-sm text-muted transition-colors hover:text-ink">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
+        {COLUMNS.map((col) => (
+          <div key={col.title}>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-faint">{col.title}</p>
+            <ul className="space-y-2.5">
+              {col.links.map((l) => (
+                <li key={`${col.title}-${l.label}`}>
+                  <Link href={l.href} className="text-sm text-muted transition-colors hover:text-ink">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
       <div className="mx-auto max-w-6xl px-5 pb-8 text-xs text-faint sm:px-8">
-        © 2026 Studio One. Tous droits réservés.
+        © Studio One. Tous droits réservés.
       </div>
     </footer>
   );

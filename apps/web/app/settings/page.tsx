@@ -61,10 +61,31 @@ export default async function SettingsPage() {
       </header>
 
       <div className="mt-8 space-y-8">
-        <SettingsSection title="Informations du compte">
+        <SettingsSection title="Identité de l’espace">
           <div className="card">
             <Row label="Espace de travail" value={APP_NAME} />
             <Row label="Langue" value="Français" />
+          </div>
+        </SettingsSection>
+
+        <SettingsSection title="Préférences vidéo par défaut" description="Appliquées aux nouvelles démos. Modifiables projet par projet.">
+          <div className="card">
+            <Row label="Format par défaut" value="16:9 — paysage" />
+            <Row label="Durée recommandée" value="90 secondes" />
+          </div>
+        </SettingsSection>
+
+        <SettingsSection title="Qualité de rendu" description="Le niveau de qualité utilisé pour produire la vidéo finale.">
+          <div className="card">
+            <Row label="Résolution" value="1080p" />
+            <Row label="Exports disponibles" value="Vidéo, script, sous-titres, storyboard" />
+          </div>
+        </SettingsSection>
+
+        <SettingsSection title="Voix" description="Le mode de voix off appliqué par défaut aux nouvelles démos.">
+          <div className="card">
+            <Row label="Mode par défaut" value="Script seul" />
+            <Row label="Options disponibles" value="Script, voix uploadée, voix premium" />
           </div>
         </SettingsSection>
 
@@ -75,17 +96,10 @@ export default async function SettingsPage() {
           <ProviderSettings initial={rows} />
         </SettingsSection>
 
-        <SettingsSection title="Stockage" description="Espace utilisé par vos démos, captures et exports.">
+        <SettingsSection title="Aide et support" description="Une question sur Studio One ou un rendu ?">
           <div className="card">
-            <Row label="Conservation des fichiers" value="Illimitée" />
-            <Row label="Exports disponibles" value="Vidéo, script, sous-titres" />
-          </div>
-        </SettingsSection>
-
-        <SettingsSection title="Qualité vidéo par défaut" description="Appliquée aux nouvelles démos. Modifiable projet par projet.">
-          <div className="card">
-            <Row label="Résolution" value="1080p" />
-            <Row label="Format par défaut" value="16:9 — paysage" />
+            <Row label="Centre d’aide" value="Voir « Comment ça marche »" />
+            <Row label="Contact" value="support@studio-one.app" />
           </div>
         </SettingsSection>
       </div>

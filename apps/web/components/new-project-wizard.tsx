@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, ImagePlus, Loader2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ImagePlus, Loader2, ShieldCheck, X } from "lucide-react";
 import { DEMO_DURATIONS, VIDEO_FORMATS, VOICE_MODES } from "@studio-one/shared";
 import { Button } from "./ui/button.js";
 import { Input, Textarea, Select } from "./ui/input.js";
@@ -33,6 +33,25 @@ const VOICE_LABEL: Record<string, string> = {
   script_only: "Script seul",
   uploaded_human_voice: "Voix humaine (upload)",
   tts_provider: "Voix premium",
+};
+
+const SCENARIO_TEMPLATES: { label: string; text: string }[] = [
+  { label: "Démo commerciale courte", text: "Présentez le tableau de bord, montrez la création d’un élément, ouvrez la section statistiques, puis concluez sur le gain de temps." },
+  { label: "Démo onboarding", text: "Souhaitez la bienvenue, montrez la configuration initiale, présentez les trois actions clés, puis terminez sur les ressources d’aide." },
+  { label: "Démo fonctionnalité", text: "Rappelez le besoin en une phrase, ouvrez la fonctionnalité, montrez-la en action, puis concluez sur le bénéfice immédiat." },
+  { label: "Démo métier premium", text: "Commencez par le contexte métier, montrez les écrans essentiels avec un rythme calme, ajoutez des bénéfices clairs, puis terminez par une conclusion rassurante." },
+];
+
+const DURATION_HELP: Record<number, string> = {
+  60: "60 secondes : idéal pour la prospection.",
+  90: "90 secondes : idéal pour une page de vente.",
+  180: "3 minutes : idéal pour l’onboarding ou les produits complexes.",
+};
+
+const VOICE_HELP: Record<string, string> = {
+  script_only: "Script seul : recommandé pour enregistrer une vraie voix humaine.",
+  uploaded_human_voice: "Voix uploadée : utilisez votre propre enregistrement.",
+  tts_provider: "Voix premium : utilisez une voix générée si configurée.",
 };
 
 export function NewProjectWizard() {
@@ -108,20 +127,20 @@ export function NewProjectWizard() {
       <div className="card mt-6 p-6 sm:p-8">
         {step === 0 && (
           <Section title="Produit" hint="Le produit et la promesse principale que la vidéo doit faire passer.">
-            <Field label="Nom du produit">
-              <Input value={form.productName} onChange={(e) => set("productName", e.target.value)} placeholder="Northwind CRM" />
+            <Field label="Nom du produit" hint="Exemple : Horse Ledger, CRM Nova, FinPilot.">
+              <Input value={form.productName} onChange={(e) => set("productName", e.target.value)} placeholder="CRM Nova" />
             </Field>
-            <Field label="URL de l’application">
+            <Field label="URL de l’application" hint="Utilisez de préférence l’URL de connexion ou du tableau de bord.">
               <Input value={form.url} onChange={(e) => set("url", e.target.value)} placeholder="https://app.exemple.com" />
             </Field>
-            <Field label="Audience cible">
+            <Field label="Audience cible" hint="Exemple : équipes commerciales B2B, gestionnaires d’écuries, cabinets de conseil.">
               <Input
                 value={form.targetAudience}
                 onChange={(e) => set("targetAudience", e.target.value)}
-                placeholder="Responsables commerciaux dans des entreprises B2B"
+                placeholder="Équipes commerciales B2B"
               />
             </Field>
-            <Field label="Promesse principale">
+            <Field label="Promesse principale" hint="Résumez le bénéfice en une phrase simple.">
               <Input
                 value={form.mainPromise}
                 onChange={(e) => set("mainPromise", e.target.value)}
@@ -144,7 +163,19 @@ export function NewProjectWizard() {
             <Field label="Mot de passe (optionnel)">
               <Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="••••••••" />
             </Field>
-            <Field label="Scénario de démonstration">
+            <Field label="Scénario de démonstration" hint="Astuce : partez d’un modèle ci-dessous, puis adaptez-le à votre produit.">
+              <div className="mb-3 flex flex-wrap gap-2">
+                {SCENARIO_TEMPLATES.map((t) => (
+                  <button
+                    key={t.label}
+                    type="button"
+                    onClick={() => set("scenario", t.text)}
+                    className="rounded-full border border-hairline bg-surface px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-accent/40 hover:text-ink"
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
               <Textarea
                 value={form.scenario}
                 onChange={(e) => set("scenario", e.target.value)}
@@ -152,10 +183,13 @@ export function NewProjectWizard() {
                 rows={4}
               />
             </Field>
-            <p className="rounded-xl border border-hairline bg-surface px-4 py-3 text-sm leading-relaxed text-muted">
-              Les accès servent uniquement à capturer le parcours de démonstration. Ils ne sont jamais affichés dans la
-              vidéo.
-            </p>
+            <div className="flex items-start gap-3 rounded-xl border border-hairline bg-surface px-4 py-3">
+              <ShieldCheck size={18} className="mt-0.5 shrink-0 text-accent-deep" />
+              <p className="text-sm leading-relaxed text-muted">
+                Conseil : utilisez un compte de démonstration avec des données fictives propres. Cela évite d’afficher
+                des informations sensibles dans la vidéo.
+              </p>
+            </div>
           </Section>
         )}
 
@@ -194,6 +228,11 @@ export function NewProjectWizard() {
                   ))}
                 </Select>
               </Field>
+            </div>
+
+            <div className="flex flex-col gap-1.5 rounded-xl border border-hairline bg-surface px-4 py-3 text-sm leading-relaxed text-muted">
+              {DURATION_HELP[form.durationSeconds] && <p>{DURATION_HELP[form.durationSeconds]}</p>}
+              {VOICE_HELP[form.voiceMode] && <p>{VOICE_HELP[form.voiceMode]}</p>}
             </div>
 
             {form.voiceMode === "tts_provider" && (
