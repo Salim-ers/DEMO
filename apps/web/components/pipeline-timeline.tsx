@@ -86,7 +86,7 @@ export function PipelineTimeline({
     <div className="card overflow-hidden">
       <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
         <div className="flex items-center gap-2.5">
-          <span className="eyebrow">Pipeline de rendu</span>
+          <span className="eyebrow">Progression</span>
           <StatusPill status={state.status} />
         </div>
         <span className="font-mono text-xs tabular-nums text-muted">{state.progress}%</span>

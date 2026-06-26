@@ -13,7 +13,6 @@ import { FeatureCard } from "../ui/feature-card.js";
 import { StepCard } from "../ui/step-card.js";
 import { TemplateCard } from "../ui/template-card.js";
 import { ScenarioCard } from "../ui/scenario-card.js";
-import { PricingCard } from "../ui/pricing-card.js";
 import { FAQItem } from "../ui/faq-item.js";
 import { BeforeAfter } from "../ui/before-after.js";
 import { CTASection } from "../ui/cta-section.js";
@@ -98,14 +97,24 @@ const CAS_USAGE = [
   "Vidéo LinkedIn", "Vidéo pour investisseurs", "Vidéo explicative d’une fonctionnalité",
 ];
 
-const OFFRES = [
-  { name: "Essentiel", tagline: "Pour tester le principe avec une première vidéo.", features: ["1 projet de démo", "Export vidéo standard", "Script voix off", "Sous-titres"], cta: { label: "Commencer", href: "/new" } },
-  { name: "Pro", tagline: "Pour les équipes qui créent régulièrement des supports commerciaux.", features: ["Plusieurs projets de démo", "Exports premium", "Formats 16:9, vertical et carré", "Modèles de scénarios", "Assets exportables"], cta: { label: "Créer une démo", href: "/new" }, featured: true },
-  { name: "Studio", tagline: "Pour agences, équipes sales ou besoins avancés.", features: ["Plusieurs marques ou clients", "Variantes de vidéos", "Scénarios personnalisés", "Support prioritaire", "Préparation de campagnes vidéo"], cta: { label: "Nous contacter", href: "/new" } },
+const AVANT = ["Captures faites à la main", "Script à écrire", "Montage long", "Formats à adapter", "Sous-titres à créer"];
+const APRES = ["Vidéo 16:9 prête à envoyer", "Script voix off généré", "Sous-titres inclus", "Storyboard structuré", "Fichiers livrables centralisés"];
+
+const EXEMPLES_VIDEOS = [
+  { title: "Démo SaaS B2B", img: "/visuals/edit.jpg", duree: "90 s", usage: "Prospection & sales deck" },
+  { title: "Pub LinkedIn / TikTok", img: "/visuals/studio.jpg", duree: "30 s", usage: "Acquisition & social ads" },
+  { title: "Onboarding produit", img: "/visuals/camera.jpg", duree: "3 min", usage: "Activation & support client" },
 ];
 
-const AVANT = ["Démonstrations longues à préparer", "Captures faites à la main", "Discours commercial variable", "Difficulté à réutiliser une démo", "Vidéos souvent jamais produites"];
-const APRES = ["Scénario structuré", "Captures propres", "Support réutilisable", "Vidéo prête à envoyer", "Meilleure cohérence commerciale"];
+const INCLUS = [
+  "1 vidéo de démo ou publicité produit",
+  "Storyboard généré",
+  "Script voix off",
+  "Sous-titres inclus",
+  "Export MP4 1080p",
+  "Format 16:9 pour site, landing page ou sales deck",
+  "Fichiers livrables centralisés",
+];
 
 const FAQ = [
   { q: "Est-ce que Studio One crée une fausse interface ?", a: "Non. Studio One est pensé pour travailler à partir de vraies captures de votre produit. L’objectif est de montrer votre application telle qu’elle existe, de façon claire et professionnelle." },
@@ -145,22 +154,23 @@ export function Landing() {
           </HeroItem>
           <HeroItem blur>
             <h1 className="text-display mx-auto mt-5 max-w-3xl text-balance text-[clamp(2.3rem,5vw,4.25rem)] text-ink">
-              Créez des vidéos de démonstration professionnelles pour vos SaaS.
+              Transformez votre produit en vidéo de démo ou pub IA prête à vendre.
             </h1>
           </HeroItem>
           <HeroItem>
             <p className="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-muted sm:text-xl">
-              Studio One transforme vos écrans, vos accès démo et votre scénario en une vidéo claire, structurée et prête à être utilisée par vos commerciaux.
+              Studio One capture vos vrais écrans produit, génère le storyboard, la voix off, les sous-titres et l’export
+              vidéo pour vos démos SaaS, pubs LinkedIn, onboarding et lancements.
             </p>
           </HeroItem>
           <HeroItem>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="/new" className="btn-primary px-7 py-3.5 text-base">Créer une démo <ArrowRight size={18} /></Link>
-              <Link href="#fonctionnement" className="btn-secondary px-7 py-3.5 text-base">Voir comment ça marche</Link>
+              <Link href="/new" className="btn-primary px-7 py-3.5 text-base">Créer ma vidéo <ArrowRight size={18} /></Link>
+              <Link href="/demo" className="btn-secondary px-7 py-3.5 text-base"><Play size={16} fill="currentColor" /> Voir un exemple</Link>
             </div>
           </HeroItem>
           <HeroItem>
-            <p className="mt-5 text-sm text-faint">Aucune interface inventée. Studio One utilise de vraies captures de votre produit.</p>
+            <p className="mt-5 text-sm text-faint">Pas d’interface inventée. Vos vrais écrans, scénarisés comme une vidéo pro.</p>
           </HeroItem>
           <HeroItem>
             <ul className="mt-7 flex flex-col items-center gap-x-6 gap-y-2 text-sm text-muted sm:flex-row">
@@ -209,7 +219,7 @@ export function Landing() {
               <p className="mt-6 text-lg leading-relaxed text-muted">
                 Captures réelles de votre application, storyboard structuré, voix off et sous-titres : tout est assemblé pour vous, dans le format de votre choix.
               </p>
-              <Link href="/new" className="btn-primary mt-8 px-7 py-3.5 text-base">Créer une démo <ArrowRight size={18} /></Link>
+              <Link href="/new" className="btn-primary mt-8 px-7 py-3.5 text-base">Créer ma vidéo <ArrowRight size={18} /></Link>
             </Reveal>
             <Reveal delay={0.1}>
               <div className="relative overflow-hidden rounded-3xl border border-hairline shadow-soft">
@@ -230,6 +240,34 @@ export function Landing() {
           <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {MODELES.map((m) => (
               <RevealItem key={m.title}><TemplateCard title={m.title} desc={m.desc} duration={m.duration} ideal={m.ideal} /></RevealItem>
+            ))}
+          </RevealGroup>
+        </section>
+
+        {/* EXEMPLES DE VIDÉOS */}
+        <section id="exemples-videos" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
+          <Reveal>
+            <SectionHeader eyebrow="Exemples de vidéos" title="À quoi ressemble une vidéo Studio One" subtitle="Des exemples illustratifs pour chaque objectif. Votre vidéo est générée à partir de votre propre produit." />
+          </Reveal>
+          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
+            {EXEMPLES_VIDEOS.map((e) => (
+              <RevealItem key={e.title}>
+                <div className="card group flex h-full flex-col overflow-hidden !p-0">
+                  <div className="relative">
+                    <img src={e.img} alt={`Exemple de vidéo : ${e.title}`} className="aspect-video w-full object-cover" />
+                    <div aria-hidden className="absolute inset-0 bg-black/30" />
+                    <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-cream backdrop-blur">{e.duree}</span>
+                    <span className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-studio shadow-lg transition-transform group-hover:scale-105">
+                      <Play size={16} className="ml-0.5" fill="currentColor" />
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="text-lg font-semibold text-ink">{e.title}</h3>
+                    <p className="mt-1.5 text-sm text-muted">{e.usage}</p>
+                    <Link href="/demo" className="btn-secondary mt-5 justify-center py-2.5">Voir l’exemple</Link>
+                  </div>
+                </div>
+              </RevealItem>
             ))}
           </RevealGroup>
         </section>
@@ -336,18 +374,35 @@ export function Landing() {
           </RevealGroup>
         </section>
 
-        {/* 11 — OFFRES */}
+        {/* 11 — TARIF UNIQUE */}
         <section id="offres" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
           <Reveal>
-            <SectionHeader align="center" eyebrow="Offres" title="Choisissez le niveau qui correspond à votre besoin" />
+            <SectionHeader align="center" eyebrow="Tarif" title="Un prix simple, par vidéo" />
           </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
-            {OFFRES.map((o) => (
-              <RevealItem key={o.name}><PricingCard name={o.name} tagline={o.tagline} features={o.features} cta={o.cta} featured={o.featured} /></RevealItem>
-            ))}
-          </RevealGroup>
-          <Reveal delay={0.1}>
-            <p className="mt-8 text-center text-sm text-faint">Les offres peuvent être ajustées selon votre volume de vidéos et vos besoins d’accompagnement.</p>
+          <Reveal delay={0.08} className="mt-12 block">
+            <div className="mx-auto max-w-lg">
+              <div className="card p-9 text-center">
+                <p className="eyebrow justify-center">Vidéo IA prête à vendre</p>
+                <div className="mt-4 flex items-end justify-center gap-1.5">
+                  <span className="text-display text-[3.5rem] leading-none text-ink">49 €</span>
+                  <span className="mb-1.5 text-muted">/ vidéo</span>
+                </div>
+                <ul className="mx-auto mt-8 max-w-sm space-y-3 text-left">
+                  {INCLUS.map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-[15px] text-ink">
+                      <Check size={18} className="mt-0.5 shrink-0 text-accent-deep" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/new" className="btn-primary mt-8 w-full justify-center py-3.5 text-base">
+                  Créer ma vidéo pour 49 € <ArrowRight size={18} />
+                </Link>
+                <p className="mt-4 text-sm text-faint">Prix unitaire simple : vous payez uniquement par vidéo générée.</p>
+              </div>
+              <p className="mt-6 text-center text-sm text-faint">
+                Prix bêta de lancement. Des options agence et volume pourront être proposées plus tard.
+              </p>
+            </div>
           </Reveal>
         </section>
 
@@ -380,7 +435,7 @@ export function Landing() {
       <CTASection
         title="Transformez votre produit en une vidéo claire et professionnelle."
         text="Préparez une démo que vos prospects peuvent comprendre sans long rendez-vous, sans montage manuel et sans support improvisé."
-        cta={{ label: "Créer une démo", href: "/new" }}
+        cta={{ label: "Créer ma vidéo", href: "/new" }}
       />
     </>
   );

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, Menu, X } from "lucide-react";
+import { Plus, Menu, X, LogOut } from "lucide-react";
 import { LogoMark } from "./brand/logo.js";
 import { NAV_ITEMS } from "./nav-items.js";
 import { cn } from "../lib/cn.js";
@@ -50,8 +50,18 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
         })}
       </nav>
 
-      <p className="mt-6 px-3 text-xs leading-relaxed text-faint">
-        Studio One — Vidéos de démonstration SaaS professionnelles.
+      <button
+        type="button"
+        onClick={async () => {
+          await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+          window.location.href = "/";
+        }}
+        className="mt-6 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-elevated/60 hover:text-ink"
+      >
+        <LogOut size={18} className="text-faint" /> <span className="font-medium">Se déconnecter</span>
+      </button>
+      <p className="mt-4 px-3 text-xs leading-relaxed text-faint">
+        Studio One — Vidéos de démonstration professionnelles.
       </p>
     </div>
   );

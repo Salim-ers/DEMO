@@ -21,7 +21,7 @@ export function DownloadCenter({ items }: { items: DownloadItem[] }) {
   return (
     <div className="card overflow-hidden">
       <div className="border-b border-hairline px-6 py-4">
-        <span className="eyebrow">Téléchargements</span>
+        <span className="eyebrow">Fichiers livrables</span>
       </div>
       {!available ? (
         <div className="px-6 py-6">

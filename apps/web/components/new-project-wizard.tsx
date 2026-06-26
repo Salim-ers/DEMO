@@ -6,6 +6,7 @@ import { DEMO_DURATIONS, VIDEO_FORMATS, VOICE_MODES } from "@studio-one/shared";
 import { Button } from "./ui/button.js";
 import { Input, Textarea, Select } from "./ui/input.js";
 import { Stepper } from "./ui/stepper.js";
+import { cn } from "../lib/cn.js";
 
 interface FormState {
   productName: string;
@@ -54,13 +55,33 @@ const VOICE_HELP: Record<string, string> = {
   tts_provider: "Voix premium : utilisez une voix générée si configurée.",
 };
 
+const VIDEO_TEMPLATES: { label: string; format: string; duration: number; scenario: string }[] = [
+  { label: "Démo SaaS B2B", format: "16:9", duration: 90, scenario: "Présentez le tableau de bord, montrez la création d’un élément, ouvrez la section statistiques, puis concluez sur le gain de temps." },
+  { label: "Pub LinkedIn", format: "16:9", duration: 30, scenario: "Accrochez avec le problème, montrez la solution en action sur un écran clé, puis terminez par un bénéfice et un appel à l’action." },
+  { label: "Onboarding utilisateur", format: "16:9", duration: 180, scenario: "Souhaitez la bienvenue, montrez la configuration initiale, présentez les trois actions clés, puis terminez sur les ressources d’aide." },
+  { label: "Feature launch", format: "16:9", duration: 60, scenario: "Rappelez le besoin, ouvrez la nouvelle fonctionnalité, montrez-la sur un cas concret, puis concluez sur le bénéfice immédiat." },
+  { label: "Vidéo verticale TikTok/Reels", format: "9:16", duration: 30, scenario: "Accroche rapide, montrez l’écran le plus marquant, enchaînez deux ou trois bénéfices courts, terminez par un appel à l’action." },
+];
+
+/** Rough scene-count estimate (kept short and structured: 5–16 scenes). */
+function estimateScenes(seconds: number): number {
+  return Math.max(5, Math.min(16, Math.round(seconds / 11)));
+}
+
+const VIDEO_PRICE = "49 €";
+
 export function NewProjectWizard() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<File[]>([]);
+  const [useCaptures, setUseCaptures] = useState(false);
   const imgInputRef = useRef<HTMLInputElement>(null);
+
+  function applyTemplate(t: (typeof VIDEO_TEMPLATES)[number]) {
+    setForm((f) => ({ ...f, scenario: t.scenario, format: t.format, durationSeconds: t.duration }));
+  }
   const [form, setForm] = useState<FormState>({
     productName: "",
     url: "",
@@ -127,6 +148,22 @@ export function NewProjectWizard() {
       <div className="card mt-6 p-6 sm:p-8">
         {step === 0 && (
           <Section title="Produit" hint="Le produit et la promesse principale que la vidéo doit faire passer.">
+            <div>
+              <label className="field-label">Type de vidéo (optionnel)</label>
+              <div className="flex flex-wrap gap-2">
+                {VIDEO_TEMPLATES.map((t) => (
+                  <button
+                    key={t.label}
+                    type="button"
+                    onClick={() => applyTemplate(t)}
+                    className="rounded-full border border-hairline bg-surface px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-accent/40 hover:text-ink"
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-faint">Pré-remplit le format, la durée et un scénario de départ. Vous pourrez tout ajuster.</p>
+            </div>
             <Field label="Nom du produit" hint="Exemple : Horse Ledger, CRM Nova, FinPilot.">
               <Input value={form.productName} onChange={(e) => set("productName", e.target.value)} placeholder="CRM Nova" />
             </Field>
@@ -152,7 +189,26 @@ export function NewProjectWizard() {
 
         {step === 1 && (
           <Section title="Accès & scénario" hint="Ce que la vidéo doit montrer, et comment y accéder.">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="flex items-start gap-3 rounded-xl border border-hairline bg-surface px-4 py-3">
+              <ShieldCheck size={18} className="mt-0.5 shrink-0 text-accent-deep" />
+              <p className="text-sm leading-relaxed text-muted">
+                Nous utilisons ces accès uniquement pour capturer le parcours demandé. Vous pouvez aussi importer des
+                captures.
+              </p>
+            </div>
+
+            <label className="flex cursor-pointer items-center gap-3">
+              <input type="checkbox" checked={useCaptures} onChange={(e) => setUseCaptures(e.target.checked)} className="h-4 w-4 accent-accent" />
+              <span className="text-sm text-muted">Je préfère importer des captures plutôt que donner un accès.</span>
+            </label>
+
+            {useCaptures && (
+              <p className="rounded-xl border border-accent/30 bg-accent/[0.06] px-4 py-3 text-sm leading-relaxed text-accent-deep">
+                Parfait. Laissez les champs d’accès vides et ajoutez vos captures à l’étape suivante (« Vos visuels »).
+              </p>
+            )}
+
+            <div className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2", useCaptures && "opacity-50")}>
               <Field label="URL de connexion (optionnel)">
                 <Input value={form.loginUrl} onChange={(e) => set("loginUrl", e.target.value)} placeholder="https://app.exemple.com/login" />
               </Field>
@@ -293,6 +349,20 @@ export function NewProjectWizard() {
               <input type="checkbox" checked={form.startNow} onChange={(e) => set("startNow", e.target.checked)} className="h-4 w-4 accent-accent" />
               <span className="text-sm text-muted">Lancer la génération immédiatement</span>
             </label>
+
+            <div className="rounded-xl border border-hairline bg-surface p-4">
+              <p className="text-sm font-semibold text-ink">Estimation avant génération</p>
+              <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                <div className="flex justify-between gap-2"><dt className="text-muted">Durée</dt><dd className="font-medium text-ink">{form.durationSeconds >= 180 ? "3 min" : `${form.durationSeconds} s`}</dd></div>
+                <div className="flex justify-between gap-2"><dt className="text-muted">Scènes</dt><dd className="font-medium text-ink">~{estimateScenes(form.durationSeconds)}</dd></div>
+                <div className="flex justify-between gap-2"><dt className="text-muted">Format</dt><dd className="font-medium text-ink">{form.format}</dd></div>
+                <div className="flex justify-between gap-2"><dt className="text-muted">Livrables</dt><dd className="font-medium text-ink">Vidéo, script, sous-titres</dd></div>
+              </dl>
+              <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
+                <span className="text-sm text-muted">Prix</span>
+                <span className="text-base font-semibold text-ink">{VIDEO_PRICE} <span className="text-sm font-normal text-faint">/ vidéo</span></span>
+              </div>
+            </div>
           </Section>
         )}
 

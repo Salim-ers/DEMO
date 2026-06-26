@@ -23,7 +23,7 @@ const COLUMNS: Array<{ title: string; links: Array<{ href: string; label: string
   {
     title: "Compte",
     links: [
-      { href: "/projects", label: "Connexion" },
+      { href: "/login", label: "Connexion" },
       { href: "/projects", label: "Projets" },
       { href: "/settings", label: "Paramètres" },
     ],

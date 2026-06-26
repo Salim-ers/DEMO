@@ -111,8 +111,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       </header>
 
       {project.status === "failed" && (
-        <div className="mb-6 rounded-xl border border-bad/30 bg-bad/10 px-4 py-3 text-sm text-bad">
-          La génération n’a pas pu aller au bout. Vérifiez l’URL, les accès et relancez la démo.
+        <div className="mb-6 rounded-xl border border-bad/30 bg-bad/10 px-5 py-4">
+          <p className="text-sm font-semibold text-bad">La génération n’a pas pu aller au bout</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">
+            Vérifiez l’URL et les accès du compte de démonstration, puis relancez. Si la vidéo est trop lourde, réduisez
+            la durée ou choisissez un format optimisé.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link href="/new" className="rounded-lg border border-hairline bg-surface px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-accent/40">
+              Réduire la durée
+            </Link>
+            <a href="mailto:support@studio-one.app" className="rounded-lg border border-hairline bg-surface px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-accent/40">
+              Contacter le support
+            </a>
+          </div>
         </div>
       )}
 
@@ -222,7 +234,12 @@ interface QReport {
 function QualityReportPanel({ report }: { report: QReport | null }) {
   if (!report) return null;
   const dot = (s: QCheck["status"]) => (s === "pass" ? "bg-ok" : s === "warn" ? "bg-yellow-400" : "bg-bad");
-  const scoreTone = report.score >= 85 ? "text-ok" : report.score >= 65 ? "text-yellow-400" : "text-bad";
+  const hasFail = report.checks.some((c) => c.status === "fail");
+  const hasWarn = report.checks.some((c) => c.status === "warn");
+  // Keep the headline score coherent with the checks: a failing premium criterion
+  // (e.g. video bitrate) must not coexist with a 90+ score.
+  const displayScore = hasFail ? Math.min(report.score, 70) : hasWarn ? Math.min(report.score, 84) : report.score;
+  const scoreTone = displayScore >= 85 ? "text-ok" : displayScore >= 65 ? "text-yellow-400" : "text-bad";
   const metrics: Array<[string, string]> = [
     ["Résolution", report.resolution],
     ["Débit", `${report.bitrateMbps} Mbps`],
@@ -236,27 +253,39 @@ function QualityReportPanel({ report }: { report: QReport | null }) {
   ];
   return (
     <div className="card overflow-hidden">
-      <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
-        <span className="eyebrow">Rapport qualité</span>
-        <span className={`text-lg font-semibold tabular-nums ${scoreTone}`}>{report.score}/100</span>
+      <div className="border-b border-hairline px-6 py-4">
+        <div className="flex items-center justify-between">
+          <span className="eyebrow">Qualité vidéo</span>
+          <span className={`text-lg font-semibold tabular-nums ${scoreTone}`}>{displayScore}/100</span>
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          {hasFail
+            ? "Qualité vidéo : exploitable, quelques points à optimiser pour un rendu premium."
+            : "Qualité vidéo : prête pour landing page, sales deck et réseaux sociaux."}
+        </p>
       </div>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-3 px-6 py-4">
-        {metrics.map(([k, v]) => (
-          <div key={k} className="min-w-0">
-            <div className="text-[10px] font-medium uppercase tracking-wide text-faint">{k}</div>
-            <div className="truncate text-sm text-ink">{v}</div>
-          </div>
-        ))}
-      </div>
-      <ul className="divide-y divide-hairline border-t border-hairline">
-        {report.checks.map((c) => (
-          <li key={c.id} className="flex items-center gap-3 px-6 py-2.5">
-            <span className={`h-2 w-2 shrink-0 rounded-full ${dot(c.status)}`} />
-            <span className="flex-1 text-sm text-ink">{c.label}</span>
-            <span className="font-mono text-xs text-faint">{c.detail}</span>
-          </li>
-        ))}
-      </ul>
+      <details>
+        <summary className="cursor-pointer list-none px-6 py-3 text-[10px] font-medium uppercase tracking-wide text-faint transition-colors hover:text-muted">
+          Détails techniques
+        </summary>
+        <div className="grid grid-cols-3 gap-x-4 gap-y-3 px-6 pb-4">
+          {metrics.map(([k, v]) => (
+            <div key={k} className="min-w-0">
+              <div className="text-[10px] font-medium uppercase tracking-wide text-faint">{k}</div>
+              <div className="truncate text-sm text-ink">{v}</div>
+            </div>
+          ))}
+        </div>
+        <ul className="divide-y divide-hairline border-t border-hairline">
+          {report.checks.map((c) => (
+            <li key={c.id} className="flex items-center gap-3 px-6 py-2.5">
+              <span className={`h-2 w-2 shrink-0 rounded-full ${dot(c.status)}`} />
+              <span className="flex-1 text-sm text-ink">{c.label}</span>
+              <span className="font-mono text-xs text-faint">{c.detail}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
       {report.recommendations.length > 0 && (
         <div className="border-t border-hairline px-6 py-4">
           <div className="mb-2 text-[10px] font-medium uppercase tracking-wide text-faint">Recommandations</div>

@@ -7,31 +7,40 @@ import { SmoothScroll } from "./landing/smooth-scroll.js";
 import { LandingNav } from "./landing/landing-nav.js";
 import { IntroLoader } from "./landing/intro-loader.js";
 
-/** Routes that render the public marketing chrome instead of the app shell. */
-const MARKETING_ROUTES = new Set(["/"]);
+/** Public marketing chrome (nav + footer). */
+const MARKETING_ROUTES = new Set(["/", "/demo", "/security"]);
+/** Bare pages (no chrome at all). */
+const BARE_ROUTES = new Set(["/login"]);
 
 /**
- * One frame, two faces. Public pages (landing, pricing) get a marketing header +
- * footer; the workspace gets the full app chrome (sidebar, drawer, command
- * palette). Toasts are available everywhere.
+ * One frame, three faces. Marketing pages get the public header + footer; the
+ * private workspace gets the app chrome (sidebar); a few pages (login) render
+ * bare. The cinematic intro only plays on the home page.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isMarketing = MARKETING_ROUTES.has(pathname);
 
-  return (
-    <ToastProvider>
-      {isMarketing ? (
+  if (BARE_ROUTES.has(pathname)) {
+    return <ToastProvider>{children}</ToastProvider>;
+  }
+
+  if (MARKETING_ROUTES.has(pathname)) {
+    return (
+      <ToastProvider>
         <div className="min-h-screen">
-          <IntroLoader />
+          {pathname === "/" && <IntroLoader />}
           <SmoothScroll />
           <LandingNav />
           <main>{children}</main>
           <SiteFooter />
         </div>
-      ) : (
-        <AppChrome>{children}</AppChrome>
-      )}
+      </ToastProvider>
+    );
+  }
+
+  return (
+    <ToastProvider>
+      <AppChrome>{children}</AppChrome>
     </ToastProvider>
   );
 }

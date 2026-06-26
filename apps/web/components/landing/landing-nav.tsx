@@ -62,7 +62,7 @@ export function LandingNav() {
 
           <div className="flex items-center gap-5">
             <Link
-              href="/projects"
+              href="/login"
               className="hidden text-[15px] font-medium text-muted transition-colors hover:text-ink sm:inline-flex"
             >
               Connexion
@@ -133,7 +133,7 @@ export function LandingNav() {
               Créer une démo <ArrowRight size={16} />
             </Link>
             <Link
-              href="/projects"
+              href="/login"
               onClick={() => setDrawer(false)}
               className="flex items-center justify-center rounded-xl border border-hairline bg-surface px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-accent/40 hover:bg-elevated"
             >
