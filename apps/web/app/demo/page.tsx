@@ -59,7 +59,7 @@ export default function DemoPage() {
       </section>
 
       {/* Corps crème */}
-      <div className="paper" style={{ backgroundColor: "#f7f1e6" }}>
+      <div className="paper">
         {/* Avant / Après */}
         <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
           <SectionHeader eyebrow="Avant / Après" title="Du produit brut à une vidéo prête à vendre" />

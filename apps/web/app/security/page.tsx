@@ -37,7 +37,7 @@ export default function SecurityPage() {
         </div>
       </section>
 
-      <div className="paper" style={{ backgroundColor: "#f7f1e6" }}>
+      <div className="paper">
         <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {POINTS.map((p, i) => (

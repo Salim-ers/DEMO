@@ -18,9 +18,7 @@ import { BeforeAfter } from "../ui/before-after.js";
 import { CTASection } from "../ui/cta-section.js";
 import { Reveal, RevealGroup, RevealItem, HeroStagger, HeroItem } from "./motion.js";
 
-const PAPER = "#f7f1e6";
-
-/** Rainbow accents readable on the cream body (echoes the hero dots). value = "r,g,b". */
+/** Rainbow accents readable on the light body (echoes the hero dots). value = "r,g,b". */
 const RB = ["229,72,77", "247,104,8", "48,164,108", "8,145,178", "37,99,235", "91,91,214", "147,51,234", "233,61,130"];
 const rb = (i: number): string => RB[((i % RB.length) + RB.length) % RB.length] ?? "229,72,77";
 
@@ -131,10 +129,12 @@ const FAQ = [
   { q: "À quoi sert le script voix off ?", a: "Il vous donne un texte prêt à enregistrer pour une voix humaine ou une voix premium, afin d’accompagner clairement la démonstration." },
 ];
 
+const PAD = "mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28";
+
 export function Landing() {
   return (
     <>
-      {/* 1 — HERO (sombre, points qui se fondent dans le crème) */}
+      {/* 1 — HERO (têtes inchangées) */}
       <section id="presentation" className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas">
         <div className="absolute inset-y-0 left-0 z-0 w-[52%]">
           <AnimatedDots fullScreen={false} className="h-full w-full" />
@@ -186,253 +186,281 @@ export function Landing() {
         </HeroStagger>
       </section>
 
-      {/* CORPS — fond blanc cassé chaud */}
-      <div className="paper" style={{ backgroundColor: PAPER }}>
-        {/* 2 — POURQUOI */}
-        <section id="pourquoi" className="mx-auto max-w-6xl px-5 pb-24 pt-20 sm:px-8 sm:pb-28">
-          <Reveal>
-            <SectionHeader eyebrow="Pourquoi Studio One" title="Pourquoi utiliser Studio One ?" subtitle="Créer une bonne vidéo de démonstration demande du temps : écrire le scénario, capturer les bons écrans, monter la vidéo, ajouter une voix, exporter les bons formats. Studio One simplifie ce processus pour vous aider à produire rapidement des vidéos propres, cohérentes et exploitables." />
-          </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {POURQUOI.map((c, i) => (
-              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i)} /></RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
-
-        {/* 3 — COMMENT ÇA MARCHE */}
-        <section id="fonctionnement" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader align="center" eyebrow="Comment ça marche" title="Comment ça marche" subtitle="Un processus simple, pensé pour aller de votre produit à une vidéo prête à partager." className="[&_p]:mx-auto" />
-          </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {STEPS.map((s, i) => (
-              <RevealItem key={s.title}><StepCard index={i + 1} icon={s.icon} title={s.title} text={s.text} accent={rb(i)} /></RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
-
-        {/* SHOWCASE — photo écran de montage */}
-        <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2">
+      {/* CORPS — clair, bandes alternées blanc / crème */}
+      <div className="paper">
+        {/* Pourquoi (blanc) */}
+        <section id="pourquoi">
+          <div className={PAD}>
             <Reveal>
-              <SectionHeader eyebrow="Le rendu" title="Une vidéo prête à envoyer, pas un projet de montage." />
-              <p className="mt-6 text-lg leading-relaxed text-muted">
-                Captures réelles de votre application, storyboard structuré, voix off et sous-titres : tout est assemblé pour vous, dans le format de votre choix.
-              </p>
-              <Link href="/new" className="btn-primary mt-8 px-7 py-3.5 text-base">Créer ma vidéo <ArrowRight size={18} /></Link>
+              <SectionHeader eyebrow="Pourquoi Studio One" title="Pourquoi utiliser Studio One ?" subtitle="Créer une bonne vidéo de démonstration demande du temps : écrire le scénario, capturer les bons écrans, monter la vidéo, ajouter une voix, exporter les bons formats. Studio One simplifie ce processus pour vous aider à produire rapidement des vidéos propres, cohérentes et exploitables." />
             </Reveal>
-            <Reveal delay={0.1}>
-              <div className="relative overflow-hidden rounded-3xl border border-hairline shadow-soft">
-                <img src="/visuals/edit.jpg" alt="Écran de montage vidéo" className="aspect-[4/3] w-full object-cover" />
-                <span className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-studio shadow-lg">
-                  <Play size={19} className="ml-0.5" fill="currentColor" />
-                </span>
-              </div>
-            </Reveal>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {POURQUOI.map((c, i) => (
+                <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i)} /></RevealItem>
+              ))}
+            </RevealGroup>
           </div>
         </section>
 
-        {/* 4 — MODÈLES */}
-        <section id="modeles" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader eyebrow="Modèles" title="Des modèles adaptés à chaque usage" subtitle="Choisissez le type de démonstration qui correspond à votre objectif commercial." />
-          </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {MODELES.map((m) => (
-              <RevealItem key={m.title}><TemplateCard title={m.title} desc={m.desc} duration={m.duration} ideal={m.ideal} /></RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
-
-        {/* EXEMPLES DE VIDÉOS */}
-        <section id="exemples-videos" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader eyebrow="Exemples de vidéos" title="À quoi ressemble une vidéo Studio One" subtitle="Des exemples illustratifs pour chaque objectif. Votre vidéo est générée à partir de votre propre produit." />
-          </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
-            {EXEMPLES_VIDEOS.map((e) => (
-              <RevealItem key={e.title}>
-                <div className="card group flex h-full flex-col overflow-hidden !p-0">
-                  <div className="relative">
-                    <img src={e.img} alt={`Exemple de vidéo : ${e.title}`} className="aspect-video w-full object-cover" />
-                    <div aria-hidden className="absolute inset-0 bg-black/30" />
-                    <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-cream backdrop-blur">{e.duree}</span>
-                    <span className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-studio shadow-lg transition-transform group-hover:scale-105">
-                      <Play size={16} className="ml-0.5" fill="currentColor" />
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="text-lg font-semibold text-ink">{e.title}</h3>
-                    <p className="mt-1.5 text-sm text-muted">{e.usage}</p>
-                    <Link href="/demo" className="btn-secondary mt-5 justify-center py-2.5">Voir l’exemple</Link>
-                  </div>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
-
-        {/* 5 — SCÉNARIOS */}
-        <section id="scenarios" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader eyebrow="Scénarios" title="Exemples de scénarios prêts à utiliser" subtitle="Copiez un scénario et adaptez-le à votre produit." />
-          </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
-            {SCENARIOS.map((s) => (
-              <RevealItem key={s.title}><ScenarioCard title={s.title} desc={s.desc} script={s.script} /></RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
-
-        {/* 6 — CE QUE VOUS OBTENEZ */}
-        <section id="obtenez" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader eyebrow="Livrables" title="Ce que vous obtenez à la fin" />
-          </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {OBTENEZ.map((item, i) => (
-              <RevealItem key={item}>
-                <div className="card flex items-center gap-3 p-5">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: `rgba(${rb(i)},0.12)`, color: `rgb(${rb(i)})` }}><Check size={18} /></span>
-                  <span className="text-[15px] text-ink">{item}</span>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-          <Reveal delay={0.1}>
-            <p className="mt-8 max-w-3xl text-base leading-relaxed text-muted">
-              Votre équipe peut utiliser ces éléments dans ses emails, pages de vente, relances commerciales, démos asynchrones, présentations investisseurs ou supports d’onboarding.
-            </p>
-          </Reveal>
-        </section>
-
-        {/* 7 — QUALITÉ ET RENDU (avec photo caméra) */}
-        <section id="qualite" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2">
+        {/* Comment ça marche (crème) */}
+        <section id="fonctionnement" className="paper-soft">
+          <div className={PAD}>
             <Reveal>
-              <SectionHeader eyebrow="Qualité" title="Un rendu pensé pour un usage professionnel" subtitle="Studio One privilégie une démonstration claire, lisible et crédible. L’objectif n’est pas de créer une vidéo artificielle, mais de mettre en valeur votre vrai produit avec une structure propre, un bon rythme et un message commercial compréhensible." />
+              <SectionHeader align="center" eyebrow="Comment ça marche" title="Comment ça marche" subtitle="Un processus simple, pensé pour aller de votre produit à une vidéo prête à partager." className="[&_p]:mx-auto" />
             </Reveal>
-            <Reveal delay={0.1}>
-              <div className="overflow-hidden rounded-3xl border border-hairline shadow-soft">
-                <img src="/visuals/camera.jpg" alt="Caméra de production vidéo" className="aspect-[4/3] w-full object-cover" />
-              </div>
-            </Reveal>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {STEPS.map((s, i) => (
+                <RevealItem key={s.title}><StepCard index={i + 1} icon={s.icon} title={s.title} text={s.text} accent={rb(i)} /></RevealItem>
+              ))}
+            </RevealGroup>
           </div>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {QUALITE.map((c, i) => (
-              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i + 4)} /></RevealItem>
-            ))}
-          </RevealGroup>
         </section>
 
-        {/* 8 — SÉCURITÉ */}
-        <section id="securite" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+        {/* Showcase (blanc) */}
+        <section>
+          <div className={PAD}>
+            <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2">
+              <Reveal>
+                <SectionHeader eyebrow="Le rendu" title="Une vidéo prête à envoyer, pas un projet de montage." />
+                <p className="mt-6 text-lg leading-relaxed text-muted">
+                  Captures réelles de votre application, storyboard structuré, voix off et sous-titres : tout est assemblé pour vous, dans le format de votre choix.
+                </p>
+                <Link href="/new" className="btn-primary mt-8 px-7 py-3.5 text-base">Créer ma vidéo <ArrowRight size={18} /></Link>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <div className="relative overflow-hidden rounded-3xl border border-hairline shadow-soft">
+                  <img src="/visuals/edit.jpg" alt="Écran de montage vidéo" className="aspect-[4/3] w-full object-cover" />
+                  <span className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-studio shadow-lg">
+                    <Play size={19} className="ml-0.5" fill="currentColor" />
+                  </span>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* Modèles (crème) */}
+        <section id="modeles" className="paper-soft">
+          <div className={PAD}>
             <Reveal>
-              <SectionHeader eyebrow="Sécurité" title="Des accès utilisés uniquement pour la démonstration" />
-              <p className="mt-6 text-lg leading-relaxed text-muted">
-                Studio One est pensé pour fonctionner avec des comptes de démonstration. Les accès servent uniquement à capturer le parcours prévu dans le scénario. Il est recommandé d’utiliser un compte démo contenant des données fictives et propres.
+              <SectionHeader eyebrow="Modèles" title="Des modèles adaptés à chaque usage" subtitle="Choisissez le type de démonstration qui correspond à votre objectif commercial." />
+            </Reveal>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {MODELES.map((m) => (
+                <RevealItem key={m.title}><TemplateCard title={m.title} desc={m.desc} duration={m.duration} ideal={m.ideal} /></RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+
+        {/* Exemples de vidéos (blanc) */}
+        <section id="exemples-videos">
+          <div className={PAD}>
+            <Reveal>
+              <SectionHeader eyebrow="Exemples de vidéos" title="À quoi ressemble une vidéo Studio One" subtitle="Des exemples illustratifs pour chaque objectif. Votre vidéo est générée à partir de votre propre produit." />
+            </Reveal>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
+              {EXEMPLES_VIDEOS.map((e) => (
+                <RevealItem key={e.title}>
+                  <div className="card group flex h-full flex-col overflow-hidden !p-0">
+                    <div className="relative">
+                      <img src={e.img} alt={`Exemple de vidéo : ${e.title}`} className="aspect-video w-full object-cover" />
+                      <div aria-hidden className="absolute inset-0 bg-black/30" />
+                      <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-cream backdrop-blur">{e.duree}</span>
+                      <span className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-studio shadow-lg transition-transform group-hover:scale-105">
+                        <Play size={16} className="ml-0.5" fill="currentColor" />
+                      </span>
+                    </div>
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="text-lg font-semibold text-ink">{e.title}</h3>
+                      <p className="mt-1.5 text-sm text-muted">{e.usage}</p>
+                      <Link href="/demo" className="btn-secondary mt-5 justify-center py-2.5">Voir l’exemple</Link>
+                    </div>
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+
+        {/* Scénarios (crème) */}
+        <section id="scenarios" className="paper-soft">
+          <div className={PAD}>
+            <Reveal>
+              <SectionHeader eyebrow="Scénarios" title="Exemples de scénarios prêts à utiliser" subtitle="Copiez un scénario et adaptez-le à votre produit." />
+            </Reveal>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
+              {SCENARIOS.map((s) => (
+                <RevealItem key={s.title}><ScenarioCard title={s.title} desc={s.desc} script={s.script} /></RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+
+        {/* Ce que vous obtenez (blanc) */}
+        <section id="obtenez">
+          <div className={PAD}>
+            <Reveal>
+              <SectionHeader eyebrow="Livrables" title="Ce que vous obtenez à la fin" />
+            </Reveal>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {OBTENEZ.map((item, i) => (
+                <RevealItem key={item}>
+                  <div className="card flex items-center gap-3 p-5">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: `rgba(${rb(i)},0.12)`, color: `rgb(${rb(i)})` }}><Check size={18} /></span>
+                    <span className="text-[15px] text-ink">{item}</span>
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+            <Reveal delay={0.1}>
+              <p className="mt-8 max-w-3xl text-base leading-relaxed text-muted">
+                Votre équipe peut utiliser ces éléments dans ses emails, pages de vente, relances commerciales, démos asynchrones, présentations investisseurs ou supports d’onboarding.
               </p>
             </Reveal>
-            <Reveal delay={0.1}>
-              <ul className="card space-y-4 p-7">
-                {SECURITE.map((p) => (
-                  <li key={p} className="flex items-start gap-3 text-[15px] text-ink">
-                    <ShieldCheck size={20} className="mt-0.5 shrink-0 text-accent-deep" /> {p}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
           </div>
         </section>
 
-        {/* 9 — POUR QUI */}
-        <section id="pour-qui" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader eyebrow="Pour qui" title="Pour qui est fait Studio One ?" />
-          </Reveal>
-          <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {POUR_QUI.map((c, i) => (
-              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i + 2)} /></RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
-
-        {/* 10 — CAS D’USAGE */}
-        <section id="cas-usage" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader eyebrow="Cas d’usage" title="Cas d’usage fréquents" />
-          </Reveal>
-          <RevealGroup className="mt-12 flex flex-wrap gap-3">
-            {CAS_USAGE.map((c, i) => (
-              <RevealItem key={c}>
-                <span className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface px-4 py-2 text-sm text-muted">
-                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: `rgb(${rb(i)})` }} /> {c}
-                </span>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
-
-        {/* 11 — TARIF UNIQUE */}
-        <section id="offres" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader align="center" eyebrow="Tarif" title="Un prix simple, par vidéo" />
-          </Reveal>
-          <Reveal delay={0.08} className="mt-12 block">
-            <div className="mx-auto max-w-lg">
-              <div className="card p-9 text-center">
-                <p className="eyebrow justify-center">Vidéo IA prête à vendre</p>
-                <div className="mt-4 flex items-end justify-center gap-1.5">
-                  <span className="text-display text-[3.5rem] leading-none text-ink">49 €</span>
-                  <span className="mb-1.5 text-muted">/ vidéo</span>
+        {/* Qualité (crème, photo caméra) */}
+        <section id="qualite" className="paper-soft">
+          <div className={PAD}>
+            <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2">
+              <Reveal>
+                <SectionHeader eyebrow="Qualité" title="Un rendu pensé pour un usage professionnel" subtitle="Studio One privilégie une démonstration claire, lisible et crédible. L’objectif n’est pas de créer une vidéo artificielle, mais de mettre en valeur votre vrai produit avec une structure propre, un bon rythme et un message commercial compréhensible." />
+              </Reveal>
+              <Reveal delay={0.1}>
+                <div className="overflow-hidden rounded-3xl border border-hairline shadow-soft">
+                  <img src="/visuals/camera.jpg" alt="Caméra de production vidéo" className="aspect-[4/3] w-full object-cover" />
                 </div>
-                <ul className="mx-auto mt-8 max-w-sm space-y-3 text-left">
-                  {INCLUS.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-[15px] text-ink">
-                      <Check size={18} className="mt-0.5 shrink-0 text-accent-deep" /> {f}
+              </Reveal>
+            </div>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {QUALITE.map((c, i) => (
+                <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i + 4)} /></RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+
+        {/* Sécurité (blanc) */}
+        <section id="securite">
+          <div className={PAD}>
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+              <Reveal>
+                <SectionHeader eyebrow="Sécurité" title="Des accès utilisés uniquement pour la démonstration" />
+                <p className="mt-6 text-lg leading-relaxed text-muted">
+                  Studio One est pensé pour fonctionner avec des comptes de démonstration. Les accès servent uniquement à capturer le parcours prévu dans le scénario. Il est recommandé d’utiliser un compte démo contenant des données fictives et propres.
+                </p>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <ul className="card space-y-4 p-7">
+                  {SECURITE.map((p) => (
+                    <li key={p} className="flex items-start gap-3 text-[15px] text-ink">
+                      <ShieldCheck size={20} className="mt-0.5 shrink-0 text-accent-deep" /> {p}
                     </li>
                   ))}
                 </ul>
-                <Link href="/new" className="btn-primary mt-8 w-full justify-center py-3.5 text-base">
-                  Créer ma vidéo pour 49 € <ArrowRight size={18} />
-                </Link>
-                <p className="mt-4 text-sm text-faint">Prix unitaire simple : vous payez uniquement par vidéo générée.</p>
-              </div>
-              <p className="mt-6 text-center text-sm text-faint">
-                Prix bêta de lancement. Des options agence et volume pourront être proposées plus tard.
-              </p>
+              </Reveal>
             </div>
-          </Reveal>
+          </div>
         </section>
 
-        {/* 12 — AVANT / APRÈS */}
-        <section id="avant-apres" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader eyebrow="Avant / Après" title="Ce que Studio One change" />
-          </Reveal>
-          <Reveal delay={0.08} className="mt-14 block">
-            <BeforeAfter before={AVANT} after={APRES} />
-          </Reveal>
-        </section>
-
-        {/* 13 — FAQ */}
-        <section id="faq" className="mx-auto max-w-3xl px-5 py-24 sm:px-8 sm:py-28">
-          <Reveal>
-            <SectionHeader align="center" eyebrow="FAQ" title="Questions fréquentes" />
-          </Reveal>
-          <Reveal delay={0.08} className="mt-12 block">
-            <div className="border-t border-hairline">
-              {FAQ.map((f, i) => (
-                <FAQItem key={f.q} question={f.q} answer={f.a} defaultOpen={i === 0} />
+        {/* Pour qui (crème) */}
+        <section id="pour-qui" className="paper-soft">
+          <div className={PAD}>
+            <Reveal>
+              <SectionHeader eyebrow="Pour qui" title="Pour qui est fait Studio One ?" />
+            </Reveal>
+            <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {POUR_QUI.map((c, i) => (
+                <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i + 2)} /></RevealItem>
               ))}
-            </div>
-          </Reveal>
+            </RevealGroup>
+          </div>
+        </section>
+
+        {/* Cas d’usage (blanc) */}
+        <section id="cas-usage">
+          <div className={PAD}>
+            <Reveal>
+              <SectionHeader eyebrow="Cas d’usage" title="Cas d’usage fréquents" />
+            </Reveal>
+            <RevealGroup className="mt-12 flex flex-wrap gap-3">
+              {CAS_USAGE.map((c, i) => (
+                <RevealItem key={c}>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface px-4 py-2 text-sm text-muted">
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: `rgb(${rb(i)})` }} /> {c}
+                  </span>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+
+        {/* Tarif (crème) */}
+        <section id="offres" className="paper-soft">
+          <div className={PAD}>
+            <Reveal>
+              <SectionHeader align="center" eyebrow="Tarif" title="Un prix simple, par vidéo" />
+            </Reveal>
+            <Reveal delay={0.08} className="mt-12 block">
+              <div className="mx-auto max-w-lg">
+                <div className="card p-9 text-center">
+                  <p className="eyebrow justify-center">Vidéo IA prête à vendre</p>
+                  <div className="mt-4 flex items-end justify-center gap-1.5">
+                    <span className="text-display text-[3.5rem] leading-none text-ink">49 €</span>
+                    <span className="mb-1.5 text-muted">/ vidéo</span>
+                  </div>
+                  <ul className="mx-auto mt-8 max-w-sm space-y-3 text-left">
+                    {INCLUS.map((f) => (
+                      <li key={f} className="flex items-start gap-3 text-[15px] text-ink">
+                        <Check size={18} className="mt-0.5 shrink-0 text-accent-deep" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/new" className="btn-primary mt-8 w-full justify-center py-3.5 text-base">
+                    Créer ma vidéo pour 49 € <ArrowRight size={18} />
+                  </Link>
+                  <p className="mt-4 text-sm text-faint">Prix unitaire simple : vous payez uniquement par vidéo générée.</p>
+                </div>
+                <p className="mt-6 text-center text-sm text-faint">
+                  Prix bêta de lancement. Des options agence et volume pourront être proposées plus tard.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Avant / Après (blanc) */}
+        <section id="avant-apres">
+          <div className={PAD}>
+            <Reveal>
+              <SectionHeader eyebrow="Avant / Après" title="Ce que Studio One change" />
+            </Reveal>
+            <Reveal delay={0.08} className="mt-14 block">
+              <BeforeAfter before={AVANT} after={APRES} />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* FAQ (crème) */}
+        <section id="faq" className="paper-soft">
+          <div className="mx-auto max-w-3xl px-5 py-24 sm:px-8 sm:py-28">
+            <Reveal>
+              <SectionHeader align="center" eyebrow="FAQ" title="Questions fréquentes" />
+            </Reveal>
+            <Reveal delay={0.08} className="mt-12 block">
+              <div className="border-t border-hairline">
+                {FAQ.map((f, i) => (
+                  <FAQItem key={f.q} question={f.q} answer={f.a} defaultOpen={i === 0} />
+                ))}
+              </div>
+            </Reveal>
+          </div>
         </section>
       </div>
 
-      {/* 14 — CTA FINAL (sombre, bookend) */}
+      {/* CTA FINAL (sombre, bookend) */}
       <CTASection
         title="Transformez votre produit en une vidéo claire et professionnelle."
         text="Préparez une démo que vos prospects peuvent comprendre sans long rendez-vous, sans montage manuel et sans support improvisé."

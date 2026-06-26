@@ -174,8 +174,12 @@ html.lenis body {
  * .paper — les composants restent inchangés.
  */
 .paper {
-  background-color: #f7f1e6;
+  background-color: #ffffff;
   color: #1a130d;
+}
+/* Alternating soft band (warm off-white) for a clean white/soft rhythm. */
+.paper-soft {
+  background-color: #f7f1e6;
 }
 .paper .text-ink {
   color: #1a130d;
@@ -206,8 +210,8 @@ html.lenis body {
 }
 .paper .card {
   background-color: #ffffff;
-  border-color: rgba(26, 19, 13, 0.1);
-  box-shadow: 0 20px 45px -30px rgba(26, 19, 13, 0.35);
+  border: 1px solid rgba(26, 19, 13, 0.08);
+  box-shadow: 0 14px 40px -26px rgba(26, 19, 13, 0.25);
 }
 .paper .btn-secondary {
   color: #1a130d;
