@@ -180,9 +180,6 @@ export function Landing() {
             </ul>
           </HeroItem>
         </HeroStagger>
-
-        {/* fondu du hero vers le corps crème (plus de coupure nette) */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-52" style={{ background: `linear-gradient(to bottom, rgba(247,241,230,0), ${PAPER})` }} />
       </section>
 
       {/* CORPS — fond blanc cassé chaud */}
