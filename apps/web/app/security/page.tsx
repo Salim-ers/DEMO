@@ -8,6 +8,9 @@ export const metadata = {
   description: "Comment Studio One utilise vos accès et vos données : uniquement pour produire la vidéo demandée.",
 };
 
+const RB = ["229,72,77", "247,104,8", "48,164,108", "8,145,178", "37,99,235", "91,91,214", "147,51,234", "233,61,130"];
+const rb = (i: number): string => RB[i % RB.length] ?? "229,72,77";
+
 const POINTS = [
   { icon: KeyRound, title: "Accès limités au scénario", text: "Les accès que vous fournissez servent uniquement à capturer le parcours décrit dans votre scénario." },
   { icon: EyeOff, title: "Aucun secret affiché", text: "Vos identifiants et clés ne sont jamais affichés publiquement ni montrés dans la vidéo." },
@@ -37,8 +40,8 @@ export default function SecurityPage() {
       <div className="paper" style={{ backgroundColor: "#f7f1e6" }}>
         <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {POINTS.map((p) => (
-              <FeatureCard key={p.title} icon={p.icon} title={p.title} text={p.text} />
+            {POINTS.map((p, i) => (
+              <FeatureCard key={p.title} icon={p.icon} title={p.title} text={p.text} accent={rb(i)} />
             ))}
           </div>
 

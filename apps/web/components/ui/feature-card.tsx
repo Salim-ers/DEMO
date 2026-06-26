@@ -6,14 +6,19 @@ export interface FeatureCardProps {
   icon?: LucideIcon;
   title: string;
   text: string;
+  /** Optional rainbow accent for the icon chip, as "r,g,b". Falls back to caramel. */
+  accent?: string;
   className?: string;
 }
 
-export function FeatureCard({ icon: Icon, title, text, className }: FeatureCardProps) {
+export function FeatureCard({ icon: Icon, title, text, accent, className }: FeatureCardProps) {
+  const chip = accent
+    ? { style: { background: `rgba(${accent},0.12)`, color: `rgb(${accent})` }, className: "" }
+    : { style: undefined, className: "bg-accent/12 text-accent-deep" };
   return (
     <div className={cn("card h-full p-7 transition-colors hover:border-accent/30", className)}>
       {Icon ? (
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/12 text-accent-deep">
+        <div className={cn("flex h-12 w-12 items-center justify-center rounded-xl", chip.className)} style={chip.style}>
           <Icon size={22} />
         </div>
       ) : null}

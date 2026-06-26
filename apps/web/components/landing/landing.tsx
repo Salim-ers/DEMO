@@ -20,6 +20,10 @@ import { Reveal, RevealGroup, RevealItem, HeroStagger, HeroItem } from "./motion
 
 const PAPER = "#f7f1e6";
 
+/** Rainbow accents readable on the cream body (echoes the hero dots). value = "r,g,b". */
+const RB = ["229,72,77", "247,104,8", "48,164,108", "8,145,178", "37,99,235", "91,91,214", "147,51,234", "233,61,130"];
+const rb = (i: number): string => RB[((i % RB.length) + RB.length) % RB.length] ?? "229,72,77";
+
 const HERO_POINTS = [
   "Capture réelle de votre application",
   "Script voix off prêt à enregistrer",
@@ -190,8 +194,8 @@ export function Landing() {
             <SectionHeader eyebrow="Pourquoi Studio One" title="Pourquoi utiliser Studio One ?" subtitle="Créer une bonne vidéo de démonstration demande du temps : écrire le scénario, capturer les bons écrans, monter la vidéo, ajouter une voix, exporter les bons formats. Studio One simplifie ce processus pour vous aider à produire rapidement des vidéos propres, cohérentes et exploitables." />
           </Reveal>
           <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {POURQUOI.map((c) => (
-              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} /></RevealItem>
+            {POURQUOI.map((c, i) => (
+              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i)} /></RevealItem>
             ))}
           </RevealGroup>
         </section>
@@ -203,7 +207,7 @@ export function Landing() {
           </Reveal>
           <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {STEPS.map((s, i) => (
-              <RevealItem key={s.title}><StepCard index={i + 1} icon={s.icon} title={s.title} text={s.text} /></RevealItem>
+              <RevealItem key={s.title}><StepCard index={i + 1} icon={s.icon} title={s.title} text={s.text} accent={rb(i)} /></RevealItem>
             ))}
           </RevealGroup>
         </section>
@@ -287,10 +291,10 @@ export function Landing() {
             <SectionHeader eyebrow="Livrables" title="Ce que vous obtenez à la fin" />
           </Reveal>
           <RevealGroup className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {OBTENEZ.map((item) => (
+            {OBTENEZ.map((item, i) => (
               <RevealItem key={item}>
                 <div className="card flex items-center gap-3 p-5">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/12 text-accent-deep"><Check size={18} /></span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: `rgba(${rb(i)},0.12)`, color: `rgb(${rb(i)})` }}><Check size={18} /></span>
                   <span className="text-[15px] text-ink">{item}</span>
                 </div>
               </RevealItem>
@@ -316,8 +320,8 @@ export function Landing() {
             </Reveal>
           </div>
           <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {QUALITE.map((c) => (
-              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} /></RevealItem>
+            {QUALITE.map((c, i) => (
+              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i + 4)} /></RevealItem>
             ))}
           </RevealGroup>
         </section>
@@ -349,8 +353,8 @@ export function Landing() {
             <SectionHeader eyebrow="Pour qui" title="Pour qui est fait Studio One ?" />
           </Reveal>
           <RevealGroup className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {POUR_QUI.map((c) => (
-              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} /></RevealItem>
+            {POUR_QUI.map((c, i) => (
+              <RevealItem key={c.title}><FeatureCard icon={c.icon} title={c.title} text={c.text} accent={rb(i + 2)} /></RevealItem>
             ))}
           </RevealGroup>
         </section>
@@ -361,10 +365,10 @@ export function Landing() {
             <SectionHeader eyebrow="Cas d’usage" title="Cas d’usage fréquents" />
           </Reveal>
           <RevealGroup className="mt-12 flex flex-wrap gap-3">
-            {CAS_USAGE.map((c) => (
+            {CAS_USAGE.map((c, i) => (
               <RevealItem key={c}>
                 <span className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface px-4 py-2 text-sm text-muted">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {c}
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: `rgb(${rb(i)})` }} /> {c}
                 </span>
               </RevealItem>
             ))}

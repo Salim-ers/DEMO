@@ -9,6 +9,9 @@ export const metadata = {
   description: "Un exemple complet de ce que Studio One produit à partir d’un vrai produit : vidéo, storyboard, script voix off, sous-titres et fichiers livrables.",
 };
 
+const RB = ["229,72,77", "247,104,8", "48,164,108", "8,145,178", "37,99,235", "91,91,214"];
+const rb = (i: number): string => RB[i % RB.length] ?? "229,72,77";
+
 const DELIVERABLES = [
   { icon: Film, title: "Vidéo MP4", meta: "1080p · 16:9" },
   { icon: ListOrdered, title: "Storyboard", meta: "Structure de la vidéo" },
@@ -69,9 +72,9 @@ export default function DemoPage() {
         <section className="mx-auto max-w-6xl px-5 pb-24 sm:px-8">
           <SectionHeader eyebrow="Livrables" title="Ce que Studio One a généré" subtitle="Tout est centralisé et prêt à être utilisé par vos équipes." />
           <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {DELIVERABLES.map((d) => (
+            {DELIVERABLES.map((d, i) => (
               <div key={d.title} className="card flex items-center gap-4 p-6">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/12 text-accent-deep">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl" style={{ background: `rgba(${rb(i)},0.12)`, color: `rgb(${rb(i)})` }}>
                   <d.icon size={22} />
                 </span>
                 <div>

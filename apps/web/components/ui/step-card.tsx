@@ -7,14 +7,19 @@ export interface StepCardProps {
   icon?: LucideIcon;
   title: string;
   text: string;
+  /** Optional rainbow accent for the icon chip, as "r,g,b". Falls back to caramel. */
+  accent?: string;
 }
 
-export function StepCard({ index, icon: Icon, title, text }: StepCardProps) {
+export function StepCard({ index, icon: Icon, title, text, accent }: StepCardProps) {
+  const chip = accent
+    ? { style: { background: `rgba(${accent},0.12)`, color: `rgb(${accent})` }, className: "" }
+    : { style: undefined, className: "bg-accent/12 text-accent-deep" };
   return (
     <div className={cn("card h-full p-7")}>
       <div className="flex items-center justify-between">
         {Icon ? (
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent/12 text-accent-deep">
+          <span className={cn("inline-flex h-12 w-12 items-center justify-center rounded-xl", chip.className)} style={chip.style}>
             <Icon className="h-6 w-6" aria-hidden="true" />
           </span>
         ) : (
