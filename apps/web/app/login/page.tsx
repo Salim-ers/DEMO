@@ -1,14 +1,15 @@
 "use client";
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Loader2, Lock } from "lucide-react";
 import { LogoMark } from "../../components/brand/logo.js";
 
 function LoginForm() {
-  const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/projects";
+  const nextRaw = params.get("next") || "/projects";
+  // Only allow internal redirects (no open-redirect).
+  const next = nextRaw.startsWith("/") && !nextRaw.startsWith("//") ? nextRaw : "/projects";
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,8 +28,8 @@ function LoginForm() {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? "Connexion impossible.");
       }
-      router.push(next);
-      router.refresh();
+      // Hard redirect so the new cookie is applied and the middleware re-evaluates server-side.
+      window.location.assign(next);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Connexion impossible.");
       setLoading(false);
