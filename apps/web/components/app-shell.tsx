@@ -6,6 +6,7 @@ import { AppChrome } from "./app-sidebar.js";
 import { SmoothScroll } from "./landing/smooth-scroll.js";
 import { LandingNav } from "./landing/landing-nav.js";
 import { IntroLoader } from "./landing/intro-loader.js";
+import { ThemeProvider } from "./theme.js";
 
 /** Public marketing chrome (nav + footer). */
 const MARKETING_ROUTES = new Set(["/", "/demo", "/security"]);
@@ -40,7 +41,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ToastProvider>
-      <AppChrome>{children}</AppChrome>
+      <ThemeProvider>
+        <AppChrome>{children}</AppChrome>
+      </ThemeProvider>
     </ToastProvider>
   );
 }

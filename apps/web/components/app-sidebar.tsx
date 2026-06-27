@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { Plus, Menu, X, LogOut } from "lucide-react";
 import { LogoMark } from "./brand/logo.js";
 import { NAV_ITEMS } from "./nav-items.js";
+import { ThemeToggle } from "./theme-toggle.js";
+import { useTheme } from "./theme.js";
 import { cn } from "../lib/cn.js";
 
 function isActive(pathname: string, href: string) {
@@ -50,13 +52,18 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
         })}
       </nav>
 
+      <div className="mt-6">
+        <p className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-faint">Apparence</p>
+        <ThemeToggle className="w-full justify-between" />
+      </div>
+
       <button
         type="button"
         onClick={async () => {
           await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
           window.location.href = "/";
         }}
-        className="mt-6 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-elevated/60 hover:text-ink"
+        className="mt-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-elevated/60 hover:text-ink"
       >
         <LogOut size={18} className="text-faint" /> <span className="font-medium">Se déconnecter</span>
       </button>
@@ -70,15 +77,17 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
 /** App chrome: fixed desktop sidebar + mobile drawer. Calm and uncluttered. */
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { resolved } = useTheme();
   const [drawer, setDrawer] = useState(false);
 
   useEffect(() => setDrawer(false), [pathname]);
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-[1400px]">
-      <aside className="sticky top-0 hidden h-screen w-[252px] shrink-0 flex-col border-r border-hairline px-4 py-6 md:flex">
-        <SidebarContent pathname={pathname} />
-      </aside>
+    <div className={cn("min-h-screen transition-colors duration-300", resolved === "light" ? "app-light bg-[#faf7f1]" : "bg-canvas")}>
+      <div className="mx-auto flex max-w-[1400px]">
+        <aside className="sticky top-0 hidden h-screen w-[252px] shrink-0 flex-col border-r border-hairline px-4 py-6 md:flex">
+          <SidebarContent pathname={pathname} />
+        </aside>
 
       {/* Mobile drawer */}
       <div
@@ -119,6 +128,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="min-w-0 flex-1 px-5 py-8 sm:px-8 lg:px-10">{children}</main>
+      </div>
       </div>
     </div>
   );

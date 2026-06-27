@@ -2,6 +2,7 @@ import { prisma, ProviderKind } from "@studio-one/db";
 import { APP_NAME } from "@studio-one/shared";
 import { getActiveWorkspaceId } from "../../lib/workspace.js";
 import { ProviderSettings, type ProviderRow } from "../../components/provider-settings.js";
+import { ThemeToggle } from "../../components/theme-toggle.js";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Réglages" };
@@ -61,6 +62,13 @@ export default async function SettingsPage() {
       </header>
 
       <div className="mt-8 space-y-8">
+        <SettingsSection title="Apparence" description="Choisissez le thème de votre espace de travail.">
+          <div className="card flex flex-wrap items-center justify-between gap-4 p-5">
+            <span className="text-sm text-muted">Thème</span>
+            <ThemeToggle />
+          </div>
+        </SettingsSection>
+
         <SettingsSection title="Identité de l’espace">
           <div className="card">
             <Row label="Espace de travail" value={APP_NAME} />

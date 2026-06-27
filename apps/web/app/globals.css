@@ -223,6 +223,67 @@ html.lenis body {
   border-color: rgba(139, 94, 52, 0.45);
 }
 
+/* ----- App light mode (scoped to the workspace chrome) ----- */
+.app-light {
+  color: #1a130d;
+}
+.app-light .text-ink {
+  color: #1a130d;
+}
+.app-light .text-muted {
+  color: rgba(26, 19, 13, 0.66);
+}
+.app-light .text-faint {
+  color: rgba(26, 19, 13, 0.46);
+}
+.app-light .text-accent-deep {
+  color: #8b5e34;
+}
+.app-light .eyebrow {
+  color: #8b5e34;
+}
+.app-light .border-hairline {
+  border-color: rgba(26, 19, 13, 0.12);
+}
+.app-light .bg-surface {
+  background-color: rgba(26, 19, 13, 0.04);
+}
+.app-light .bg-panel {
+  background-color: #ffffff;
+}
+.app-light .bg-elevated {
+  background-color: rgba(26, 19, 13, 0.06);
+}
+.app-light .bg-canvas-soft {
+  background-color: #efe7d8;
+}
+.app-light .bg-canvas {
+  background-color: #faf7f1;
+}
+.app-light .bg-canvas\/80 {
+  background-color: rgba(250, 247, 241, 0.8);
+}
+.app-light .bg-canvas\/90 {
+  background-color: rgba(250, 247, 241, 0.9);
+}
+.app-light .card {
+  background-color: #ffffff;
+  border: 1px solid rgba(26, 19, 13, 0.08);
+  box-shadow: 0 12px 36px -24px rgba(26, 19, 13, 0.25);
+}
+.app-light .field-label {
+  color: rgba(26, 19, 13, 0.7);
+}
+.app-light .btn-secondary {
+  color: #1a130d;
+  border-color: rgba(26, 19, 13, 0.14);
+  background-color: rgba(26, 19, 13, 0.03);
+}
+.app-light .btn-secondary:hover {
+  background-color: rgba(26, 19, 13, 0.07);
+  border-color: rgba(139, 94, 52, 0.45);
+}
+
 ::-webkit-scrollbar {
   width: 11px;
   height: 11px;
