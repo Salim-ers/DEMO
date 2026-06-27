@@ -57,7 +57,7 @@ export function UserImagesPanel({ projectId, initial }: { projectId: string; ini
       <div className="px-6 py-5">
         <p className="mb-4 text-sm leading-relaxed text-muted">
           Ajoutez vos propres photos ou captures d'écran. Elles seront intégrées à la vidéo comme scènes du produit
-          lors de la prochaine génération — idéal si votre app est derrière une connexion.
+          lors de la prochaine génération. Idéal si votre app est derrière une connexion.
         </p>
 
         {images.length > 0 && (

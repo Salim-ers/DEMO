@@ -38,7 +38,7 @@ function LoginForm() {
 
   return (
     <div className="w-full max-w-sm">
-      <Link href="/" className="mb-8 flex items-center gap-2.5" aria-label="Studio One — accueil">
+      <Link href="/" className="mb-8 flex items-center gap-2.5" aria-label="Studio One, accueil">
         <LogoMark tone="cream" size={40} />
         <span className="text-lg font-semibold tracking-tight text-ink">Studio One</span>
       </Link>

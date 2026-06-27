@@ -3,33 +3,39 @@
 @tailwind utilities;
 
 /*
- * Studio One — sober, warm, professional.
- * Deep near-black canvas, cream ink, a single brown → caramel accent.
- * No neon, no aurora, no film grain. Calm and legible.
+ * Studio One — dark cinematic studio.
+ * Deep, warm near-black canvas, warm-cream ink, a controlled bronze → champagne
+ * accent. Glow, grain and depth are used with restraint: premium, never neon,
+ * never flat brown, never "AI slop".
  */
 :root {
   color-scheme: dark;
 
   /* Brand palette (single source of truth). */
-  --background: #060504;
-  --background-soft: #11100e;
-  --cream: #fff7ec;
+  --background: #050403;
+  --background-soft: #0d0b09;
+  --background-deep: #030201;
+  --cream: #fff7ea;
+  --champagne: #f6e7cc;
   --cream-soft: #f3e7d7;
   --text-dark: #1a130d;
-  --text-light: #fff7ec;
-  --muted-light: rgba(255, 247, 236, 0.68);
+  --text-light: #fff7ea;
+  --muted-light: rgba(255, 247, 234, 0.68);
   --muted-dark: rgba(26, 19, 13, 0.62);
   --brown: #8b5e34;
-  --caramel: #b9824a;
-  --border-light: rgba(255, 247, 236, 0.14);
+  --caramel: #c68642;
+  --gold: #e3b36d;
+  --ice: #55d8ff;
+  --iris: #8a6cff;
+  --border-light: rgba(246, 231, 204, 0.12);
   --border-dark: rgba(26, 19, 13, 0.1);
 
   /* Semantic aliases used across the app. */
-  --surface: rgba(255, 247, 236, 0.04);
+  --surface: rgba(246, 231, 204, 0.035);
   --border: var(--border-light);
   --text-primary: var(--cream);
   --text-secondary: var(--muted-light);
-  --text-muted: rgba(255, 247, 236, 0.45);
+  --text-muted: rgba(255, 247, 234, 0.44);
   --accent: var(--caramel);
 }
 
@@ -46,7 +52,7 @@ body {
     border-color: var(--border);
   }
   ::selection {
-    background: rgba(185, 130, 74, 0.28);
+    background: rgba(198, 134, 66, 0.3);
     color: var(--cream);
   }
   :focus-visible {
@@ -57,16 +63,16 @@ body {
   h1,
   h2,
   h3 {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
 }
 
 @layer components {
-  /* Small uppercase section label — sober, no monospace. */
+  /* Small uppercase mono label — the "studio" tell (wide tracking, monospaced). */
   .eyebrow {
-    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-caramel;
+    @apply inline-flex items-center gap-2 font-mono text-[0.68rem] font-medium uppercase tracking-[0.24em] text-accent-deep;
   }
-  /* The one card style: soft border, faint surface, restrained shadow. */
+  /* The one card style: gradient hairline, faint glass, restrained depth. */
   .card {
     @apply rounded-2xl border border-hairline bg-panel shadow-panel;
   }
@@ -74,13 +80,102 @@ body {
     @apply mb-1.5 block text-sm font-medium text-muted;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all duration-200;
   }
+  /* Primary CTA: warm bronze with a controlled glow and a top sheen. */
   .btn-primary {
-    @apply btn bg-accent px-5 py-2.5 font-semibold text-studio hover:bg-accent-deep;
+    @apply btn relative isolate overflow-hidden px-5 py-2.5 font-semibold text-studio;
+    background-image: linear-gradient(135deg, #e3b36d 0%, #c68642 52%, #a96d33 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 247, 234, 0.4) inset,
+      0 14px 34px -16px rgba(198, 134, 66, 0.6);
+  }
+  .btn-primary:hover {
+    box-shadow:
+      0 1px 0 rgba(255, 247, 234, 0.5) inset,
+      0 20px 48px -16px rgba(198, 134, 66, 0.72);
+    filter: brightness(1.04);
   }
   .btn-secondary {
-    @apply btn border border-hairline bg-surface px-5 py-2.5 text-ink hover:border-accent/40 hover:bg-elevated;
+    @apply btn border border-hairline bg-surface px-5 py-2.5 text-ink hover:border-accent/45 hover:bg-elevated;
+  }
+  .btn-ghost {
+    @apply btn px-4 py-2 text-muted hover:bg-elevated hover:text-ink;
+  }
+}
+
+@layer utilities {
+  /* Oversized, tight display type for hero + statement sections. */
+  .text-display {
+    font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+  }
+  /* Bronze → champagne gradient ink for accent words. */
+  .text-gradient-bronze {
+    background: linear-gradient(100deg, #e3b36d 0%, #f6e7cc 40%, #c68642 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Editorial serif accent (used sparingly, "human studio" feel). */
+  .editorial {
+    font-family: var(--font-editorial), Georgia, serif;
+    font-style: italic;
+    letter-spacing: -0.01em;
+  }
+  /* Monospaced timecode/label, like a real NLE. */
+  .timecode {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  /* Fine film grain — sits over dark sections, very subtle. */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* Soft radial glow orb. Use behind hero mockups / statement words. */
+  .glow-orb {
+    border-radius: 9999px;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  /* Horizontal fade mask (for marquees / overflow rails). */
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  /* Gradient hairline border on glass cards (premium edge light). */
+  .edge-light {
+    position: relative;
+  }
+  .edge-light::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(160deg, rgba(246, 231, 204, 0.22), rgba(246, 231, 204, 0.02) 40%, transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  /* Editorial photo treatment: desaturated by default, color on hover. */
+  .editorial-img {
+    filter: grayscale(1) contrast(1.04);
+    transition: filter 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .group:hover .editorial-img,
+  .editorial-img:hover {
+    filter: grayscale(0) contrast(1);
   }
 }
 
@@ -109,120 +204,6 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Oversized, tight display type used for hero + statement sections. */
-.text-display {
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
-}
-
-/* Animated rainbow gradient text (accent words). */
-.text-rainbow {
-  background: linear-gradient(90deg, #ff453a, #ff9f0a, #ffd60a, #34c759, #0a84ff, #5e5ce6, #bf5af2, #ff375f, #ff453a);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-pan 7s linear infinite;
-}
-
-/* Rainbow card: dark glass that lights up in its own colour (set via --c). */
-.rcard {
-  position: relative;
-  border: 1px solid rgba(255, 247, 236, 0.1);
-  background: rgba(255, 247, 236, 0.03);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s, background 0.35s, box-shadow 0.35s;
-}
-.rcard:hover {
-  transform: translateY(-7px);
-  border-color: rgba(var(--c), 0.6);
-  background: rgba(var(--c), 0.07);
-  box-shadow: 0 28px 80px -24px rgba(var(--c), 0.5);
-}
-.rcard .glow {
-  background: rgba(var(--c), 0.55);
-  opacity: 0.45;
-  transition: opacity 0.35s;
-}
-.rcard:hover .glow {
-  opacity: 0.95;
-}
-.rcard .rbar {
-  background: rgb(var(--c));
-}
-
-/* Floating blobs for the skew gradient cards. */
-@keyframes blob {
-  0%,
-  100% {
-    transform: translateY(10px);
-  }
-  50% {
-    transform: translateX(-10px);
-  }
-}
-.animate-blob {
-  animation: blob 2s ease-in-out infinite;
-}
-.animation-delay-1000 {
-  animation-delay: -1s;
-}
-
-/*
- * Thème « papier » : surface blanc cassé chaude (comme le logo) pour le corps
- * marketing. On re-mappe les tokens sombres en valeurs claires UNIQUEMENT dans
- * .paper — les composants restent inchangés.
- */
-.paper {
-  background-color: #ffffff;
-  color: #1a130d;
-}
-/* Alternating soft band (warm off-white) for a clean white/soft rhythm. */
-.paper-soft {
-  background-color: #f7f1e6;
-}
-.paper .text-ink {
-  color: #1a130d;
-}
-.paper .text-muted {
-  color: rgba(26, 19, 13, 0.66);
-}
-.paper .text-faint {
-  color: rgba(26, 19, 13, 0.46);
-}
-.paper .text-accent-deep {
-  color: #8b5e34;
-}
-.paper .eyebrow {
-  color: #8b5e34;
-}
-.paper .border-hairline {
-  border-color: rgba(26, 19, 13, 0.12);
-}
-.paper .bg-panel {
-  background-color: #ffffff;
-}
-.paper .bg-surface {
-  background-color: rgba(26, 19, 13, 0.04);
-}
-.paper .bg-canvas-soft {
-  background-color: #efe4d3;
-}
-.paper .card {
-  background-color: #ffffff;
-  border: 1px solid rgba(26, 19, 13, 0.08);
-  box-shadow: 0 14px 40px -26px rgba(26, 19, 13, 0.25);
-}
-.paper .btn-secondary {
-  color: #1a130d;
-  border-color: rgba(26, 19, 13, 0.14);
-  background-color: rgba(26, 19, 13, 0.03);
-}
-.paper .btn-secondary:hover {
-  background-color: rgba(26, 19, 13, 0.07);
-  border-color: rgba(139, 94, 52, 0.45);
-}
-
 /* ----- App light mode (scoped to the workspace chrome) ----- */
 .app-light {
   color: #1a130d;
@@ -234,13 +215,13 @@ html.lenis body {
   color: rgba(26, 19, 13, 0.66);
 }
 .app-light .text-faint {
-  color: rgba(26, 19, 13, 0.46);
+  color: rgba(26, 19, 13, 0.6);
 }
 .app-light .text-accent-deep {
-  color: #8b5e34;
+  color: #a96d33;
 }
 .app-light .eyebrow {
-  color: #8b5e34;
+  color: #a96d33;
 }
 .app-light .border-hairline {
   border-color: rgba(26, 19, 13, 0.12);
@@ -281,7 +262,7 @@ html.lenis body {
 }
 .app-light .btn-secondary:hover {
   background-color: rgba(26, 19, 13, 0.07);
-  border-color: rgba(139, 94, 52, 0.45);
+  border-color: rgba(169, 109, 51, 0.45);
 }
 
 ::-webkit-scrollbar {
@@ -289,12 +270,12 @@ html.lenis body {
   height: 11px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 247, 236, 0.12);
+  background: rgba(246, 231, 204, 0.12);
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 247, 236, 0.2);
+  background: rgba(246, 231, 204, 0.2);
   background-clip: content-box;
 }

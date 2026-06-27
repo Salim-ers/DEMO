@@ -78,7 +78,7 @@ export default async function SettingsPage() {
 
         <SettingsSection title="Préférences vidéo par défaut" description="Appliquées aux nouvelles démos. Modifiables projet par projet.">
           <div className="card">
-            <Row label="Format par défaut" value="16:9 — paysage" />
+            <Row label="Format par défaut" value="16:9 · paysage" />
             <Row label="Durée recommandée" value="90 secondes" />
           </div>
         </SettingsSection>

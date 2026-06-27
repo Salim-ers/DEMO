@@ -5,27 +5,27 @@ const COLUMNS: Array<{ title: string; links: Array<{ href: string; label: string
   {
     title: "Produit",
     links: [
-      { href: "/#presentation", label: "Présentation" },
       { href: "/#fonctionnement", label: "Fonctionnement" },
-      { href: "/#modeles", label: "Modèles" },
-      { href: "/#scenarios", label: "Exemples" },
+      { href: "/#moteur", label: "Le moteur" },
+      { href: "/#styles", label: "Styles" },
+      { href: "/#exemples", label: "Exemples" },
     ],
   },
   {
     title: "Ressources",
     links: [
-      { href: "/#scenarios", label: "Scénarios" },
+      { href: "/#prix", label: "Prix" },
       { href: "/#faq", label: "FAQ" },
-      { href: "/#securite", label: "Sécurité" },
-      { href: "/#offres", label: "Offres" },
+      { href: "/demo", label: "Voir un exemple" },
+      { href: "/security", label: "Sécurité" },
     ],
   },
   {
     title: "Compte",
     links: [
       { href: "/login", label: "Connexion" },
-      { href: "/projects", label: "Projets" },
-      { href: "/settings", label: "Paramètres" },
+      { href: "/projects", label: "Mes démos" },
+      { href: "/new", label: "Nouvelle vidéo" },
     ],
   },
 ];

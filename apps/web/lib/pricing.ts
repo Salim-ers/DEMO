@@ -1,29 +1,32 @@
 /**
- * Studio One ships a single, everything-included plan. Prices are placeholders
- * until real billing is wired — change them here and every surface updates.
+ * Studio One ships a single subscription. One plan, ten videos a month, no
+ * per-video pricing. Change the numbers here and every surface (landing,
+ * pricing, wizard, dashboard quota) updates.
  */
 export const PLAN = {
   name: "Studio One",
-  summary: "Tout est inclus. Un seul plan, pensé pour livrer.",
+  tagline: "Un abonnement. Dix vidéos. Zéro montage.",
   currency: "€",
-  monthly: 29,
-  yearly: 290, // two months free vs. monthly
+  monthlyPrice: 39.99,
+  includedVideos: 10,
   features: [
-    "Projets de démo illimités",
-    "Capture d'écrans réelle, app connectée",
-    "Storyboard & script générés automatiquement",
-    "Voix off gratuite ou IA premium",
-    "Rendu vidéo premium 1080p",
-    "Rapport qualité automatique",
-    "Espace de marque & presets vidéo",
-    "Exports MP4, SRT/VTT et archive ZIP",
-    "Support prioritaire",
+    "10 vidéos de présentation par mois",
+    "Démo SaaS, publicité courte, TikTok / Reels, onboarding",
+    "Formats 16:9, 9:16 et 1:1",
+    "Script marketing écrit pour vous",
+    "Storyboard scène par scène",
+    "Sous-titres synchronisés",
+    "Voix off premium (option)",
+    "Exports prêts à publier (MP4, SRT)",
+    "Historique de tous vos projets",
   ],
 } as const;
 
-/** Effective monthly price when billed yearly (rounded), and the % saved. */
-export function yearlyBreakdown() {
-  const perMonth = Math.round(PLAN.yearly / 12);
-  const savedPct = Math.round((1 - PLAN.yearly / (PLAN.monthly * 12)) * 100);
-  return { perMonth, savedPct };
+/** Format a price the French way: "39,99 €". */
+export function formatPrice(value: number, currency: string = PLAN.currency): string {
+  const hasCents = !Number.isInteger(value);
+  return `${value.toFixed(hasCents ? 2 : 0).replace(".", ",")} ${currency}`;
 }
+
+/** Pretty monthly price string, e.g. "39,99 €". */
+export const PRICE_LABEL = formatPrice(PLAN.monthlyPrice);

@@ -59,7 +59,7 @@ export function ProviderSettings({ initial }: { initial: ProviderRow[] }) {
               type="password"
               value={drafts[r.kind] ?? ""}
               onChange={(e) => setDrafts((d) => ({ ...d, [r.kind]: e.target.value }))}
-              placeholder={r.hasSecret ? "•••••••••••• (enregistré — collez pour remplacer)" : r.placeholder}
+              placeholder={r.hasSecret ? "•••••••••••• (enregistré, collez pour remplacer)" : r.placeholder}
             />
             <Button size="md" onClick={() => save(r.kind)} disabled={saving === r.kind || !(drafts[r.kind] ?? "").trim()}>
               {saving === r.kind ? <Loader2 size={16} className="animate-spin" /> : saved === r.kind ? <Check size={16} /> : null}
@@ -69,7 +69,7 @@ export function ProviderSettings({ initial }: { initial: ProviderRow[] }) {
         </div>
       ))}
       <p className="px-1 text-xs leading-relaxed text-faint">
-        Les clés sont chiffrées dans le coffre et stockées uniquement sous forme de références opaques — jamais en clair,
+        Les clés sont chiffrées dans le coffre et stockées uniquement sous forme de références opaques : jamais en clair,
         jamais dans les logs. Laissez un fournisseur déconnecté pour fonctionner entièrement hors ligne avec les solutions
         de repli déterministes.
       </p>

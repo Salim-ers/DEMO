@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { LogoMark } from "../brand/logo.js";
@@ -7,15 +7,18 @@ import { cn } from "../../lib/cn.js";
 
 const NAV = [
   { href: "#fonctionnement", label: "Fonctionnement" },
-  { href: "#modeles", label: "Modèles" },
-  { href: "#offres", label: "Tarifs" },
-  { href: "#faq", label: "FAQ" },
+  { href: "#styles", label: "Styles" },
+  { href: "#exemples", label: "Exemples" },
+  { href: "#prix", label: "Prix" },
 ];
 
 /** High-end top bar: large beige round badge + clean spaced links, frosted on scroll. */
 export function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
   const [drawer, setDrawer] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -31,6 +34,38 @@ export function LandingNav() {
     };
   }, [drawer]);
 
+  // Modal-dialog behavior for the mobile drawer: move focus in, trap Tab, Escape to close.
+  useEffect(() => {
+    if (!drawer) return;
+    const trigger = triggerRef.current;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setDrawer(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const items = panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (items.length === 0) return;
+      const first = items[0]!;
+      const last = items[items.length - 1]!;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      trigger?.focus();
+    };
+  }, [drawer]);
+
   return (
     <>
       <header
@@ -43,7 +78,7 @@ export function LandingNav() {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
           {/* Large beige round badge + wordmark */}
-          <Link href="/" aria-label="Studio One — accueil" className="flex shrink-0 items-center gap-3.5">
+          <Link href="/" aria-label="Studio One, accueil" className="flex shrink-0 items-center gap-3.5">
             <LogoMark tone="cream" size={scrolled ? 46 : 58} className="transition-all duration-300" />
             <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.7rem]">Studio One</span>
           </Link>
@@ -71,12 +106,14 @@ export function LandingNav() {
               href="/new"
               className="hidden items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-[15px] font-semibold text-studio transition-colors hover:bg-accent-deep sm:inline-flex"
             >
-              Créer une démo <ArrowRight size={16} />
+              Créer ma vidéo <ArrowRight size={16} />
             </Link>
             <button
+              ref={triggerRef}
               type="button"
               onClick={() => setDrawer(true)}
               aria-label="Ouvrir le menu"
+              aria-expanded={drawer}
               className="text-muted hover:text-ink lg:hidden"
             >
               <Menu size={26} />
@@ -95,12 +132,17 @@ export function LandingNav() {
           onClick={() => setDrawer(false)}
         />
         <div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
           className={cn(
             "absolute right-0 top-0 h-full w-[288px] max-w-[86vw] border-l border-hairline bg-canvas px-5 py-7 shadow-soft transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
             drawer ? "translate-x-0" : "translate-x-full",
           )}
         >
           <button
+            ref={closeRef}
             type="button"
             onClick={() => setDrawer(false)}
             aria-label="Fermer le menu"
@@ -130,7 +172,7 @@ export function LandingNav() {
               onClick={() => setDrawer(false)}
               className="flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-studio transition-colors hover:bg-accent-deep"
             >
-              Créer une démo <ArrowRight size={16} />
+              Créer ma vidéo <ArrowRight size={16} />
             </Link>
             <Link
               href="/login"

@@ -19,7 +19,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   } catch (err) {
     // Redis unavailable: keep the job queued and surface the issue rather than 500-ing the UI.
     return NextResponse.json(
-      { renderJobId: renderJob.id, queued: false, error: "File d'attente indisponible — Redis est-il démarré ?" },
+      { renderJobId: renderJob.id, queued: false, error: "File d'attente indisponible. Redis est-il démarré ?" },
       { status: 202 },
     );
   }

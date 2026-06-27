@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Film, CheckCircle2, AlertTriangle, Info } from "lucide-react";
+import { ArrowLeft, Film, CheckCircle2, AlertTriangle, Info, Smartphone, Wand2 } from "lucide-react";
 import type { JobState } from "@studio-one/shared";
 import { prisma } from "../../../lib/db.js";
 import { signed } from "../../../lib/storage.js";
@@ -10,6 +10,8 @@ import { PipelineTimeline } from "../../../components/pipeline-timeline.js";
 import { StoryboardPreview, type PreviewScene } from "../../../components/storyboard-preview.js";
 import { DownloadCenter, type DownloadItem } from "../../../components/download-center.js";
 import { UserImagesPanel, type UploadedImage } from "../../../components/user-images-panel.js";
+import { ProductionPipeline } from "../../../components/video-production/production-pipeline.js";
+import { productionStages, toVideoStatus } from "../../../lib/video/index.js";
 import { AssetKind } from "@studio-one/db";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +31,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   const renderJob = project.renderJobs[0] ?? null;
   const exp = project.exports[0] ?? null;
+
+  const hasVoiceOver = String(project.voiceScript?.mode ?? project.voiceMode) !== "SCRIPT_ONLY";
+  const stages = productionStages(toVideoStatus(project.status, Boolean(project.archivedAt)), hasVoiceOver);
 
   let host = project.url;
   try {
@@ -107,7 +112,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           </div>
           <p className="text-sm text-faint">{host}</p>
         </div>
-        <GenerateButton projectId={project.id} hasRun={Boolean(renderJob)} />
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link href="/new" className="btn-secondary px-3.5 py-2 text-sm">
+            <Smartphone size={15} /> Version TikTok
+          </Link>
+          <Link href="/new" className="btn-secondary px-3.5 py-2 text-sm">
+            <Wand2 size={15} /> Demander une variante
+          </Link>
+          <GenerateButton projectId={project.id} hasRun={Boolean(renderJob)} />
+        </div>
       </header>
 
       {project.status === "failed" && (
@@ -148,6 +161,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             voiceMode={String(project.voiceScript?.mode ?? project.voiceMode)}
             language={project.language}
           />
+          <ProductionPipeline stages={stages} />
           <div id="quality" className="scroll-mt-24">
             <QualityReportPanel report={(renderJob?.qualityReport as QReport | null) ?? null} />
           </div>
@@ -165,7 +179,7 @@ function LoginBanner({ status, reason }: { status?: string; reason?: string }) {
     return (
       <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-ok/30 bg-ok/10 px-4 py-3 text-sm text-ok">
         <CheckCircle2 size={17} className="mt-0.5 shrink-0" />
-        <span>Connecté à votre application — la démo filme l'outil, pas seulement le site public.</span>
+        <span>Connecté à votre application : la démo filme l'outil, pas seulement le site public.</span>
       </div>
     );
   }
@@ -250,7 +264,7 @@ function QualityReportPanel({ report }: { report: QReport | null }) {
     ["Débit", `${report.bitrateMbps} Mbps`],
     ["Codec", report.videoCodec.toUpperCase()],
     ["FPS", String(report.fps)],
-    ["Audio", report.audioCodec ? `${report.audioCodec.toUpperCase()} ${report.audioBitrateKbps ?? "?"}k` : "—"],
+    ["Audio", report.audioCodec ? `${report.audioCodec.toUpperCase()} ${report.audioBitrateKbps ?? "?"}k` : "Aucun"],
     ["Durée", `${report.durationSec}s`],
     ["Taille", `${report.fileMb} Mo`],
     ["Scènes motion", String(report.motionSceneCount)],

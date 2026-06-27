@@ -18,7 +18,7 @@ function isActive(pathname: string, href: string) {
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
-      <Link href="/projects" onClick={onNavigate} className="mb-8 flex items-center gap-2.5" aria-label="Studio One — accueil">
+      <Link href="/projects" onClick={onNavigate} className="mb-8 flex items-center gap-2.5" aria-label="Studio One, accueil">
         <LogoMark size={36} />
         <span className="text-base font-semibold tracking-tight text-ink">Studio One</span>
       </Link>
@@ -79,7 +79,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
         <LogOut size={18} className="text-faint" /> <span className="font-medium">Se déconnecter</span>
       </button>
       <p className="mt-4 px-3 text-xs leading-relaxed text-faint">
-        Studio One — Vidéos de démonstration professionnelles.
+        Studio One · Vidéos de démonstration professionnelles.
       </p>
     </div>
   );
