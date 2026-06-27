@@ -11,8 +11,8 @@ const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "Tous" },
   { id: "draft", label: "Brouillons" },
   { id: "in_progress", label: "En cours" },
-  { id: "ready", label: "Prêts" },
-  { id: "failed", label: "Échecs" },
+  { id: "ready", label: "Prêtes" },
+  { id: "failed", label: "Action requise" },
 ];
 
 function matchesFilter(status: string, f: Filter) {
