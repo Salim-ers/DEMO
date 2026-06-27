@@ -6,6 +6,7 @@ import { AppChrome } from "./app-sidebar.js";
 import { SmoothScroll } from "./landing/smooth-scroll.js";
 import { LandingNav } from "./landing/landing-nav.js";
 import { IntroLoader } from "./landing/intro-loader.js";
+import { ScrollProgress } from "./landing/scroll-progress.js";
 import { ThemeProvider } from "./theme.js";
 
 /** Public marketing chrome (nav + footer). */
@@ -30,6 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <ToastProvider>
         <div className="min-h-screen">
           {pathname === "/" && <IntroLoader />}
+          <ScrollProgress />
           <SmoothScroll />
           <LandingNav />
           <main>{children}</main>

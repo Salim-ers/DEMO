@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, Menu, X, LogOut } from "lucide-react";
+import { Plus, Menu, X, LogOut, Search } from "lucide-react";
 import { LogoMark } from "./brand/logo.js";
 import { NAV_ITEMS } from "./nav-items.js";
 import { ThemeToggle } from "./theme-toggle.js";
 import { useTheme } from "./theme.js";
+import { CommandPalette, openCommandPalette } from "./command-palette.js";
 import { cn } from "../lib/cn.js";
 
 function isActive(pathname: string, href: string) {
@@ -29,6 +30,16 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       >
         <Plus size={16} /> Nouvelle démo
       </Link>
+
+      <button
+        type="button"
+        onClick={openCommandPalette}
+        className="mb-5 flex cursor-pointer items-center gap-2.5 rounded-xl border border-hairline bg-surface px-3 py-2 text-sm text-faint transition-colors duration-150 hover:border-accent/30 hover:text-muted"
+      >
+        <Search size={15} />
+        <span className="flex-1 text-left">Rechercher…</span>
+        <kbd className="rounded-md border border-hairline px-1.5 py-0.5 text-[10px] font-medium">⌘K</kbd>
+      </button>
 
       <nav className="flex-1 space-y-1">
         {NAV_ITEMS.map((item) => {
@@ -130,6 +141,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
         <main className="min-w-0 flex-1 px-5 py-8 sm:px-8 lg:px-10">{children}</main>
       </div>
       </div>
+      <CommandPalette />
     </div>
   );
 }

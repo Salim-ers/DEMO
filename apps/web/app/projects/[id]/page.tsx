@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Film } from "lucide-react";
+import { ArrowLeft, Film, CheckCircle2, AlertTriangle, Info } from "lucide-react";
 import type { JobState } from "@studio-one/shared";
 import { prisma } from "../../../lib/db.js";
 import { signed } from "../../../lib/storage.js";
@@ -163,24 +163,29 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 function LoginBanner({ status, reason }: { status?: string; reason?: string }) {
   if (status === "logged_in") {
     return (
-      <div className="mb-6 rounded-xl border border-ok/30 bg-ok/10 px-4 py-3 text-sm text-ok">
-        ✅ Connecté à votre application — la démo filme l'outil, pas seulement le site public.
+      <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-ok/30 bg-ok/10 px-4 py-3 text-sm text-ok">
+        <CheckCircle2 size={17} className="mt-0.5 shrink-0" />
+        <span>Connecté à votre application — la démo filme l'outil, pas seulement le site public.</span>
       </div>
     );
   }
   if (status === "no_credentials") {
     return (
-      <div className="mb-6 rounded-xl border border-hairline bg-surface px-4 py-3 text-sm text-muted">
-        La démo filme votre site public. Ajoutez vos identifiants au projet pour filmer l'outil connecté.
+      <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-hairline bg-surface px-4 py-3 text-sm text-muted">
+        <Info size={17} className="mt-0.5 shrink-0 text-faint" />
+        <span>La démo filme votre site public. Ajoutez vos identifiants au projet pour filmer l'outil connecté.</span>
       </div>
     );
   }
   // attempted but not logged in (failed / manual_step_required / key mismatch)
   return (
-    <div className="mb-6 rounded-xl border border-bad/30 bg-bad/10 px-4 py-3 text-sm text-bad">
-      ⚠️ Connexion à votre application impossible{reason ? ` (${reason})` : ""}. La démo montre donc le site public.
-      Vérifiez que <span className="font-mono text-xs">LOCAL_SECRET_ENCRYPTION_KEY</span> est <strong>identique</strong> sur
-      Vercel et Railway, puis relancez le pipeline.
+    <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-bad/30 bg-bad/10 px-4 py-3 text-sm text-bad">
+      <AlertTriangle size={17} className="mt-0.5 shrink-0" />
+      <span>
+        Connexion à votre application impossible{reason ? ` (${reason})` : ""}. La démo montre donc le site public.
+        Vérifiez que <span className="font-mono text-xs">LOCAL_SECRET_ENCRYPTION_KEY</span> est <strong>identique</strong> sur
+        Vercel et Railway, puis relancez le pipeline.
+      </span>
     </div>
   );
 }
