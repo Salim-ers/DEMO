@@ -7,6 +7,7 @@ import { storyboardToRenderProps, renderDemoVideo, normalizeMp4, shrinkMp4, prob
 import { buildVideoProps, renderVideoProps, FORMAT_DIMS } from "@studio-one/video";
 import { RENDER_DEFAULTS, STATEMENT_SCENE_TYPES, type VideoFormat, type VoiceLine } from "@studio-one/shared";
 import { dbStoryboardToDomain, projectToContext } from "../db-map.js";
+import { generatePremiumShots } from "./generateShots.js";
 import { setStage } from "../status.js";
 import { JOBS } from "@studio-one/shared";
 import type { PipelineCtx } from "../pipeline.js";
@@ -101,6 +102,16 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
     } catch (err) {
       ctx.log.warn({ err: String(err) }, "no word timestamps; captions from line timing");
     }
+    // Generate Higgsfield b-roll for statement scenes (one camera move per clip,
+    // locked seed). No-op without a key; falls back to captures + placeholders.
+    const sceneClips = await generatePremiumShots({
+      project: { id: project.id, productName: project.productName, tone: project.tone, format: project.format },
+      storyboard,
+      accentColor,
+      storage,
+      log: ctx.log,
+    });
+
     const vprops = buildVideoProps({
       ctx: projectToContext(project),
       storyboard,
@@ -112,6 +123,7 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
       words,
       voiceLines,
       resolveImageUrl: (assetId) => urlMap.get(assetId) ?? null,
+      resolveSceneClipUrl: (sceneId) => sceneClips.get(sceneId) ?? null,
     });
     const dims = FORMAT_DIMS[fmt];
     outWidth = dims.width;

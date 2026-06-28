@@ -28,6 +28,8 @@ export interface BuildVideoInput {
   resolveImageUrl?: (assetId: string) => string | null;
   /** Resolve a scene's sourceAssetId to a generated Higgsfield clip URL. */
   resolveClipUrl?: (assetId: string) => string | null;
+  /** Resolve a generated Higgsfield clip by scene id (b-roll for statement scenes). */
+  resolveSceneClipUrl?: (sceneId: string) => string | null;
 }
 
 const CTA_TYPES = new Set(["final_cta", "outro"]);
@@ -65,6 +67,10 @@ function parseStats(visualInstruction: string): Stat[] {
 }
 
 function device(s: StoryboardScene, input: BuildVideoInput): { deviceSrc?: string; deviceIsVideo: boolean } {
+  // A generated Higgsfield clip for this scene wins (gives statement scenes real
+  // motion instead of a placeholder).
+  const sceneClip = input.resolveSceneClipUrl?.(s.id) ?? null;
+  if (sceneClip) return { deviceSrc: sceneClip, deviceIsVideo: true };
   if (!s.sourceAssetId) return { deviceIsVideo: false };
   const clip = input.resolveClipUrl?.(s.sourceAssetId) ?? null;
   if (clip) return { deviceSrc: clip, deviceIsVideo: true };
