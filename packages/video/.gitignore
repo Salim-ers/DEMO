@@ -1,0 +1,4 @@
+out/
+.turbo/
+node_modules/
+build/
