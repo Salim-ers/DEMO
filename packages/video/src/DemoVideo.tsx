@@ -14,13 +14,6 @@ import { StatsScene } from "./scenes/StatsScene.js";
 import { CtaScene } from "./scenes/CtaScene.js";
 import { RollingCaptions, Soundtrack } from "./components.js";
 
-/** Total frames once scene-to-scene transition overlaps are accounted for. */
-export function getDurationInFrames(scenes: Scene[]): number {
-  const sum = scenes.reduce((a, s) => a + s.durationInFrames, 0);
-  const transitions = scenes.slice(0, -1).filter((s) => s.transitionToNext !== "none").length;
-  return Math.max(1, sum - transitions * TRANSITION_FRAMES);
-}
-
 function SceneRouter({ scene, brand, format }: { scene: Scene; brand: Brand; format: Format }) {
   switch (scene.type) {
     case "hook":

@@ -1,5 +1,5 @@
 import { pino } from "pino";
-import type { TTSProvider, TTSResult } from "./index.js";
+import type { SynthOptions, TTSProvider, TTSResult } from "./index.js";
 
 const log = pino({ name: "tts:google" });
 
@@ -48,7 +48,7 @@ export class GoogleTTSProvider implements TTSProvider {
   readonly name = "google";
   readonly available = true;
 
-  async synthesize(text: string, opts: { language: string; consent: boolean }): Promise<TTSResult> {
+  async synthesize(text: string, opts: SynthOptions): Promise<TTSResult> {
     if (!opts.consent) {
       return { audio: null, contentType: "audio/mpeg", provider: this.name, status: "skipped" };
     }

@@ -37,23 +37,34 @@ export async function generateVoiceScript(ctx: PipelineCtx): Promise<{ voiceScri
 
   let audioAssetId: string | undefined;
   if (mode === "tts_provider" && script.consentConfirmed) {
+    const fmt = project.format as "16:9" | "9:16" | "1:1";
     const tts = getTTS();
-    let out = await tts.synthesize(script.fullText, { language: script.language, consent: true });
+    let out = await tts.synthesize(script.fullText, { language: script.language, consent: true, format: fmt });
     // Never ship a silent demo: if the configured provider (e.g. ElevenLabs with
     // a missing/invalid key or exhausted quota) returns no audio, fall back to the
     // free Google voice so there is always a voiceover.
     if ((out.status !== "generated" || !out.audio) && tts.name !== "google") {
       ctx.log.warn({ provider: tts.name, status: out.status }, "primary TTS produced no audio; falling back to free voice");
-      out = await new GoogleTTSProvider().synthesize(script.fullText, { language: script.language, consent: true });
+      out = await new GoogleTTSProvider().synthesize(script.fullText, { language: script.language, consent: true, format: fmt });
     }
     if (out.status === "generated" && out.audio) {
-      const key = `audio/${project.id}/voiceover.mp3`;
+      const ext = out.contentType.includes("wav") ? "wav" : "mp3";
+      const key = `audio/${project.id}/voiceover.${ext}`;
       const { bytes } = await getStorage().put(key, out.audio, out.contentType);
       const asset = await prisma.asset.create({
         data: { projectId: project.id, kind: AssetKind.AUDIO, storageKey: key, contentType: out.contentType, bytes },
       });
       audioAssetId = asset.id;
-      ctx.log.info({ provider: out.provider }, "voiceover synthesized");
+      // Persist word-level timestamps (ElevenLabs) as a sidecar so the premium
+      // render path can show word-synced captions. Best-effort, never fatal.
+      if (out.words && out.words.length > 0) {
+        try {
+          await getStorage().put(`audio/${project.id}/words.json`, Buffer.from(JSON.stringify(out.words)), "application/json");
+        } catch (err) {
+          ctx.log.warn({ err: String(err) }, "could not persist word timestamps");
+        }
+      }
+      ctx.log.info({ provider: out.provider, format: fmt }, "voiceover synthesized");
     } else {
       ctx.log.info({ status: out.status }, "voiceover not synthesized; continuing without audio");
     }

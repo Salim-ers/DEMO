@@ -1,7 +1,7 @@
 import { Composition } from "remotion";
-import { DemoVideo, getDurationInFrames } from "./DemoVideo.js";
+import { DemoVideo } from "./DemoVideo.js";
 import { videoSchema, type Caption, type Format, type Scene, type VideoProps } from "./schema.js";
-import { FORMAT_DIMS, FPS } from "./lib/theme.js";
+import { FORMAT_DIMS, FPS, getDurationInFrames } from "./lib/constants.js";
 
 /**
  * Calibration example ("Lumen Pay" fintech, from the spec). It renders with

@@ -23,6 +23,7 @@
     "@studio-one/storyboard": "workspace:*",
     "@studio-one/voice": "workspace:*",
     "@studio-one/render": "workspace:*",
+    "@studio-one/video": "workspace:*",
     "@studio-one/integrations": "workspace:*",
     "archiver": "^7.0.1",
     "bullmq": "^5.13.2",

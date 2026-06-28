@@ -10,11 +10,69 @@ export interface BrollResult {
   meta?: Record<string, unknown>;
 }
 
+/** Per-clip camera control. The spec's hard rule: ONE move per clip. */
+export interface ShotOptions {
+  /** A single camera preset (see CAMERA_PRESETS). */
+  cameraPreset?: string;
+  /** Lock a seed once a render is good, so prompt iterations stay coherent. */
+  seed?: number;
+}
+
 export interface HiggsfieldProvider {
   readonly available: boolean;
-  generateMarketingBroll(prompt: string, aspectRatio: string, durationSec: number): Promise<BrollResult>;
-  imageToVideo(imageAssetId: string, prompt: string, durationSec: number): Promise<BrollResult>;
-  generateTransitionScene(prompt: string): Promise<BrollResult>;
+  generateMarketingBroll(prompt: string, aspectRatio: string, durationSec: number, opts?: ShotOptions): Promise<BrollResult>;
+  imageToVideo(imageAssetId: string, prompt: string, durationSec: number, opts?: ShotOptions): Promise<BrollResult>;
+  generateTransitionScene(prompt: string, opts?: ShotOptions): Promise<BrollResult>;
+}
+
+/**
+ * Camera-move vocabulary. Each preset is a single motion; never combine two in
+ * one clip (the spec's "deux mouvements = instable" rule).
+ */
+export const CAMERA_PRESETS = {
+  dollyIn: "Dolly In",
+  pushIn: "Push-In",
+  tracking: "Tracking",
+  pan: "Pan",
+  orbit: "Orbit",
+  crashZoom: "Crash Zoom",
+  whipPan: "Whip Pan",
+  craneUp: "Crane Up",
+  pullOut: "Pull-Out",
+} as const;
+export type CameraPreset = (typeof CAMERA_PRESETS)[keyof typeof CAMERA_PRESETS];
+
+/**
+ * Map a storyboard scene type (lower_snake) + format to the right camera move.
+ * Reveals push in, lists track, features orbit, hooks crash-zoom (punchier on
+ * vertical), openings crane up, endings pull out.
+ */
+export function cameraPresetForScene(sceneType: string, format?: string): CameraPreset {
+  const vertical = format === "9:16";
+  switch (sceneType) {
+    case "cinematic_intro":
+    case "title_card":
+      return vertical ? CAMERA_PRESETS.crashZoom : CAMERA_PRESETS.craneUp;
+    case "problem_motion_card":
+      return CAMERA_PRESETS.crashZoom;
+    case "product_stage":
+    case "product_zoom":
+    case "screen_capture":
+    case "zoom":
+      return CAMERA_PRESETS.dollyIn;
+    case "feature_callout":
+      return CAMERA_PRESETS.orbit;
+    case "workflow_map":
+    case "benefit_grid":
+    case "benefit_card":
+      return CAMERA_PRESETS.tracking;
+    case "metric_moment":
+    case "final_cta":
+    case "outro":
+      return CAMERA_PRESETS.pullOut;
+    default:
+      return CAMERA_PRESETS.pushIn;
+  }
 }
 
 /**
@@ -54,14 +112,15 @@ export class RealHiggsfieldProvider implements HiggsfieldProvider {
     };
   }
 
-  generateMarketingBroll(prompt: string, aspectRatio: string, durationSec: number) {
-    return this.request("/v1/broll", { prompt, aspectRatio, duration: durationSec });
+  generateMarketingBroll(prompt: string, aspectRatio: string, durationSec: number, opts?: ShotOptions) {
+    // One camera move per clip (never combine two).
+    return this.request("/v1/broll", { prompt, aspectRatio, duration: durationSec, camera: opts?.cameraPreset, seed: opts?.seed });
   }
-  imageToVideo(imageAssetId: string, prompt: string, durationSec: number) {
-    return this.request("/v1/image-to-video", { imageAssetId, prompt, duration: durationSec });
+  imageToVideo(imageAssetId: string, prompt: string, durationSec: number, opts?: ShotOptions) {
+    return this.request("/v1/image-to-video", { imageAssetId, prompt, duration: durationSec, camera: opts?.cameraPreset, seed: opts?.seed });
   }
-  generateTransitionScene(prompt: string) {
-    return this.request("/v1/transition", { prompt });
+  generateTransitionScene(prompt: string, opts?: ShotOptions) {
+    return this.request("/v1/transition", { prompt, camera: opts?.cameraPreset, seed: opts?.seed });
   }
 }
 

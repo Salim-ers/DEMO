@@ -1,14 +1,11 @@
 import { Easing, interpolate } from "remotion";
 import { loadFont } from "@remotion/google-fonts/Manrope";
-import type { Format } from "../schema.js";
+
+/** Node-safe constants live in constants.ts; re-exported here for components. */
+export { FPS, TRANSITION_FRAMES, FORMAT_DIMS, dbToVolume, type Dims } from "./constants.js";
 
 /** Always-loaded premium fallback face, so text renders even before brand fonts. */
 export const { fontFamily: FONT_FAMILY } = loadFont();
-
-export const FPS = 30;
-
-/** Scene-to-scene transition length (0.5s). */
-export const TRANSITION_FRAMES = 15;
 
 /**
  * THE house easing. easeOutExpo — a fast, confident start that brakes slowly.
@@ -19,18 +16,6 @@ export const EASE_IN = Easing.bezier(0.7, 0, 0.84, 0);
 
 /** Spring config reserved for pops (badges, numbers, the CTA button). */
 export const POP = { damping: 12, mass: 0.6, stiffness: 140 } as const;
-
-export type Dims = { width: number; height: number; safe: number };
-
-/** 1080p masters. Safe area = inner padding so nothing kisses the edge. */
-export const FORMAT_DIMS: Record<Format, Dims> = {
-  "16:9": { width: 1920, height: 1080, safe: 96 },
-  "9:16": { width: 1080, height: 1920, safe: 72 },
-  "1:1": { width: 1080, height: 1080, safe: 80 },
-};
-
-/** dB → linear gain (for ducking music under the voice). */
-export const dbToVolume = (db: number): number => Math.pow(10, db / 20);
 
 /**
  * Staggered entrance. Returns opacity + a small upward translate, eased. Pass an

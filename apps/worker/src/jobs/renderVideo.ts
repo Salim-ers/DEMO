@@ -4,7 +4,8 @@ import { readFile, mkdir } from "node:fs/promises";
 import { prisma, AssetKind } from "@studio-one/db";
 import { getStorage } from "@studio-one/integrations";
 import { storyboardToRenderProps, renderDemoVideo, normalizeMp4, shrinkMp4, probeVideo, buildQualityReport } from "@studio-one/render";
-import { RENDER_DEFAULTS, STATEMENT_SCENE_TYPES } from "@studio-one/shared";
+import { buildVideoProps, renderVideoProps, FORMAT_DIMS } from "@studio-one/video";
+import { RENDER_DEFAULTS, STATEMENT_SCENE_TYPES, type VideoFormat, type VoiceLine } from "@studio-one/shared";
 import { dbStoryboardToDomain, projectToContext } from "../db-map.js";
 import { setStage } from "../status.js";
 import { JOBS } from "@studio-one/shared";
@@ -74,32 +75,65 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
   // Optional background-music bed (royalty-free), ducked under the voice.
   const musicUrl = process.env.RENDER_MUSIC_URL?.trim() || null;
 
-  const props = storyboardToRenderProps(projectToContext(project), storyboard, {
-    fps: RENDER_DEFAULTS.fps,
-    accentColor,
-    audioUrl,
-    musicUrl,
-    logoUrl,
-    siteHost,
-    videoStyle: project.videoStyle ?? null,
-    resolveImageUrl: (assetId) => urlMap.get(assetId) ?? null,
-  });
-
   const tmpDir = await mkdir(path.join(os.tmpdir(), `studio-one-${ctx.projectId}`), { recursive: true })
     .then(() => path.join(os.tmpdir(), `studio-one-${ctx.projectId}`));
   const rawPath = path.join(tmpDir, "raw.mp4");
   const finalPath = path.join(tmpDir, "demo.mp4");
 
-  ctx.log.info({ scenes: props.scenes.length, format: props.format }, "render starting");
-  await renderDemoVideo({
-    props,
-    outPath: rawPath,
-    onProgress: (p) => {
-      if (Math.round(p * 100) % 10 === 0) {
-        void setStage(ctx.renderJobId, JOBS.renderVideo, { status: "running" }).catch(() => {});
-      }
-    },
-  });
+  const onProgress = (p: number) => {
+    if (Math.round(p * 100) % 10 === 0) {
+      void setStage(ctx.renderJobId, JOBS.renderVideo, { status: "running" }).catch(() => {});
+    }
+  };
+
+  const fmt = project.format as VideoFormat;
+  let outWidth: number;
+  let outHeight: number;
+
+  // The premium montage engine (packages/video) is opt-in via RENDER_ENGINE=premium
+  // so the proven legacy render path stays the default and is never disturbed.
+  if ((process.env.RENDER_ENGINE ?? "").toLowerCase() === "premium") {
+    const voiceLines = ((vs?.lines as unknown as VoiceLine[]) ?? []).map((l) => ({ text: l.text, startMs: l.startMs, endMs: l.endMs }));
+    let words: Array<{ word: string; startMs: number; endMs: number }> | null = null;
+    try {
+      const wkey = `audio/${project.id}/words.json`;
+      if (await storage.exists(wkey)) words = JSON.parse((await storage.get(wkey)).toString());
+    } catch (err) {
+      ctx.log.warn({ err: String(err) }, "no word timestamps; captions from line timing");
+    }
+    const vprops = buildVideoProps({
+      ctx: projectToContext(project),
+      storyboard,
+      accentColor,
+      logoUrl,
+      siteHost,
+      voiceoverSrc: audioUrl,
+      musicSrc: musicUrl,
+      words,
+      voiceLines,
+      resolveImageUrl: (assetId) => urlMap.get(assetId) ?? null,
+    });
+    const dims = FORMAT_DIMS[fmt];
+    outWidth = dims.width;
+    outHeight = dims.height;
+    ctx.log.info({ scenes: vprops.scenes.length, format: fmt, engine: "premium" }, "render starting");
+    await renderVideoProps({ props: vprops, outPath: rawPath, onProgress });
+  } else {
+    const props = storyboardToRenderProps(projectToContext(project), storyboard, {
+      fps: RENDER_DEFAULTS.fps,
+      accentColor,
+      audioUrl,
+      musicUrl,
+      logoUrl,
+      siteHost,
+      videoStyle: project.videoStyle ?? null,
+      resolveImageUrl: (assetId) => urlMap.get(assetId) ?? null,
+    });
+    outWidth = props.width;
+    outHeight = props.height;
+    ctx.log.info({ scenes: props.scenes.length, format: props.format, engine: "legacy" }, "render starting");
+    await renderDemoVideo({ props, outPath: rawPath, onProgress });
+  }
 
   // Normalize for delivery. If ffmpeg is unavailable this throws; we fall back
   // to shipping the raw render so the pipeline still produces a playable file.
@@ -138,8 +172,8 @@ export async function renderVideo(ctx: PipelineCtx): Promise<{ outputAssetId: st
       kind: AssetKind.RENDER_OUTPUT,
       storageKey: outKey,
       contentType: "video/mp4",
-      width: props.width,
-      height: props.height,
+      width: outWidth,
+      height: outHeight,
       bytes,
     },
   });

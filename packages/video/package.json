@@ -4,6 +4,12 @@
   "private": true,
   "type": "module",
   "description": "Studio One — programmatic montage engine (Remotion). Premium SaaS demo / ad / TikTok videos, frame-driven with easing. Receives Higgsfield clips + ElevenLabs WAV + music.",
+  "main": "./src/api.ts",
+  "types": "./src/api.ts",
+  "exports": {
+    ".": "./src/api.ts",
+    "./entry": "./src/index.ts"
+  },
   "scripts": {
     "dev": "remotion studio src/index.ts",
     "typecheck": "tsc --noEmit",
@@ -13,9 +19,12 @@
     "clean": "rm -rf out .turbo"
   },
   "dependencies": {
+    "@remotion/bundler": "4.0.230",
     "@remotion/cli": "4.0.230",
     "@remotion/google-fonts": "4.0.230",
+    "@remotion/renderer": "4.0.230",
     "@remotion/transitions": "4.0.230",
+    "@studio-one/shared": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "4.0.230",

@@ -76,6 +76,7 @@ export const statSchema = z.object({
   suffix: z.string().default(""),
   label: z.string(),
 });
+export type Stat = z.infer<typeof statSchema>;
 
 export const statsSceneSchema = z.object({
   type: z.literal("stats"),
