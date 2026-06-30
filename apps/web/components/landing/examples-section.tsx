@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Play, ArrowRight } from "lucide-react";
 import { Reveal } from "../motion/reveal.js";
+import { AnimatedBackground } from "./animated-background.js";
 
 const EXAMPLES = [
   { title: "SaaS RH", kind: "Démo produit", format: "16:9", duration: "90 s", objective: "Prospection & sales deck", style: "Premium clean", poster: "/visuals/edit.jpg" },
@@ -13,8 +14,9 @@ const EXAMPLES = [
 
 export function ExamplesSection() {
   return (
-    <section id="exemples" className="py-28 sm:py-32">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <section id="exemples" className="relative overflow-hidden py-28 sm:py-32">
+      <AnimatedBackground variant="soft" />
+      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8">
         <Reveal className="max-w-2xl">
           <p className="eyebrow">Exemples</p>
           <h2 className="text-display mt-4 text-[clamp(2rem,4vw,3.2rem)] text-ink">
@@ -32,7 +34,7 @@ export function ExamplesSection() {
         role="region"
         aria-label="Exemples de vidéos, faites défiler horizontalement"
         tabIndex={0}
-        className="mask-fade-x mt-12 overflow-x-auto pb-4 outline-none [scrollbar-width:none] focus-visible:ring-2 focus-visible:ring-accent/40 [&::-webkit-scrollbar]:hidden"
+        className="mask-fade-x relative z-10 mt-12 overflow-x-auto pb-4 outline-none [scrollbar-width:none] focus-visible:ring-2 focus-visible:ring-accent/40 [&::-webkit-scrollbar]:hidden"
       >
         <div className="flex w-max snap-x snap-mandatory gap-5 px-5 sm:px-8">
           {EXAMPLES.map((e) => (

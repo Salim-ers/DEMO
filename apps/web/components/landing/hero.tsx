@@ -7,6 +7,7 @@ import { Magnetic } from "../motion/magnetic.js";
 import { Tilt } from "../motion/tilt.js";
 import { Parallax } from "../motion/parallax.js";
 import { HeroPlayer } from "./hero-player.js";
+import { AnimatedBackground } from "./animated-background.js";
 import { PRICE_LABEL } from "../../lib/pricing.js";
 
 export function Hero() {
@@ -38,18 +39,15 @@ export function Hero() {
       ref={ref}
       className="grain relative flex min-h-[100svh] items-center overflow-hidden bg-canvas pt-28 pb-16 sm:pt-24"
     >
-      {/* Ambient warm light + faint grid */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-mesh-hero" />
+      {/* Animated aurora background (replaces the static grid) */}
+      <AnimatedBackground variant="hero" />
+      {/* Parallax glows on top, reacting to scroll */}
       <Parallax speed={10} className="pointer-events-none absolute -left-32 top-10 -z-0">
-        <span aria-hidden className="glow-orb block h-[520px] w-[520px] bg-[radial-gradient(closest-side,rgba(198,134,66,0.20),transparent)]" />
+        <span aria-hidden className="glow-orb block h-[520px] w-[520px] bg-[radial-gradient(closest-side,rgba(198,134,66,0.16),transparent)]" />
       </Parallax>
       <Parallax speed={16} className="pointer-events-none absolute -right-24 top-1/3 -z-0">
-        <span aria-hidden className="glow-orb block h-[420px] w-[420px] bg-[radial-gradient(closest-side,rgba(227,179,109,0.14),transparent)]" />
+        <span aria-hidden className="glow-orb block h-[420px] w-[420px] bg-[radial-gradient(closest-side,rgba(227,179,109,0.12),transparent)]" />
       </Parallax>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-grid-faint opacity-[0.5] [background-size:46px_46px] [mask-image:radial-gradient(70%_60%_at_50%_30%,#000,transparent)]"
-      />
 
       <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
         {/* Copy */}

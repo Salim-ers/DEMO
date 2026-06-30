@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, KeyRound, EyeOff, ImageUp, Trash2, FileCheck2, ShieldCheck } from "lucide-react";
 import { FeatureCard } from "../../components/ui/feature-card.js";
+import { AnimatedBackground } from "../../components/landing/animated-background.js";
 
 export const metadata = {
   title: "Sécurité & confidentialité",
@@ -22,7 +23,7 @@ export default function SecurityPage() {
   return (
     <>
       <section className="grain relative overflow-hidden bg-canvas px-5 pb-16 pt-36 sm:px-8 sm:pb-20 sm:pt-44">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-mesh-hero" />
+        <AnimatedBackground variant="hero" />
         <div className="relative mx-auto max-w-3xl text-center">
           <p className="eyebrow justify-center">Sécurité &amp; confidentialité</p>
           <h1 className="text-display mt-4 text-[clamp(2.2rem,5vw,3.75rem)] text-ink">

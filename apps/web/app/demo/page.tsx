@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Play, Film, ListOrdered, Mic, Captions, Smartphone, FolderArchive } from "lucide-react";
 import { SectionHeader } from "../../components/ui/section-header.js";
 import { BeforeAfter } from "../../components/ui/before-after.js";
+import { AnimatedBackground } from "../../components/landing/animated-background.js";
 
 export const metadata = {
   title: "Exemple de vidéo générée",
@@ -27,7 +28,7 @@ export default function DemoPage() {
     <>
       {/* Header + player */}
       <section className="grain relative overflow-hidden bg-canvas px-5 pb-20 pt-36 sm:px-8 sm:pb-24 sm:pt-44">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-mesh-hero" />
+        <AnimatedBackground variant="hero" />
         <div className="relative mx-auto max-w-4xl text-center">
           <p className="eyebrow justify-center">Exemple</p>
           <h1 className="text-display mt-4 text-[clamp(2.2rem,5vw,3.75rem)] text-ink">Une vidéo générée par Studio One</h1>

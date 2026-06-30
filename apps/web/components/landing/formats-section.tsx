@@ -1,5 +1,6 @@
 import { Play } from "lucide-react";
 import { Reveal } from "../motion/reveal.js";
+import { AnimatedBackground } from "./animated-background.js";
 
 const FORMATS: { ratio: string; aspect: string; name: string; use: string; w: string }[] = [
   { ratio: "16:9", aspect: "aspect-video", name: "Paysage", use: "Site, landing page, sales deck, YouTube.", w: "w-full" },
@@ -9,8 +10,9 @@ const FORMATS: { ratio: string; aspect: string; name: string; use: string; w: st
 
 export function FormatsSection() {
   return (
-    <section className="border-y border-hairline bg-canvas-soft">
-      <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-28">
+    <section className="relative overflow-hidden border-y border-hairline bg-canvas-soft">
+      <AnimatedBackground variant="soft" />
+      <div className="relative z-10 mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-28">
         <Reveal className="max-w-2xl">
           <p className="eyebrow">Formats</p>
           <h2 className="text-display mt-4 text-[clamp(2rem,4vw,3.2rem)] text-ink">
