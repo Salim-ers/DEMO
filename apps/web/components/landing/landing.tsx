@@ -2,6 +2,7 @@ import { Hero } from "./hero.js";
 import { TrustTicker } from "./trust-ticker.js";
 import { HowItWorks } from "./how-it-works.js";
 import { EngineTimeline } from "./engine-timeline.js";
+import { PipelineOrbit } from "./pipeline-orbit.js";
 import { StylesSwitcher } from "./styles-switcher.js";
 import { FormatsSection } from "./formats-section.js";
 import { ExamplesSection } from "./examples-section.js";
@@ -23,6 +24,7 @@ export function Landing() {
       <TrustTicker />
       <HowItWorks />
       <EngineTimeline />
+      <PipelineOrbit />
       <StylesSwitcher />
       <FormatsSection />
       <ExamplesSection />
